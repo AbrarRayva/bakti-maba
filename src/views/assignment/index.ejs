@@ -1,0 +1,8 @@
+<h2>Daftar Tugas</h2>
+<ul>
+  <% assignments.forEach(a => { %>
+    <li>
+      <a href="/assignment/<%= a.id %>"><%= a.title %></a>
+    </li>
+  <% }) %>
+</ul>

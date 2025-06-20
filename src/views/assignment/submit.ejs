@@ -1,0 +1,8 @@
+<h2><%= tugas.title %></h2>
+<p><%= tugas.detail %></p>
+<p>Deadline: <%= tugas.deadline %></p>
+
+<form action="/assignment/<%= tugas.id %>/submit" method="POST" enctype="multipart/form-data">
+  <input type="file" name="file" required>
+  <button type="submit">Submit</button>
+</form>

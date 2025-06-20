@@ -1,0 +1,42 @@
+<h2>Peta Kampus Interaktif</h2>
+
+<!-- Peta interaktif -->
+<img src="./images/campus/peta_unand.jpeg" usemap="#mapgedung" width="800">
+
+<!-- Area klik gedung -->
+<map name="mapgedung">
+  <% buildings.forEach(b => { %>
+    <area shape="rect" coords="<%= b.coords %>" href="#" onclick="showInfo('<%= b.name %>'); return false;" alt="<%= b.name %>">
+  <% }) %>
+</map>
+
+<!-- Tempat muncul informasi -->
+<div id="info-box" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc;"></div>
+
+<!-- Daftar seluruh kegiatan -->
+<h3>Daftar Lokasi dan Kegiatan</h3>
+<ul>
+  <% kegiatan.forEach(k => { %>
+    <li><strong><%= k.lokasi %></strong>: <%= k.title %> - <%= k.waktu %></li>
+  <% }) %>
+</ul>
+
+<script>
+  function showInfo(namaGedung) {
+    const kegiatan = JSON.parse('<%- JSON.stringify(kegiatan) %>');
+    const aktivitas = kegiatan.filter(k => k.lokasi === namaGedung);
+    let html = `<h3>${namaGedung}</h3>`;
+    if (aktivitas.length > 0) {
+      aktivitas.forEach(a => {
+        html += `<p style="color:${a.warna}">${a.title} - ${a.waktu}</p>`;
+      });
+    } else {
+      html += `<p>Tidak ada kegiatan di lokasi ini.</p>`;
+    }
+    document.getElementById('info-box').innerHTML = html;
+  }
+</script>
+
+<p>
+  <a href="/campus/add">➕ Tambah </a> |
+</p>

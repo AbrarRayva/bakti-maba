@@ -1,0 +1,16 @@
+<h2>Tambah Tugas Baru</h2>
+<form action="/assignment/new" method="POST">
+  <label>Judul:</label><br>
+  <input type="text" name="title" required><br>
+
+  <label>Nama File Tugas (misalnya .docx):</label><br>
+  <input type="text" name="file" required><br>
+
+  <label>Deskripsi:</label><br>
+  <textarea name="detail" required></textarea><br>
+
+  <label>Deadline:</label><br>
+  <input type="date" name="deadline" required><br>
+
+  <button type="submit">Simpan</button>
+</form>
