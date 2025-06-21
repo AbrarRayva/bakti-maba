@@ -5,14 +5,17 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./src/index.js",
-    "dev": "nodemon ./src/index.js"
+    "dev": "nodemon ./src/index.js",
+    "buildcss": "npx @tailwindcss/cli -i ./src/css/style.css -o ./public/style.css --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@tailwindcss/cli": "^4.1.10",
     "ejs": "^3.1.10",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
