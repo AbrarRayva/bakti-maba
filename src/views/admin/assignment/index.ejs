@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Penugasan</title>
+    <link rel="stylesheet" href="/css/style.css"> </head>
+<body>
+    <%- include('../../partials/sidebar_admin') %> <div class="main-content">
+        <h1>Manajemen Penugasan</h1>
+        <a href="/admin/assignment/new">Tambah Penugasan Baru</a>
+        <ul>
+            <% assignments.forEach(assignment => { %>
+                <li>
+                    <h3><%= assignment.title %></h3>
+                    <p>Deskripsi: <%= assignment.description %></p>
+                    <p>Tenggat Waktu: <%= assignment.dueDate %></p>
+                    <% if (assignment.file && assignment.file.startsWith('/uploads/')) { %>
+                        <p>File: <a href="<%= assignment.file %>" target="_blank" download>Unduh File</a></p>
+                    <% } else if (assignment.file) { %>
+                        <p>Link: <a href="<%= assignment.file %>" target="_blank"><%= assignment.file %></a></p>
+                    <% } %>
+                    <form action="/admin/assignment/<%= assignment.id %>/delete" method="POST" style="display:inline;">
+                        <button type="submit">Hapus</button>
+                    </form>
+                </li>
+            <% }) %>
+        </ul>
+    </div>
+</body>
+</html>

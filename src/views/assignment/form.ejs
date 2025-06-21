@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Tugas: <%= assignment.title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .submit-form-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 30px auto;
+        }
+        .submit-form-card h1 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="url"],
+        .form-group textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .form-group input[type="file"] {
+            width: 100%; /* Adjust as needed */
+        }
+        .radio-group {
+            margin-bottom: 20px;
+        }
+        .radio-group input {
+            margin-right: 5px;
+        }
+        .radio-group label {
+            display: inline-block;
+            margin-right: 15px;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        .form-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        .submit-btn {
+            background-color: #6a0dad; /* Purple */
+            color: white;
+        }
+        .submit-btn:hover {
+            background-color: #5a0a9d;
+        }
+        .cancel-btn {
+            background-color: #ccc;
+            color: #333;
+        }
+        .cancel-btn:hover {
+            background-color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/sidebar_mahasiswa') %>
+    <div class="main-content">
+        <div class="submit-form-card">
+            <h1>Submit Tugas: <%= assignment.title %></h1>
+            <p>Tenggat Waktu: <%= assignment.dueDate %></p>
+            <form action="/assignment/<%= assignment.id %>/submit" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="studentName">Nama Anda:</label>
+                    <input type="text" id="studentName" name="studentName" required placeholder="Nama Lengkap">
+                </div>
+
+                <div class="form-group">
+                    <label for="studentId">NIM/ID Mahasiswa:</label>
+                    <input type="text" id="studentId" name="studentId" required placeholder="Contoh: 123456789">
+                </div>
+
+                <div class="radio-group">
+                    <label>Submit Tugas Dengan:</label><br>
+                    <input type="radio" id="submitFile" name="submissionType" value="file" checked>
+                    <label for="submitFile">Upload File</label>
+                    <input type="radio" id="submitLink" name="submissionType" value="link">
+                    <label for="submitLink">Gunakan Link</label>
+                </div>
+
+                <div class="form-group" id="fileSubmissionContainer">
+                    <label for="file">Pilih File Tugas:</label>
+                    <input type="file" id="file" name="file">
+                </div>
+                <div class="form-group" id="linkSubmissionContainer" style="display:none;">
+                    <label for="submissionLink">Link Tugas (URL):</label>
+                    <input type="url" id="submissionLink" name="submissionLink" placeholder="e.g., https://docs.google.com/document/d/...">
+                </div>
+
+                <div class="form-group">
+                    <label for="submissionText">Catatan (Opsional):</label>
+                    <textarea id="submissionText" name="submissionText" rows="3" placeholder="Tambahkan catatan untuk tugas ini..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">Submit Tugas</button>
+                    <button type="button" class="cancel-btn" onclick="window.history.back();">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const submitFileRadio = document.getElementById('submitFile');
+            const submitLinkRadio = document.getElementById('submitLink');
+            const fileSubmissionContainer = document.getElementById('fileSubmissionContainer');
+            const linkSubmissionContainer = document.getElementById('linkSubmissionContainer');
+            const fileInput = document.getElementById('file');
+            const linkInput = document.getElementById('submissionLink');
+
+            function toggleSubmissionInputs() {
+                if (submitFileRadio.checked) {
+                    fileSubmissionContainer.style.display = 'block';
+                    linkSubmissionContainer.style.display = 'none';
+                    fileInput.required = true;
+                    linkInput.required = false;
+                    linkInput.value = '';
+                } else {
+                    fileSubmissionContainer.style.display = 'none';
+                    linkSubmissionContainer.style.display = 'block';
+                    fileInput.required = false;
+                    linkInput.required = true;
+                    fileInput.value = '';
+                }
+            }
+
+            submitFileRadio.addEventListener('change', toggleSubmissionInputs);
+            submitLinkRadio.addEventListener('change', toggleSubmissionInputs);
+
+            // Set initial state based on default checked radio or URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const typeParam = urlParams.get('type');
+            if (typeParam === 'link') {
+                submitLinkRadio.checked = true;
+            } else { // Default to file if no param or param is 'file'
+                submitFileRadio.checked = true;
+            }
+            toggleSubmissionInputs();
+        });
+    </script>
+</body>
+</html>

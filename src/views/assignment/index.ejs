@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Penugasan</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab-button {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #555;
+            transition: color 0.3s, border-bottom 0.3s;
+        }
+        .tab-button.active {
+            color: #6a0dad; /* Purple */
+            border-bottom: 2px solid #6a0dad;
+        }
+        .assignment-list-container {
+            margin-top: 20px;
+        }
+        .assignment-item {
+            background-color: white;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .assignment-item .assignment-info {
+            flex-grow: 1;
+        }
+        .assignment-item .assignment-info h3 {
+            margin: 0 0 5px 0;
+            color: #333;
+            font-size: 1.2em;
+        }
+        .assignment-item .assignment-info p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .assignment-item .actions-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .assignment-item .actions-button {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #888;
+        }
+        .assignment-item .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 120px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            right: 0;
+            border-radius: 5px;
+        }
+        .assignment-item .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .assignment-item .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .assignment-item .actions-dropdown:hover .dropdown-content {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/sidebar_mahasiswa') %>
+    <div class="main-content">
+        <h1>Penugasan</h1>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="on-going">On-Going</button>
+            <button class="tab-button" data-tab="completed">Completed</button>
+        </div>
+
+        <div class="assignment-list-container">
+            <div id="on-going" class="tab-content">
+                <% const now = new Date(); %>
+                <% const ongoingAssignments = assignments.filter(a => new Date(a.dueDate) >= now); %>
+                <% if (ongoingAssignments.length > 0) { %>
+                    <% ongoingAssignments.forEach(assignment => { %>
+                        <div class="assignment-item">
+                            <div class="assignment-info">
+                                <h3><%= assignment.title %> - <%= assignment.dueDate %></h3>
+                                <% if (assignment.file && assignment.file.startsWith('/uploads/')) { %>
+                                    <p><img src="/img/icon-doc.png" alt="Doc Icon" style="width:16px;vertical-align:middle;"> <a href="<%= assignment.file %>" target="_blank" download>Instruksi Tugas.<%= assignment.file.split('.').pop() %></a></p>
+                                <% } else if (assignment.file) { %>
+                                    <p><img src="/img/icon-link.png" alt="Link Icon" style="width:16px;vertical-align:middle;"> <a href="<%= assignment.file %>" target="_blank">Link Instruksi</a></p>
+                                <% } %>
+                            </div>
+                            <div class="actions-dropdown">
+                                <button class="actions-button">...</button>
+                                <div class="dropdown-content">
+                                    <a href="/assignment/<%= assignment.id %>">Open</a>
+                                    <% if (assignment.file && assignment.file.startsWith('/uploads/')) { %>
+                                        <a href="<%= assignment.file %>" download>Download</a>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p>Tidak ada tugas yang sedang berjalan.</p>
+                <% } %>
+            </div>
+
+            <div id="completed" class="tab-content" style="display:none;">
+                <% const completedAssignments = assignments.filter(a => new Date(a.dueDate) < now); %>
+                <% if (completedAssignments.length > 0) { %>
+                    <% completedAssignments.forEach(assignment => { %>
+                        <div class="assignment-item">
+                            <div class="assignment-info">
+                                <h3><%= assignment.title %> - <%= assignment.dueDate %> (Completed)</h3>
+                                <% if (assignment.file && assignment.file.startsWith('/uploads/')) { %>
+                                    <p><img src="/img/icon-doc.png" alt="Doc Icon" style="width:16px;vertical-align:middle;"> <a href="<%= assignment.file %>" target="_blank" download>Instruksi Tugas.<%= assignment.file.split('.').pop() %></a></p>
+                                <% } else if (assignment.file) { %>
+                                    <p><img src="/img/icon-link.png" alt="Link Icon" style="width:16px;vertical-align:middle;"> <a href="<%= assignment.file %>" target="_blank">Link Instruksi</a></p>
+                                <% } %>
+                            </div>
+                             <div class="actions-dropdown">
+                                <button class="actions-button">...</button>
+                                <div class="dropdown-content">
+                                    <a href="/assignment/<%= assignment.id %>">Open</a>
+                                    <% if (assignment.file && assignment.file.startsWith('/uploads/')) { %>
+                                        <a href="<%= assignment.file %>" download>Download</a>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p>Tidak ada tugas yang sudah selesai.</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            function showTab(tabId) {
+                tabContents.forEach(content => {
+                    if (content.id === tabId) {
+                        content.style.display = 'block';
+                    } else {
+                        content.style.display = 'none';
+                    }
+                });
+                tabButtons.forEach(button => {
+                    if (button.dataset.tab === tabId) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+            }
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    showTab(button.dataset.tab);
+                });
+            });
+
+            // Show default tab on load (e.g., 'on-going')
+            showTab('on-going');
+        });
+    </script>
+</body>
+</html>

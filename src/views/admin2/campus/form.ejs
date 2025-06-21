@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Aktivitas Kampus</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .activity-form-panel {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 30px auto; /* Center the form */
+        }
+        .activity-form-panel h2 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        .form-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        .form-actions .add-btn {
+            background-color: #6a0dad; /* Purple */
+            color: white;
+        }
+        .form-actions .add-btn:hover {
+            background-color: #5a0a9d;
+        }
+        .form-actions .cancel-btn {
+            background-color: #ccc;
+            color: #333;
+        }
+        .form-actions .cancel-btn:hover {
+            background-color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../../partials/sidebar_admin') %>
+    <div class="main-content">
+        <div class="activity-form-panel">
+            <h2>Add Activity</h2>
+            <form action="/admin2/campus/add" method="POST">
+                <div class="form-group">
+                    <label for="title">Judul:</label>
+                    <input type="text" id="title" name="title" required placeholder="Nama Kegiatan">
+                </div>
+                <div class="form-group">
+                    <label for="waktu">Waktu:</label>
+                    <input type="text" id="waktu" name="waktu" required placeholder="Contoh: 13:30">
+                </div>
+                <input type="hidden" id="x" name="x" value="<%= x %>">
+                <input type="hidden" id="y" name="y" value="<%= y %>">
+                
+                <div class="form-actions">
+                    <button type="submit" class="add-btn">Add</button>
+                    <button type="button" class="cancel-btn" onclick="window.history.back();">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
