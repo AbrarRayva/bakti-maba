@@ -78,6 +78,17 @@ const store = async (req, res) => {
   try {
     const { nama, nim, password, id_kelompok, role } = req.body;
 
+    // Validasi input
+    if (!nama || !nim || !password) {
+      return res.status(400).send('Nama, NIM, dan password harus diisi');
+    }
+
+    // Cek apakah NIM sudah ada
+    const existingUser = await User.findByPk(nim);
+    if (existingUser) {
+      return res.status(400).send('NIM sudah terdaftar');
+    }
+
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -101,9 +112,9 @@ const store = async (req, res) => {
 // Menampilkan form edit user
 const edit = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { nim } = req.params;
     
-    const user = await User.findByPk(id, {
+    const user = await User.findByPk(nim, {
       include: [
         {
           model: Kelompok,
@@ -132,17 +143,16 @@ const edit = async (req, res) => {
 // Update user
 const update = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { nama, nim, password, id_kelompok, role, is_blocked } = req.body;
+    const { nim } = req.params;
+    const { nama, password, id_kelompok, role, is_blocked } = req.body;
 
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(nim);
     if (!user) {
       return res.status(404).send('User tidak ditemukan');
     }
 
     const updateData = {
       nama,
-      nim,
       id_kelompok: id_kelompok || null,
       role,
       is_blocked: is_blocked === 'true'
@@ -165,9 +175,9 @@ const update = async (req, res) => {
 // Delete user
 const destroy = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { nim } = req.params;
     
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(nim);
     if (!user) {
       return res.status(404).json({ success: false, message: 'User tidak ditemukan' });
     }
@@ -183,19 +193,20 @@ const destroy = async (req, res) => {
 // Toggle block status
 const toggleBlock = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { nim } = req.params;
     
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(nim);
     if (!user) {
-      return res.status(404).send('User tidak ditemukan');
+      return res.status(404).json({ success: false, message: 'User tidak ditemukan' });
     }
 
-    await user.update({ is_blocked: !user.is_blocked });
+    const newBlockStatus = !user.is_blocked;
+    await user.update({ is_blocked: newBlockStatus });
     
     res.json({ 
       success: true, 
-      is_blocked: user.is_blocked,
-      message: user.is_blocked ? 'User berhasil diblokir' : 'User berhasil dibuka blokir'
+      is_blocked: newBlockStatus,
+      message: newBlockStatus ? 'User berhasil diblokir' : 'User berhasil dibuka blokir'
     });
   } catch (error) {
     console.error('Error toggling block status:', error);

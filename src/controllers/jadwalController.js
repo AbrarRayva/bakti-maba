@@ -148,9 +148,14 @@ const store = async (req, res) => {
   try {
     const { nama_kegiatan, deskripsi, tanggal, waktu_mulai, id_lokasi, kelompok_ids } = req.body;
 
+    // Validasi input
+    if (!nama_kegiatan || !tanggal || !waktu_mulai || !id_lokasi) {
+      return res.status(400).send('Nama kegiatan, tanggal, waktu mulai, dan lokasi harus diisi');
+    }
+
     const jadwal = await JadwalKegiatan.create({
-      nama_kegiatan,
-      deskripsi,
+      nama_kegiatan: nama_kegiatan.trim(),
+      deskripsi: deskripsi ? deskripsi.trim() : null,
       tanggal,
       waktu_mulai,
       id_lokasi
@@ -212,14 +217,19 @@ const update = async (req, res) => {
     const { id } = req.params;
     const { nama_kegiatan, deskripsi, tanggal, waktu_mulai, id_lokasi, kelompok_ids } = req.body;
 
+    // Validasi input
+    if (!nama_kegiatan || !tanggal || !waktu_mulai || !id_lokasi) {
+      return res.status(400).send('Nama kegiatan, tanggal, waktu mulai, dan lokasi harus diisi');
+    }
+
     const jadwal = await JadwalKegiatan.findByPk(id);
     if (!jadwal) {
       return res.status(404).send('Jadwal tidak ditemukan');
     }
 
     await jadwal.update({
-      nama_kegiatan,
-      deskripsi,
+      nama_kegiatan: nama_kegiatan.trim(),
+      deskripsi: deskripsi ? deskripsi.trim() : null,
       tanggal,
       waktu_mulai,
       id_lokasi

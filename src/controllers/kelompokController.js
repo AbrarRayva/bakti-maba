@@ -19,7 +19,7 @@ const index = async (req, res) => {
         {
           model: User,
           as: 'Users',
-          attributes: ['nim', 'nama']
+          attributes: ['nim', 'nama', 'role', 'is_blocked']
         }
       ],
       order: [['nama_kelompok', 'ASC']]
@@ -50,8 +50,22 @@ const store = async (req, res) => {
   try {
     const { nama_kelompok } = req.body;
 
+    // Validasi input
+    if (!nama_kelompok || nama_kelompok.trim() === '') {
+      return res.status(400).send('Nama kelompok harus diisi');
+    }
+
+    // Cek apakah nama kelompok sudah ada
+    const existingKelompok = await Kelompok.findOne({
+      where: { nama_kelompok: nama_kelompok.trim() }
+    });
+
+    if (existingKelompok) {
+      return res.status(400).send('Nama kelompok sudah ada');
+    }
+
     await Kelompok.create({
-      nama_kelompok
+      nama_kelompok: nama_kelompok.trim()
     });
 
     res.redirect('/admin/kelompok');
@@ -71,7 +85,7 @@ const edit = async (req, res) => {
         {
           model: User,
           as: 'Users',
-          attributes: ['nim', 'nama']
+          attributes: ['nim', 'nama', 'role', 'is_blocked']
         }
       ]
     });
@@ -93,12 +107,29 @@ const update = async (req, res) => {
     const { id } = req.params;
     const { nama_kelompok } = req.body;
 
+    // Validasi input
+    if (!nama_kelompok || nama_kelompok.trim() === '') {
+      return res.status(400).send('Nama kelompok harus diisi');
+    }
+
     const kelompok = await Kelompok.findByPk(id);
     if (!kelompok) {
       return res.status(404).send('Kelompok tidak ditemukan');
     }
 
-    await kelompok.update({ nama_kelompok });
+    // Cek apakah nama kelompok sudah ada (kecuali kelompok yang sedang diedit)
+    const existingKelompok = await Kelompok.findOne({
+      where: { 
+        nama_kelompok: nama_kelompok.trim(),
+        id_kelompok: { [Op.ne]: id }
+      }
+    });
+
+    if (existingKelompok) {
+      return res.status(400).send('Nama kelompok sudah ada');
+    }
+
+    await kelompok.update({ nama_kelompok: nama_kelompok.trim() });
 
     res.redirect('/admin/kelompok');
   } catch (error) {

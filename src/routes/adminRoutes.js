@@ -22,13 +22,13 @@ router.delete('/jadwal/:id', requireAdmin, jadwalController.destroy);
 // Routes untuk admin users
 router.get('/users', requireAdmin, userController.index);
 router.get('/users/create', requireAdmin, userController.create);
-router.get('/users/edit/:id', requireAdmin, userController.edit);
+router.get('/users/edit/:nim', requireAdmin, userController.edit);
 
 // API routes untuk admin users
 router.post('/users', requireAdmin, userController.store);
-router.put('/users/:id', requireAdmin, userController.update);
-router.delete('/users/:id', requireAdmin, userController.destroy);
-router.post('/users/:id/toggle-block', requireAdmin, userController.toggleBlock);
+router.put('/users/:nim', requireAdmin, userController.update);
+router.delete('/users/:nim', requireAdmin, userController.destroy);
+router.post('/users/:nim/toggle-block', requireAdmin, userController.toggleBlock);
 
 // Routes untuk admin kelompok
 router.get('/kelompok', requireAdmin, kelompokController.index);

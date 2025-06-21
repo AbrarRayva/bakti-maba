@@ -1,5 +1,5 @@
 const { User } = require('../models');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const viewLoginPage = (req, res) => {
     res.render('auth/login', {
@@ -14,7 +14,7 @@ const login = async (req, res) => {
         
         // Find user by NIM (username from form)
         const user = await User.findOne({ 
-            attributes: ['nim', 'nama', 'password', 'role'],
+            attributes: ['nim', 'nama', 'password', 'role', 'is_blocked'],
             where: { nim: username }
         });
         
@@ -23,6 +23,15 @@ const login = async (req, res) => {
                 pageTitle: 'Login',
                 layout: false,
                 error: 'NIM atau password salah'
+            });
+        }
+        
+        // Check if user is blocked
+        if (user.is_blocked) {
+            return res.render('auth/login', {
+                pageTitle: 'Login',
+                layout: false,
+                error: 'Akun Anda telah diblokir. Silakan hubungi admin.'
             });
         }
         

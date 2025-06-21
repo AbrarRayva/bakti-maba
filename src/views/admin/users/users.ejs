@@ -177,16 +177,16 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="/admin/users/edit/<%= user.id_user %>" 
+                                    <a href="/admin/users/edit/<%= user.nim %>" 
                                        class="text-blue-600 hover:text-blue-900">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <button class="toggle-block-btn <%= user.is_blocked ? 'text-green-600 hover:text-green-900' : 'text-red-600 hover:text-red-900' %>"
-                                            data-user-id="<%= user.id_user %>">
+                                            data-user-id="<%= user.nim %>">
                                         <i class="fas fa-<%= user.is_blocked ? 'unlock' : 'lock' %>"></i>
                                     </button>
                                     <button class="delete-user-btn text-red-600 hover:text-red-900"
-                                            data-user-id="<%= user.id_user %>">
+                                            data-user-id="<%= user.nim %>">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
