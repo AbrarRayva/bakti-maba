@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chatbot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-white min-h-screen">
+
+  <!-- Sidebar -->
+  <aside class="w-64 h-screen bg-white shadow-md fixed top-0 left-0 flex flex-col pt-6 px-4 z-10">
+  <h2 class="text-lg font-bold mb-8 px-2">Menu</h2>
+  <nav class="flex flex-col space-y-4">
+    <a href="/home" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span>Home</a>
+    <a href="/jadwal" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Jadwal</a>
+    <a href="/penugasan" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Penugasan</a>
+    <a href="/gps" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Absensi</a>
+    <a href="/forum/chat/1" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Forum</a>
+    <a href="/peta" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Peta</a>
+    <a href="/logout" class="flex items-center text-red-600 hover:text-red-800"><span class="material-icons mr-3"></span> Logout</a>
+  </nav>
+</aside>
+
+  <!-- Chat Section -->
+  <main class="flex-1 flex flex-col p-6 ml-64">
+  <!-- Header -->
+  <div class="pb-2">
+    <h1 class="text-2xl font-bold">Forum</h1>
+  </div>
+    <!-- Tabs -->
+    <div class="flex justify-center space-x-8 border-b mb-4">
+      <a href="/forum/chat/1" class="py-2 px-6 text-black font-semibold">Global</a>
+      <a href="/chatbot" class="py-2 px-6 text-black font-semibold bg-gray-300 rounded-full">ChatBot</a>
+      <a href="/leaderboardRoutes" class="py-2 px-6 text-black font-semibold">LeaderBoard</a>
+    </div>
+
+    <!-- Chat Body -->
+    <div class="flex-1 my-4 space-y-4 overflow-y-auto">
+      <% if (messages.length === 0) { %>
+        <p class="text-gray-400 text-center">Belum ada pesan. Silakan mulai percakapan.</p>
+      <% } %>
+
+      <% messages.forEach(msg => { %>
+        <% if (msg.from === 'user') { %>
+          <div class="flex justify-end">
+            <div class="max-w-xs bg-yellow-100 p-3 rounded-xl text-sm shadow"><%= msg.text %></div>
+          </div>
+          <p class="text-xs text-gray-400 text-right"><%= msg.time %></p>
+        <% } else { %>
+          <div class="max-w-sm bg-gray-200 p-3 rounded-xl text-sm shadow"><%= msg.text %></div>
+          <p class="text-xs text-gray-400 ml-2"><%= msg.time %></p>
+        <% } %>
+      <% }) %>
+    </div>
+
+    <!-- Input Box -->
+    <form action="/chatbot" method="POST" class="flex items-center gap-2 p-3 bg-gray-100 rounded-xl">
+      <input type="text" name="message" placeholder="Ketik pesan Anda..." required class="flex-1 px-4 py-2 rounded-xl border border-gray-300" />
+      <button type="submit" class="bg-yellow-400 px-4 py-2 rounded-xl hover:bg-yellow-300">Kirim</button>
+    </form>
+  </main>
+
+</body>
+</html>

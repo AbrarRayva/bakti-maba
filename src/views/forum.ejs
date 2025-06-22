@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forum</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-white min-h-screen relative">
+
+<!--sidebar-->
+  <aside class="w-64 h-screen bg-white shadow-md fixed top-0 left-0 flex flex-col pt-6 px-4 z-10">
+  <h2 class="text-lg font-bold mb-8 px-2">Menu</h2>
+  <nav class="flex flex-col space-y-4">
+    <a href="/home" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span>Home</a>
+    <a href="/jadwal" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Jadwal</a>
+    <a href="/penugasan" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Penugasan</a>
+    <a href="/gps" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Absensi</a>
+    <a href="/forum/chat/1" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Forum</a>
+    <a href="/peta" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Peta</a>
+    <a href="/logout" class="flex items-center text-red-600 hover:text-red-800"><span class="material-icons mr-3"></span> Logout</a>
+  </nav>
+</aside>
+
+<!-- Main Content -->
+<main class="flex-1 p-6 relative ml-64">
+  <div class="flex justify-between items-center mb-4 relative">
+    <h1 class="text-2xl font-bold">Forum</h1>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex justify-center space-x-8 mb-4">
+    <a href="/forum/chat/1" class="py-2 px-6 rounded-full font-semibold bg-gray-300 text-black">Global</a>
+    <a href="/chatbot" class="py-2 px-6 rounded-full text-gray-600 hover:text-black">ChatBot</a>
+    <a href="/leaderboardRoutes" class="py-2 px-6 rounded-full text-gray-600 hover:text-black">LeaderBoard</a>
+  </div>
+
+<!-- Chat Area -->
+  <div class="bg-white rounded-2xl shadow-lg p-6">
+    <!-- Header dengan avatar -->
+    <div class="mb-4 border-b pb-4 flex justify-between items-start">
+      <div class="flex items-center space-x-3">
+        <img src=" " class="w-10 h-10 rounded-full object-cover border border-gray-300">
+        <div>
+          <h2 class="text-lg font-semibold">Bakti 2025</h2>
+        </div>
+      </div>
+      <button class="text-gray-600 text-lg">🔍</button>
+    </div>
+
+    <div id="searchBox" class="mb-4 hidden">
+      <input type="text" id="searchInput" onkeyup="searchMessages()" placeholder="Cari pesan..." class="w-full border border-gray-300 rounded px-4 py-2" />
+    </div>
+
+    <div id="chatMessages" class="space-y-2 mb-6 min-h-[300px]">
+      <p id="noMessages" class="text-center text-gray-400">Belum ada pesan. Silakan mulai percakapan.</p>
+    </div>
+
+    <!-- Chat Input -->
+    <div class="flex items-center gap-2 border-t pt-4 justify-end">
+      <input id="chatInput" type="text" placeholder="Type your message here..." class="flex-1 border border-gray-300 rounded-full px-4 py-2" />
+      <button onclick="sendMessage()" class="bg-yellow-300 rounded-full px-4 py-2 text-sm font-semibold hover:bg-yellow-400">Kirim</button>
+    </div>
+  </div>
+</main>
+
+<script>
+  function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (text === '') return;
+
+    const container = document.getElementById('chatMessages');
+    const noMessages = document.getElementById('noMessages');
+    if (noMessages) noMessages.remove();
+
+    const messageEl = document.createElement('div');
+    messageEl.className = 'text-right message-item';
+    messageEl.innerHTML = `
+      <p class="inline-block bg-yellow-100 text-sm px-4 py-2 rounded-full">${text}</p>
+      <p class="text-xs text-gray-400 mr-4">${new Date().toLocaleTimeString()}</p>
+    `;
+    container.appendChild(messageEl);
+    input.value = '';
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function toggleSearch() {
+    document.getElementById('searchBox').classList.toggle('hidden');
+  }
+
+  function searchMessages() {
+    const keyword = document.getElementById('searchInput').value.toLowerCase();
+    const messages = document.querySelectorAll('.message-item');
+    messages.forEach(msg => {
+      const content = msg.textContent.toLowerCase();
+      if (content.includes(keyword)) {
+        msg.classList.remove('hidden');
+      } else {
+        msg.classList.add('hidden');
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard</title>
+  <link href="./output.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gradient-to-b from-yellow-100 to-blue-100 min-h-screen">
+
+<aside class="w-64 h-screen bg-white shadow-md fixed top-0 left-0 flex flex-col pt-6 px-4 z-10">
+  <h2 class="text-lg font-bold mb-8 px-2">Menu</h2>
+  <nav class="flex flex-col space-y-4">
+    <a href="/home" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span>Home</a>
+    <a href="/jadwal" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Jadwal</a>
+    <a href="/penugasan" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Penugasan</a>
+    <a href="/gps" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Absensi</a>
+    <a href="/forum/admin" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Forum</a>
+    <a href="/peta" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Peta</a>
+    <a href="/logout" class="flex items-center text-red-600 hover:text-red-800"><span class="material-icons mr-3"></span> Logout</a>
+  </nav>
+</aside>
+
+<!-- Main Content -->
+<main class="flex-1 ml-64 p-10">
+  <h1 class="text-3xl font-bold mb-6">Forum</h1>
+
+  <!-- Tabs -->
+  <div class="flex justify-center space-x-8 border-b mb-8">
+    <a href="/forum/admin" class="py-2 px-6 text-black font-semibold">Global</a>
+    <a href="/chatbot" class="py-2 px-6 text-black font-semibold">ChatBot</a>
+    <a href="/leaderboardRoutes" class="py-2 px-6 text-black font-semibold bg-gray-300 rounded-full">LeaderBoard</a>
+  </div>
+
+  <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
+    <!-- Congratulations Card -->
+    <div class="bg-white rounded-2xl shadow-md p-6 w-80 text-center">
+      <div class="text-6xl mb-2">🏆</div>
+      <h2 class="text-xl font-bold">Congratulations!</h2>
+      <p class="text-gray-500">@<%= username %></p>
+      <hr class="my-4">
+      <p class="text-3xl font-semibold"><%= userPoints %></p>
+      <p class="text-gray-500">Interaction</p>
+    </div>
+
+    <!-- Standing List -->
+    <div class="bg-white rounded-2xl shadow-md p-6 w-96">
+      <h3 class="text-lg font-semibold mb-4">Standing</h3>
+      <table class="w-full text-left">
+        <thead>
+          <tr class="text-gray-600 border-b">
+            <th>Rank</th>
+            <th>User</th>
+            <th class="text-right">Interaction</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% leaderboard.forEach((user, index) => { %>
+            <tr class="border-b py-2">
+              <td class="py-2"><%= index + 1 %></td>
+              <td>@<%= user.username %></td>
+              <td class="text-right"><%= user.points %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

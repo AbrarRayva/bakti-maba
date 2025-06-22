@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forum Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-white min-h-screen relative">
+
+<!-- Sidebar -->
+<!--sidebar-->
+<aside class="w-64 h-screen bg-white shadow-md fixed top-0 left-0 flex flex-col pt-6 px-4 z-10">
+  <h2 class="text-lg font-bold mb-8 px-2">Menu</h2>
+  <nav class="flex flex-col space-y-4">
+    <a href="/home" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span>Home</a>
+    <a href="/jadwal" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Jadwal</a>
+    <a href="/penugasan" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Penugasan</a>
+    <a href="/gps" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Absensi</a>
+    <a href="/forum/admin" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Forum</a>
+    <a href="/peta" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Peta</a>
+    <a href="/logout" class="flex items-center text-red-600 hover:text-red-800"><span class="material-icons mr-3"></span> Logout</a>
+  </nav>
+</aside>
+
+<!-- Main Content -->
+<main class="flex-1 p-6 ml-64">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">Forum Admin</h1>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex justify-center space-x-8 mb-4">
+    <a href="/forum/admin" class="py-2 px-6 rounded-full font-semibold bg-gray-300 text-black">Global</a>
+    <a href="/chatbot" class="py-2 px-6 rounded-full text-gray-600 hover:text-black">ChatBot</a>
+    <a href="/leaderboardRoutes" class="py-2 px-6 rounded-full text-gray-600 hover:text-black">LeaderBoard</a>
+  </div>
+
+  <!-- Chat Area -->
+  <div class="bg-white rounded-2xl shadow-lg p-6">
+    <!-- Header dengan avatar -->
+    <div class="mb-4 border-b pb-4 flex justify-between items-start">
+      <div class="flex items-center space-x-3">
+        <img src=" " class="w-10 h-10 rounded-full object-cover border border-gray-300">
+        <div>
+          <h2 class="text-lg font-semibold">Bakti 2025</h2>
+        </div>
+      </div>
+      <button class="text-gray-600 text-lg">🔍</button>
+    </div>
+
+    <!-- Chat Messages -->
+    <div id="chatMessages" class="space-y-2 mb-6 min-h-[300px] relative">
+      <p class="text-center text-gray-400" id="placeholder">Belum ada pesan. Silakan mulai percakapan.</p>
+    </div>
+
+    <!-- Popup Menu -->
+    <div id="messagePopup" class="absolute hidden bg-[#DBDFE9] border shadow-lg rounded-lg w-40 z-20">
+      <ul class="divide-y divide-gray-200 text-sm">
+        <li onclick="replyMessage()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Reply</li>
+        <li onclick="reactMessage()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">React</li>
+        <li onclick="deleteMessage()" class="px-4 py-2 hover:bg-red-100 cursor-pointer">Delete</li>
+        <li onclick="pinMessage()" class="px-4 py-2 hover:bg-red-100 cursor-pointer">Pinned</li>
+      </ul>
+    </div>
+
+    <!-- Pinned Message -->
+    <div id="pinnedMessage" class="mb-4 hidden bg-yellow-50 border-l-4 border-yellow-300 text-gray-700 p-4 rounded-lg relative">
+      <span class="font-semibold">Pinned:</span>
+      <span id="pinnedText"></span>
+      <button onclick="unpinMessage()" class="absolute top-2 right-2 text-sm text-gray-500 hover:text-red-500">✖</button>
+    </div>
+
+    <!-- Chat Input -->
+    <div class="flex items-center gap-2 border-t pt-4 justify-end">
+      <input id="chatInput" type="text" placeholder="Type your message here..." class="flex-1 border border-gray-300 rounded-full px-4 py-2" />
+      <button onclick="sendMessage()" class="bg-yellow-300 rounded-full px-4 py-2 text-sm font-semibold hover:bg-yellow-400">Kirim</button>
+    </div>
+  </div>
+</main>
+
+<!-- Script -->
+<script>
+  let selectedMessage = null;
+
+  function sendMessage() {
+    const input = document.getElementById("chatInput");
+    const message = input.value.trim();
+    const messagesDiv = document.getElementById("chatMessages");
+    if (message === "") return;
+
+    const placeholder = document.getElementById("placeholder");
+    if (placeholder) placeholder.remove();
+
+    const messageWrapper = document.createElement("div");
+    messageWrapper.className = "relative flex justify-end group";
+
+    const messageBubble = document.createElement("div");
+    messageBubble.className = "max-w-xs bg-yellow-100 p-3 rounded-xl text-sm shadow cursor-pointer";
+    messageBubble.textContent = message;
+    messageBubble.dataset.message = message;
+
+    // Double-click bubble → show popup
+    messageBubble.addEventListener("dblclick", (e) => showPopup(e, messageWrapper));
+
+    const timeStamp = document.createElement("p");
+    timeStamp.className = "text-xs text-gray-400 text-right";
+    timeStamp.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    messageWrapper.appendChild(messageBubble);
+    messageWrapper.appendChild(timeStamp);
+    messagesDiv.appendChild(messageWrapper);
+
+    input.value = "";
+  }
+
+  function showPopup(event, messageElement) {
+    const popup = document.getElementById("messagePopup");
+    const rect = event.target.getBoundingClientRect();
+    popup.style.top = `${rect.bottom + window.scrollY}px`;
+    popup.style.left = `${rect.left}px`;
+    popup.classList.remove("hidden");
+    selectedMessage = messageElement;
+  }
+
+  // Hide popup on outside click
+  window.addEventListener("click", function (e) {
+    const popup = document.getElementById("messagePopup");
+    if (!popup.contains(e.target) && !e.target.closest(".max-w-xs")) {
+      popup.classList.add("hidden");
+      selectedMessage = null;
+    }
+  });
+
+  function replyMessage() {
+    const input = document.getElementById("chatInput");
+    const originalText = selectedMessage.querySelector("div").textContent;
+    input.value = `@reply to: "${originalText}" → `;
+    input.focus();
+    document.getElementById("messagePopup").classList.add("hidden");
+  }
+
+  function reactMessage() {
+    const emoji = prompt("Masukkan emoji (misal 😊, 👍):");
+    if (emoji) {
+      const span = document.createElement("span");
+      span.textContent = " " + emoji;
+      selectedMessage.querySelector("div").appendChild(span);
+    }
+    document.getElementById("messagePopup").classList.add("hidden");
+  }
+
+  function deleteMessage() {
+    if (confirm("Yakin ingin menghapus pesan ini?")) {
+      selectedMessage.remove();
+      selectedMessage = null;
+    }
+    document.getElementById("messagePopup").classList.add("hidden");
+  }
+
+  function pinMessage() {
+    const pinnedText = selectedMessage.querySelector("div").textContent;
+    document.getElementById("pinnedText").textContent = pinnedText;
+    document.getElementById("pinnedMessage").classList.remove("hidden");
+    document.getElementById("messagePopup").classList.add("hidden");
+  }
+
+  function unpinMessage() {
+    document.getElementById("pinnedMessage").classList.add("hidden");
+    document.getElementById("pinnedText").textContent = "";
+  }
+</script>
+
+</body>
+</html>
