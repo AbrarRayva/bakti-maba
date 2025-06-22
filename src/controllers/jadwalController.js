@@ -1,4 +1,4 @@
-const { JadwalKegiatan, Lokasi } = require('../models');
+const { JadwalKegiatan, Lokasi, Kelompok } = require('../models');
 const { Op } = require('sequelize');
 
 // Menampilkan semua jadwal dengan filter
@@ -18,23 +18,31 @@ const getAllJadwal = async (req, res) => {
       whereClause.jenis_kegiatan = jenis_kegiatan;
     }
     
-    // Filter berdasarkan kelompok/jurusan
-    if (kelompok) {
-      whereClause.kelompok = kelompok;
-    }
-    
     let lokasiWhere = {};
     if (lokasi) {
       lokasiWhere.nama_lokasi = { [Op.like]: `%${lokasi}%` };
     }
     
+    let kelompokWhere = {};
+    if (kelompok) {
+      kelompokWhere.nama_kelompok = kelompok;
+    }
+    
     const jadwal = await JadwalKegiatan.findAll({
       where: whereClause,
-      include: [{
-        model: Lokasi,
-        where: lokasiWhere,
-        attributes: ['nama_lokasi', 'alamat']
-      }],
+      include: [
+        {
+          model: Lokasi,
+          where: lokasiWhere,
+          attributes: ['nama_lokasi', 'alamat']
+        },
+        {
+          model: Kelompok,
+          where: kelompokWhere,
+          attributes: ['nama_kelompok'],
+          through: { attributes: [] }
+        }
+      ],
       order: [['tanggal', 'ASC'], ['waktu_mulai', 'ASC']]
     });
     
@@ -57,11 +65,18 @@ const getJadwalByKelompok = async (req, res) => {
     const { kelompok } = req.params;
     
     const jadwal = await JadwalKegiatan.findAll({
-      where: { kelompok },
-      include: [{
-        model: Lokasi,
-        attributes: ['nama_lokasi', 'alamat']
-      }],
+      include: [
+        {
+          model: Lokasi,
+          attributes: ['nama_lokasi', 'alamat']
+        },
+        {
+          model: Kelompok,
+          where: { nama_kelompok: kelompok },
+          attributes: ['nama_kelompok'],
+          through: { attributes: [] }
+        }
+      ],
       order: [['tanggal', 'ASC'], ['waktu_mulai', 'ASC']]
     });
     
@@ -82,14 +97,25 @@ const getJadwalByKelompok = async (req, res) => {
 const showJadwalPage = async (req, res) => {
   try {
     const jadwal = await JadwalKegiatan.findAll({
-      include: [{
-        model: Lokasi,
-        attributes: ['nama_lokasi', 'alamat']
-      }],
+      include: [
+        {
+          model: Lokasi,
+          attributes: ['nama_lokasi', 'alamat']
+        },
+        {
+          model: Kelompok,
+          attributes: ['nama_kelompok'],
+          through: { attributes: [] }
+        }
+      ],
       order: [['tanggal', 'ASC'], ['waktu_mulai', 'ASC']]
     });
     
-    res.render('jadwal/index', { jadwal });
+    const kelompok = await Kelompok.findAll({
+      order: [['nama_kelompok', 'ASC']]
+    });
+    
+    res.render('jadwal/index', { jadwal, kelompok });
   } catch (error) {
     res.status(500).render('error', { 
       message: 'Terjadi kesalahan saat memuat halaman jadwal',
@@ -102,16 +128,26 @@ const showJadwalPage = async (req, res) => {
 const showAdminJadwalPage = async (req, res) => {
   try {
     const jadwal = await JadwalKegiatan.findAll({
-      include: [{
-        model: Lokasi,
-        attributes: ['nama_lokasi', 'alamat']
-      }],
+      include: [
+        {
+          model: Lokasi,
+          attributes: ['nama_lokasi', 'alamat']
+        },
+        {
+          model: Kelompok,
+          attributes: ['nama_kelompok'],
+          through: { attributes: [] }
+        }
+      ],
       order: [['tanggal', 'ASC'], ['waktu_mulai', 'ASC']]
     });
     
     const lokasi = await Lokasi.findAll();
+    const kelompok = await Kelompok.findAll({
+      order: [['nama_kelompok', 'ASC']]
+    });
     
-    res.render('admin/jadwal/index', { jadwal, lokasi });
+    res.render('admin/jadwal/index', { jadwal, lokasi, kelompok });
   } catch (error) {
     res.status(500).render('error', { 
       message: 'Terjadi kesalahan saat memuat halaman admin jadwal',
@@ -124,7 +160,10 @@ const showAdminJadwalPage = async (req, res) => {
 const showCreateJadwalPage = async (req, res) => {
   try {
     const lokasi = await Lokasi.findAll();
-    res.render('admin/jadwal/create', { lokasi });
+    const kelompok = await Kelompok.findAll({
+      order: [['nama_kelompok', 'ASC']]
+    });
+    res.render('admin/jadwal/create', { lokasi, kelompok });
   } catch (error) {
     res.status(500).render('error', { 
       message: 'Terjadi kesalahan saat memuat halaman create jadwal',
@@ -138,10 +177,17 @@ const showEditJadwalPage = async (req, res) => {
   try {
     const { id } = req.params;
     const jadwal = await JadwalKegiatan.findByPk(id, {
-      include: [{
-        model: Lokasi,
-        attributes: ['nama_lokasi', 'alamat']
-      }]
+      include: [
+        {
+          model: Lokasi,
+          attributes: ['nama_lokasi', 'alamat']
+        },
+        {
+          model: Kelompok,
+          attributes: ['id_kelompok', 'nama_kelompok'],
+          through: { attributes: [] }
+        }
+      ]
     });
     
     if (!jadwal) {
@@ -151,7 +197,10 @@ const showEditJadwalPage = async (req, res) => {
     }
     
     const lokasi = await Lokasi.findAll();
-    res.render('admin/jadwal/edit', { jadwal, lokasi });
+    const kelompok = await Kelompok.findAll({
+      order: [['nama_kelompok', 'ASC']]
+    });
+    res.render('admin/jadwal/edit', { jadwal, lokasi, kelompok });
   } catch (error) {
     res.status(500).render('error', { 
       message: 'Terjadi kesalahan saat memuat halaman edit jadwal',
@@ -170,7 +219,7 @@ const createJadwal = async (req, res) => {
       waktu_mulai, 
       waktu_selesai,
       id_lokasi, 
-      kelompok, 
+      kelompok_ids, 
       jenis_kegiatan, 
       topik 
     } = req.body;
@@ -182,10 +231,14 @@ const createJadwal = async (req, res) => {
       waktu_mulai,
       waktu_selesai,
       id_lokasi,
-      kelompok,
       jenis_kegiatan,
       topik
     });
+    
+    // Add kelompok associations
+    if (kelompok_ids && kelompok_ids.length > 0) {
+      await jadwal.setKelompoks(kelompok_ids);
+    }
     
     res.json({
       success: true,
@@ -212,7 +265,7 @@ const updateJadwal = async (req, res) => {
       waktu_mulai, 
       waktu_selesai,
       id_lokasi, 
-      kelompok, 
+      kelompok_ids, 
       jenis_kegiatan, 
       topik 
     } = req.body;
@@ -233,10 +286,16 @@ const updateJadwal = async (req, res) => {
       waktu_mulai,
       waktu_selesai,
       id_lokasi,
-      kelompok,
       jenis_kegiatan,
       topik
     });
+    
+    // Update kelompok associations
+    if (kelompok_ids && kelompok_ids.length > 0) {
+      await jadwal.setKelompoks(kelompok_ids);
+    } else {
+      await jadwal.setKelompoks([]);
+    }
     
     res.json({
       success: true,
@@ -286,17 +345,30 @@ const exportJadwalToCalendar = async (req, res) => {
   try {
     const { kelompok } = req.query;
     
-    let whereClause = {};
+    let includeClause = [
+      {
+        model: Lokasi,
+        attributes: ['nama_lokasi', 'alamat']
+      }
+    ];
+    
     if (kelompok) {
-      whereClause.kelompok = kelompok;
+      includeClause.push({
+        model: Kelompok,
+        where: { nama_kelompok: kelompok },
+        attributes: ['nama_kelompok'],
+        through: { attributes: [] }
+      });
+    } else {
+      includeClause.push({
+        model: Kelompok,
+        attributes: ['nama_kelompok'],
+        through: { attributes: [] }
+      });
     }
     
     const jadwal = await JadwalKegiatan.findAll({
-      where: whereClause,
-      include: [{
-        model: Lokasi,
-        attributes: ['nama_lokasi', 'alamat']
-      }],
+      include: includeClause,
       order: [['tanggal', 'ASC'], ['waktu_mulai', 'ASC']]
     });
     
@@ -308,14 +380,16 @@ const exportJadwalToCalendar = async (req, res) => {
     
     jadwal.forEach(item => {
       const startDate = new Date(`${item.tanggal}T${item.waktu_mulai}`);
-      const endDate = item.waktu_selesai ? new Date(`${item.tanggal}T${item.waktu_selesai}`) : new Date(startDate.getTime() + 60 * 60 * 1000); // Default 1 jam
+      const endDate = item.waktu_selesai ? new Date(`${item.tanggal}T${item.waktu_selesai}`) : new Date(startDate.getTime() + 60 * 60 * 1000);
+      
+      const kelompokNames = item.Kelompoks ? item.Kelompoks.map(k => k.nama_kelompok).join(', ') : '';
       
       icalContent += 'BEGIN:VEVENT\r\n';
       icalContent += `UID:${item.id_kegiatan}@baktimaba.com\r\n`;
       icalContent += `DTSTART:${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z\r\n`;
       icalContent += `DTEND:${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z\r\n`;
       icalContent += `SUMMARY:${item.nama_kegiatan}\r\n`;
-      icalContent += `DESCRIPTION:${item.deskripsi || ''}\r\n`;
+      icalContent += `DESCRIPTION:${item.deskripsi || ''} ${kelompokNames ? `(Kelompok: ${kelompokNames})` : ''}\r\n`;
       if (item.Lokasi) {
         icalContent += `LOCATION:${item.Lokasi.nama_lokasi}\r\n`;
       }
@@ -352,10 +426,17 @@ const getJadwalForNotification = async (req, res) => {
           ]
         }
       },
-      include: [{
-        model: Lokasi,
-        attributes: ['nama_lokasi', 'alamat']
-      }]
+      include: [
+        {
+          model: Lokasi,
+          attributes: ['nama_lokasi', 'alamat']
+        },
+        {
+          model: Kelompok,
+          attributes: ['nama_kelompok'],
+          through: { attributes: [] }
+        }
+      ]
     });
     
     res.json({

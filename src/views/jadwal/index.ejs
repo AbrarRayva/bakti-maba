@@ -7,38 +7,73 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .jadwal-card {
+            transition: all 0.3s ease;
+        }
+        .jadwal-card:hover {
+            transform: translateY(-2px);
+        }
+        .filter-mobile {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .filter-desktop {
+                display: none;
+            }
+            .filter-mobile {
+                display: block;
+            }
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
     <!-- Header -->
-    <header class="bg-blue-600 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-6">
-            <div class="flex justify-between items-center">
-                <h1 class="text-3xl font-bold">Jadwal Kegiatan</h1>
-                <div class="flex space-x-4">
-                    <button onclick="exportCalendar()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg flex items-center space-x-2">
+    <header class="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+                <h1 class="text-2xl sm:text-3xl font-bold">📅 Jadwal Kegiatan</h1>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="exportCalendar()" class="bg-green-500 hover:bg-green-600 px-3 py-2 rounded-lg flex items-center space-x-2 text-sm">
                         <i class="fas fa-calendar-plus"></i>
-                        <span>Export Kalender</span>
+                        <span class="hidden sm:inline">Export Kalender</span>
+                        <span class="sm:hidden">Export</span>
                     </button>
-                    <button onclick="enableNotifications()" class="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded-lg flex items-center space-x-2">
+                    <button onclick="enableNotifications()" class="bg-yellow-500 hover:bg-yellow-600 px-3 py-2 rounded-lg flex items-center space-x-2 text-sm">
                         <i class="fas fa-bell"></i>
-                        <span>Notifikasi</span>
+                        <span class="hidden sm:inline">Notifikasi</span>
+                        <span class="sm:hidden">Notif</span>
                     </button>
                 </div>
             </div>
         </div>
     </header>
 
+    <!-- Mobile Filter Toggle -->
+    <div class="filter-mobile bg-white border-b border-gray-200">
+        <div class="container mx-auto px-4 py-3">
+            <button onclick="toggleMobileFilter()" class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-2 rounded-lg flex items-center justify-center space-x-2">
+                <i class="fas fa-filter"></i>
+                <span>Filter Jadwal</span>
+                <i class="fas fa-chevron-down" id="filterIcon"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- Filter Section -->
     <div class="container mx-auto px-4 py-6">
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-xl font-semibold mb-4">Filter Jadwal</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="filter-desktop bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-filter mr-2 text-blue-600"></i>
+                Filter Jadwal
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">📅 Tanggal</label>
                     <input type="date" id="filterTanggal" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Kegiatan</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">🎯 Jenis Kegiatan</label>
                     <select id="filterJenis" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">Semua Jenis</option>
                         <option value="Seminar">Seminar</option>
@@ -49,86 +84,145 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">📍 Lokasi</label>
                     <input type="text" id="filterLokasi" placeholder="Cari lokasi..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Kelompok/Jurusan</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">👥 Kelompok/Jurusan</label>
                     <select id="filterKelompok" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">Semua Kelompok</option>
-                        <option value="Teknik Informatika">Teknik Informatika</option>
-                        <option value="Sistem Informasi">Sistem Informasi</option>
-                        <option value="Teknik Komputer">Teknik Komputer</option>
-                        <option value="Manajemen Informatika">Manajemen Informatika</option>
+                        <% kelompok.forEach(function(kel) { %>
+                            <option value="<%= kel.nama_kelompok %>"><%= kel.nama_kelompok %></option>
+                        <% }); %>
                     </select>
                 </div>
             </div>
-            <div class="mt-4 flex space-x-2">
-                <button onclick="applyFilter()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+            <div class="mt-4 flex flex-wrap gap-2">
+                <button onclick="applyFilter()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center">
                     <i class="fas fa-filter mr-2"></i>Terapkan Filter
                 </button>
-                <button onclick="clearFilter()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
+                <button onclick="clearFilter()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md flex items-center">
                     <i class="fas fa-times mr-2"></i>Reset
                 </button>
+            </div>
+        </div>
+
+        <!-- Mobile Filter Panel -->
+        <div id="mobileFilterPanel" class="filter-mobile bg-white rounded-lg shadow-md p-4 mb-6 hidden">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">📅 Tanggal</label>
+                    <input type="date" id="mobileFilterTanggal" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">🎯 Jenis Kegiatan</label>
+                    <select id="mobileFilterJenis" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        <option value="">Semua Jenis</option>
+                        <option value="Seminar">Seminar</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Orientasi">Orientasi</option>
+                        <option value="Pelatihan">Pelatihan</option>
+                        <option value="Diskusi">Diskusi</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">📍 Lokasi</label>
+                    <input type="text" id="mobileFilterLokasi" placeholder="Cari lokasi..." class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">👥 Kelompok/Jurusan</label>
+                    <select id="mobileFilterKelompok" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        <option value="">Semua Kelompok</option>
+                        <% kelompok.forEach(function(kel) { %>
+                            <option value="<%= kel.nama_kelompok %>"><%= kel.nama_kelompok %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="applyMobileFilter()" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+                        Terapkan
+                    </button>
+                    <button onclick="clearMobileFilter()" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
+                        Reset
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- Jadwal List -->
         <div id="jadwalContainer" class="space-y-4">
             <% jadwal.forEach(function(item) { %>
-                <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                    <div class="flex justify-between items-start">
+                <div class="jadwal-card bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-4 lg:space-y-0">
                         <div class="flex-1">
-                            <div class="flex items-center space-x-3 mb-2">
-                                <h3 class="text-xl font-semibold text-gray-800"><%= item.nama_kegiatan %></h3>
-                                <% if (item.jenis_kegiatan) { %>
-                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded"><%= item.jenis_kegiatan %></span>
-                                <% } %>
-                                <% if (item.kelompok) { %>
-                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded"><%= item.kelompok %></span>
-                                <% } %>
+                            <!-- Header -->
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
+                                <div class="flex items-start space-x-3 mb-2 sm:mb-0">
+                                    <h3 class="text-lg sm:text-xl font-semibold text-gray-800"><%= item.nama_kegiatan %></h3>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <% if (item.jenis_kegiatan) { %>
+                                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                            <%= item.jenis_kegiatan %>
+                                        </span>
+                                    <% } %>
+                                    <% if (item.Kelompoks && item.Kelompoks.length > 0) { %>
+                                        <% item.Kelompoks.forEach(function(kel) { %>
+                                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                                <%= kel.nama_kelompok %>
+                                            </span>
+                                        <% }); %>
+                                    <% } %>
+                                </div>
                             </div>
                             
+                            <!-- Description -->
                             <% if (item.deskripsi) { %>
-                                <p class="text-gray-600 mb-3"><%= item.deskripsi %></p>
+                                <p class="text-gray-600 mb-3 text-sm"><%= item.deskripsi %></p>
                             <% } %>
                             
+                            <!-- Topic -->
                             <% if (item.topik) { %>
-                                <div class="mb-3">
-                                    <span class="text-sm font-medium text-gray-700">Topik:</span>
-                                    <span class="text-gray-600 ml-2"><%= item.topik %></span>
+                                <div class="mb-3 p-2 bg-yellow-50 rounded-lg">
+                                    <span class="text-sm font-medium text-yellow-800">📚 Topik:</span>
+                                    <span class="text-sm text-yellow-700 ml-2"><%= item.topik %></span>
                                 </div>
                             <% } %>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <!-- Info Grid -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
                                 <div class="flex items-center space-x-2">
-                                    <i class="fas fa-calendar text-blue-500"></i>
-                                    <span class="text-gray-700"><%= new Date(item.tanggal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+                                    <i class="fas fa-calendar text-blue-500 w-4"></i>
+                                    <span class="text-gray-700"><%= new Date(item.tanggal).toLocaleDateString('id-ID', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <i class="fas fa-clock text-green-500"></i>
+                                    <i class="fas fa-clock text-green-500 w-4"></i>
                                     <span class="text-gray-700"><%= item.waktu_mulai %><%= item.waktu_selesai ? ' - ' + item.waktu_selesai : '' %></span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <i class="fas fa-map-marker-alt text-red-500"></i>
+                                    <i class="fas fa-map-marker-alt text-red-500 w-4"></i>
                                     <span class="text-gray-700"><%= item.Lokasi ? item.Lokasi.nama_lokasi : 'Lokasi belum ditentukan' %></span>
                                 </div>
                             </div>
                             
+                            <!-- Address -->
                             <% if (item.Lokasi && item.Lokasi.alamat) { %>
-                                <div class="mt-2 text-sm text-gray-500">
-                                    <i class="fas fa-info-circle mr-1"></i>
-                                    <%= item.Lokasi.alamat %>
+                                <div class="mt-2 text-sm text-gray-500 flex items-start space-x-2">
+                                    <i class="fas fa-info-circle mt-0.5"></i>
+                                    <span><%= item.Lokasi.alamat %></span>
                                 </div>
                             <% } %>
                         </div>
                         
-                        <div class="flex space-x-2">
-                            <button onclick="addToCalendar(<%= JSON.stringify(item) %>)" class="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg" title="Tambah ke Kalender">
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-2 lg:flex-col">
+                            <button onclick="addToCalendar(<%= JSON.stringify(item) %>)" class="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg flex items-center justify-center" title="Tambah ke Kalender">
                                 <i class="fas fa-calendar-plus"></i>
+                                <span class="ml-2 text-sm hidden sm:inline">Kalender</span>
                             </button>
-                            <button onclick="showLocation('<%= item.Lokasi ? item.Lokasi.nama_lokasi : '' %>', '<%= item.Lokasi ? item.Lokasi.alamat : '' %>')" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg" title="Lihat Lokasi">
+                            <button onclick="showLocation('<%= item.Lokasi ? item.Lokasi.nama_lokasi : '' %>', '<%= item.Lokasi ? item.Lokasi.alamat : '' %>')" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg flex items-center justify-center" title="Lihat Lokasi">
                                 <i class="fas fa-map"></i>
+                                <span class="ml-2 text-sm hidden sm:inline">Lokasi</span>
                             </button>
                         </div>
                     </div>
@@ -146,9 +240,9 @@
     </div>
 
     <!-- Notification Modal -->
-    <div id="notificationModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 class="text-lg font-semibold mb-4">Notifikasi Jadwal</h3>
+    <div id="notificationModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full">
+            <h3 class="text-lg font-semibold mb-4">🔔 Notifikasi Jadwal</h3>
             <p class="text-gray-600 mb-4">Dapatkan notifikasi sebelum kegiatan dimulai untuk mengingatkan Anda.</p>
             <div class="flex space-x-2">
                 <button onclick="requestNotificationPermission()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex-1">
@@ -162,6 +256,22 @@
     </div>
 
     <script>
+        // Mobile filter toggle
+        function toggleMobileFilter() {
+            const panel = document.getElementById('mobileFilterPanel');
+            const icon = document.getElementById('filterIcon');
+            
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                panel.classList.add('hidden');
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+        
         // Filter functionality
         function applyFilter() {
             const tanggal = document.getElementById('filterTanggal').value;
@@ -169,6 +279,20 @@
             const lokasi = document.getElementById('filterLokasi').value;
             const kelompok = document.getElementById('filterKelompok').value;
             
+            performFilter(tanggal, jenis, lokasi, kelompok);
+        }
+        
+        function applyMobileFilter() {
+            const tanggal = document.getElementById('mobileFilterTanggal').value;
+            const jenis = document.getElementById('mobileFilterJenis').value;
+            const lokasi = document.getElementById('mobileFilterLokasi').value;
+            const kelompok = document.getElementById('mobileFilterKelompok').value;
+            
+            performFilter(tanggal, jenis, lokasi, kelompok);
+            toggleMobileFilter(); // Close mobile filter after applying
+        }
+        
+        function performFilter(tanggal, jenis, lokasi, kelompok) {
             let url = '/jadwal/api?';
             if (tanggal) url += `tanggal=${tanggal}&`;
             if (jenis) url += `jenis_kegiatan=${jenis}&`;
@@ -196,6 +320,14 @@
             location.reload();
         }
         
+        function clearMobileFilter() {
+            document.getElementById('mobileFilterTanggal').value = '';
+            document.getElementById('mobileFilterJenis').value = '';
+            document.getElementById('mobileFilterLokasi').value = '';
+            document.getElementById('mobileFilterKelompok').value = '';
+            location.reload();
+        }
+        
         function updateJadwalDisplay(jadwal) {
             const container = document.getElementById('jadwalContainer');
             if (jadwal.length === 0) {
@@ -210,53 +342,59 @@
             }
             
             container.innerHTML = jadwal.map(item => `
-                <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                    <div class="flex justify-between items-start">
+                <div class="jadwal-card bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-4 lg:space-y-0">
                         <div class="flex-1">
-                            <div class="flex items-center space-x-3 mb-2">
-                                <h3 class="text-xl font-semibold text-gray-800">${item.nama_kegiatan}</h3>
-                                ${item.jenis_kegiatan ? `<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">${item.jenis_kegiatan}</span>` : ''}
-                                ${item.kelompok ? `<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">${item.kelompok}</span>` : ''}
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
+                                <div class="flex items-start space-x-3 mb-2 sm:mb-0">
+                                    <h3 class="text-lg sm:text-xl font-semibold text-gray-800">${item.nama_kegiatan}</h3>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    ${item.jenis_kegiatan ? `<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">${item.jenis_kegiatan}</span>` : ''}
+                                    ${item.Kelompoks ? item.Kelompoks.map(kel => `<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">${kel.nama_kelompok}</span>`).join('') : ''}
+                                </div>
                             </div>
                             
-                            ${item.deskripsi ? `<p class="text-gray-600 mb-3">${item.deskripsi}</p>` : ''}
+                            ${item.deskripsi ? `<p class="text-gray-600 mb-3 text-sm">${item.deskripsi}</p>` : ''}
                             
                             ${item.topik ? `
-                                <div class="mb-3">
-                                    <span class="text-sm font-medium text-gray-700">Topik:</span>
-                                    <span class="text-gray-600 ml-2">${item.topik}</span>
+                                <div class="mb-3 p-2 bg-yellow-50 rounded-lg">
+                                    <span class="text-sm font-medium text-yellow-800">📚 Topik:</span>
+                                    <span class="text-sm text-yellow-700 ml-2">${item.topik}</span>
                                 </div>
                             ` : ''}
                             
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
                                 <div class="flex items-center space-x-2">
-                                    <i class="fas fa-calendar text-blue-500"></i>
-                                    <span class="text-gray-700">${new Date(item.tanggal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                                    <i class="fas fa-calendar text-blue-500 w-4"></i>
+                                    <span class="text-gray-700">${new Date(item.tanggal).toLocaleDateString('id-ID', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}</span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <i class="fas fa-clock text-green-500"></i>
+                                    <i class="fas fa-clock text-green-500 w-4"></i>
                                     <span class="text-gray-700">${item.waktu_mulai}${item.waktu_selesai ? ' - ' + item.waktu_selesai : ''}</span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <i class="fas fa-map-marker-alt text-red-500"></i>
+                                    <i class="fas fa-map-marker-alt text-red-500 w-4"></i>
                                     <span class="text-gray-700">${item.Lokasi ? item.Lokasi.nama_lokasi : 'Lokasi belum ditentukan'}</span>
                                 </div>
                             </div>
                             
                             ${item.Lokasi && item.Lokasi.alamat ? `
-                                <div class="mt-2 text-sm text-gray-500">
-                                    <i class="fas fa-info-circle mr-1"></i>
-                                    ${item.Lokasi.alamat}
+                                <div class="mt-2 text-sm text-gray-500 flex items-start space-x-2">
+                                    <i class="fas fa-info-circle mt-0.5"></i>
+                                    <span>${item.Lokasi.alamat}</span>
                                 </div>
                             ` : ''}
                         </div>
                         
-                        <div class="flex space-x-2">
-                            <button onclick="addToCalendar(${JSON.stringify(item)})" class="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg" title="Tambah ke Kalender">
+                        <div class="flex flex-col sm:flex-row gap-2 lg:flex-col">
+                            <button onclick="addToCalendar(${JSON.stringify(item)})" class="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg flex items-center justify-center" title="Tambah ke Kalender">
                                 <i class="fas fa-calendar-plus"></i>
+                                <span class="ml-2 text-sm hidden sm:inline">Kalender</span>
                             </button>
-                            <button onclick="showLocation('${item.Lokasi ? item.Lokasi.nama_lokasi : ''}', '${item.Lokasi ? item.Lokasi.alamat : ''}')" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg" title="Lihat Lokasi">
+                            <button onclick="showLocation('${item.Lokasi ? item.Lokasi.nama_lokasi : ''}', '${item.Lokasi ? item.Lokasi.alamat : ''}')" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg flex items-center justify-center" title="Lihat Lokasi">
                                 <i class="fas fa-map"></i>
+                                <span class="ml-2 text-sm hidden sm:inline">Lokasi</span>
                             </button>
                         </div>
                     </div>

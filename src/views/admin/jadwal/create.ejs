@@ -10,14 +10,15 @@
 </head>
 <body class="bg-gray-50">
     <!-- Header -->
-    <header class="bg-blue-600 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-6">
-            <div class="flex justify-between items-center">
-                <h1 class="text-3xl font-bold">Tambah Jadwal Baru</h1>
+    <header class="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+                <h1 class="text-2xl sm:text-3xl font-bold">➕ Tambah Jadwal Baru</h1>
                 <div class="flex space-x-4">
-                    <a href="/jadwal/admin" class="bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center space-x-2">
+                    <a href="/jadwal/admin" class="bg-gray-500 hover:bg-gray-600 px-3 py-2 rounded-lg flex items-center space-x-2 text-sm">
                         <i class="fas fa-arrow-left"></i>
-                        <span>Kembali</span>
+                        <span class="hidden sm:inline">Kembali</span>
+                        <span class="sm:hidden">Back</span>
                     </a>
                 </div>
             </div>
@@ -27,12 +28,15 @@
     <!-- Content -->
     <div class="container mx-auto px-4 py-6">
         <div class="max-w-4xl mx-auto">
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
                 <form id="jadwalForm" class="space-y-6">
                     <!-- Basic Information -->
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Informasi Dasar</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-info-circle mr-2 text-blue-600"></i>
+                            Informasi Dasar
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                             <div>
                                 <label for="nama_kegiatan" class="block text-sm font-medium text-gray-700 mb-2">
                                     Nama Kegiatan <span class="text-red-500">*</span>
@@ -64,7 +68,10 @@
 
                     <!-- Description and Topic -->
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Deskripsi dan Topik</h3>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-file-alt mr-2 text-green-600"></i>
+                            Deskripsi dan Topik
+                        </h3>
                         <div class="space-y-4">
                             <div>
                                 <label for="deskripsi" class="block text-sm font-medium text-gray-700 mb-2">
@@ -88,8 +95,11 @@
 
                     <!-- Schedule -->
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Jadwal</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-calendar-alt mr-2 text-purple-600"></i>
+                            Jadwal
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                             <div>
                                 <label for="tanggal" class="block text-sm font-medium text-gray-700 mb-2">
                                     Tanggal <span class="text-red-500">*</span>
@@ -118,8 +128,11 @@
 
                     <!-- Location and Group -->
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Lokasi dan Kelompok</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2 text-red-600"></i>
+                            Lokasi dan Kelompok
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                             <div>
                                 <label for="id_lokasi" class="block text-sm font-medium text-gray-700 mb-2">
                                     Lokasi <span class="text-red-500">*</span>
@@ -134,31 +147,34 @@
                             </div>
                             
                             <div>
-                                <label for="kelompok" class="block text-sm font-medium text-gray-700 mb-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
                                     Kelompok/Jurusan
                                 </label>
-                                <select id="kelompok" name="kelompok"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="">Semua Kelompok</option>
-                                    <option value="Teknik Informatika">Teknik Informatika</option>
-                                    <option value="Sistem Informasi">Sistem Informasi</option>
-                                    <option value="Teknik Komputer">Teknik Komputer</option>
-                                    <option value="Manajemen Informatika">Manajemen Informatika</option>
-                                    <option value="Teknik Elektro">Teknik Elektro</option>
-                                    <option value="Teknik Mesin">Teknik Mesin</option>
-                                    <option value="Teknik Sipil">Teknik Sipil</option>
-                                    <option value="Arsitektur">Arsitektur</option>
-                                </select>
+                                <div class="space-y-2 max-h-40 overflow-y-auto border border-gray-300 rounded-md p-3">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="selectAll" class="mr-2">
+                                        <label for="selectAll" class="text-sm font-medium text-gray-700">Pilih Semua</label>
+                                    </div>
+                                    <hr class="my-2">
+                                    <% kelompok.forEach(function(kel) { %>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" name="kelompok_ids" value="<%= kel.id_kelompok %>" 
+                                                class="mr-2 kelompok-checkbox">
+                                            <label class="text-sm text-gray-700"><%= kel.nama_kelompok %></label>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">Kosongkan jika untuk semua kelompok</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-                        <a href="/jadwal/admin" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">
+                    <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 pt-6 border-t border-gray-200">
+                        <a href="/jadwal/admin" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg text-center">
                             Batal
                         </a>
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg flex items-center space-x-2">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg flex items-center justify-center space-x-2">
                             <i class="fas fa-save"></i>
                             <span>Simpan Jadwal</span>
                         </button>
@@ -169,12 +185,36 @@
     </div>
 
     <script>
+        // Select all functionality
+        document.getElementById('selectAll').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.kelompok-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+        
+        // Update select all when individual checkboxes change
+        document.querySelectorAll('.kelompok-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const allCheckboxes = document.querySelectorAll('.kelompok-checkbox');
+                const checkedCheckboxes = document.querySelectorAll('.kelompok-checkbox:checked');
+                const selectAllCheckbox = document.getElementById('selectAll');
+                
+                selectAllCheckbox.checked = allCheckboxes.length === checkedCheckboxes.length;
+                selectAllCheckbox.indeterminate = checkedCheckboxes.length > 0 && checkedCheckboxes.length < allCheckboxes.length;
+            });
+        });
+        
         // Form submission
         document.getElementById('jadwalForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const formData = new FormData(this);
             const data = Object.fromEntries(formData);
+            
+            // Get selected kelompok IDs
+            const selectedKelompoks = document.querySelectorAll('input[name="kelompok_ids"]:checked');
+            data.kelompok_ids = Array.from(selectedKelompoks).map(cb => parseInt(cb.value));
             
             // Validation
             if (!data.nama_kegiatan.trim()) {
