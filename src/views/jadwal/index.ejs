@@ -30,24 +30,22 @@
 <body class="bg-gray-50">
     <div class="min-h-screen">
         <!-- Header -->
-        <header class="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
-            <div class="container mx-auto px-4 py-6">
-                <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-                    <h1 class="text-2xl sm:text-3xl font-bold">📅 Jadwal Kegiatan</h1>
-                    <div class="flex space-x-4">
-                        <button onclick="exportCalendar()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg flex items-center space-x-2 text-sm">
-                            <i class="fas fa-download"></i>
-                            <span class="hidden sm:inline">Export Kalender</span>
-                            <span class="sm:hidden">Export</span>
-                        </button>
-                        <button onclick="toggleMobileFilter()" class="bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center space-x-2 text-sm sm:hidden">
-                            <i class="fas fa-filter" id="filterIcon"></i>
-                            <span>Filter</span>
-                        </button>
-                    </div>
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+                <h1 class="text-3xl font-bold text-slate-800">Jadwal Kegiatan</h1>
+                <div class="flex space-x-4">
+                    <button onclick="exportCalendar()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg flex items-center space-x-2 text-sm">
+                        <i class="fas fa-download"></i>
+                        <span class="hidden sm:inline">Export Kalender</span>
+                        <span class="sm:hidden">Export</span>
+                    </button>
+                    <button onclick="toggleMobileFilter()" class="bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center space-x-2 text-sm sm:hidden">
+                        <i class="fas fa-filter" id="filterIcon"></i>
+                        <span>Filter</span>
+                    </button>
                 </div>
             </div>
-        </header>
+        </div>
 
         <!-- Content -->
         <div class="container mx-auto px-4 py-6">
