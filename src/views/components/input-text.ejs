@@ -1,0 +1,23 @@
+<!-- Input Text Component -->
+<div class="w-full">
+    <label
+        for="<%= id %>"
+        class="block text-sm font-medium text-gray-700"
+    ><%= label %></label>
+    <div class="mt-1 relative">
+        <input
+            type="<%= typeof type !== 'undefined' ? type : 'text' %>"
+            id="<%= id %>"
+            name="<%= typeof name !== 'undefined' ? name : id %>"
+            class="block w-full <%= typeof icon !== 'undefined' ? 'pl-10' : 'px-3' %> pr-3 py-2 bg-indigo-50 border border-indigo-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 hover:bg-indigo-100"
+            placeholder="<%= placeholder %>"
+            <% if (typeof required !== 'undefined' && required) { %>required<% } %>
+            <% if (typeof value !== 'undefined') { %>value="<%= value %>"<% } %>
+        />
+        <% if (typeof icon !== 'undefined') { %>
+            <span
+                class="absolute inset-y-0 left-3 flex items-center text-gray-700"
+            ><%- icon %></span>
+        <% } %>
+    </div>
+</div> 

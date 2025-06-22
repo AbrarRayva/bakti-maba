@@ -2,11 +2,17 @@
   "name": "bakti-maba",
   "version": "1.0.0",
   "description": "Website tugas besar kelompok 5.",
-  "main": "index.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "node ./src/index.js",
-    "dev": "nodemon ./src/index.js"
+    "start": "node ./src/app.js",
+    "dev": "nodemon ./src/app.js",
+    "buildcss": "npx @tailwindcss/cli -i ./src/css/style.css -o ./public/css/style.css --watch",
+    "db:sync": "npx sequelize-cli db:migrate",
+    "db:seed": "npx sequelize-cli db:seed:all"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "nodemon": "^3.1.10",
@@ -15,8 +21,15 @@
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.10",
+    "bcryptjs": "^3.0.2",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
-    "multer": "^2.0.1"
+    "lucide": "^0.522.0",
+    "multer": "^2.0.1",
+    "pg": "^8.16.2",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.7",
+    "sequelize-cli": "^6.6.3",
+    "tailwindcss": "^4.1.10"
   }
 }
