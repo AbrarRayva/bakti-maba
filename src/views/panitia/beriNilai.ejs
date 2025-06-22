@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Beri Nilai</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+    <h1 class="text-xl font-bold mb-4">Penilaian Tugas</h1>
+
+    <p><strong>Nama Peserta:</strong> <%= tugas.nama_peserta %></p>
+    <p><strong>Nama File:</strong> <%= tugas.nama_file %></p>
+    <p><strong>Versi:</strong> v<%= tugas.versi %></p>
+
+    <form action="/nilai/beri/<%= tugas.id %>" method="POST" class="mt-4 space-y-3">
+      <input type="number" name="nilai" min="0" max="100" placeholder="Nilai (0-100)" required class="w-full p-2 border rounded" />
+      <textarea name="komentar" rows="4" placeholder="Komentar" class="w-full p-2 border rounded"></textarea>
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Simpan Nilai</button>
+    </form>
+  </div>
+</body>
+</html>

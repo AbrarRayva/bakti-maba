@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Penilaian Tugas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-5xl mx-auto bg-white p-6 rounded shadow">
+    <h1 class="text-2xl font-bold mb-4">Daftar Tugas - Penilaian</h1>
+
+    <% if (tugas.length === 0) { %>
+      <p class="text-gray-500">Belum ada tugas yang dikumpulkan.</p>
+    <% } else { %>
+      <table class="w-full table-auto border">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="border p-2">Nama Peserta</th>
+            <th class="border p-2">Nama File</th>
+            <th class="border p-2">Versi</th>
+            <th class="border p-2">Waktu Unggah</th>
+            <th class="border p-2">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% tugas.forEach(t => { %>
+            <tr>
+              <td class="border p-2"><%= t.nama_peserta %></td>
+              <td class="border p-2"><%= t.filename %></td>
+              <td class="border p-2"><%= t.versi %></td>
+              <td class="border p-2"><%= new Date(t.waktu).toLocaleString() %></td>
+              <td class="border p-2">
+                <a href="/nilai/beri/<%= t.id %>" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Beri Nilai</a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+</body>
+</html>

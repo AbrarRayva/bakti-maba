@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rekap Nilai Peserta</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-5xl mx-auto bg-white p-6 rounded shadow">
+    <h1 class="text-2xl font-bold mb-4">Rekap Nilai Peserta</h1>
+
+    <table class="table-auto w-full border border-gray-300">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="border px-4 py-2">Nama Peserta</th>
+          <th class="border px-4 py-2">Nilai</th>
+          <th class="border px-4 py-2">Komentar</th>
+          <th class="border px-4 py-2">Waktu Penilaian</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (nilai.length === 0) { %>
+          <tr>
+            <td colspan="4" class="text-center py-4">Belum ada nilai yang diberikan.</td>
+          </tr>
+        <% } else { %>
+          <% nilai.forEach(n => { %>
+            <tr>
+              <td class="border px-4 py-2"><%= n.nama_peserta %></td>
+              <td class="border px-4 py-2"><%= n.nilai %></td>
+              <td class="border px-4 py-2"><%= n.komentar %></td>
+              <td class="border px-4 py-2"><%= new Date(n.waktu_nilai).toLocaleString() %></td>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

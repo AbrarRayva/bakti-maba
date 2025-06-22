@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Histori Tugas Mahasiswa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tab-button {
+      @apply px-4 py-2 font-medium text-sm rounded-t-lg;
+    }
+    .tab-button.active {
+      @apply bg-white text-blue-600 border-t border-l border-r border-gray-300;
+    }
+    .tab-button.inactive {
+      @apply bg-gray-200 text-gray-700 hover:bg-gray-300;
+    }
+    .tab-content {
+      @apply hidden p-4 border border-gray-300 rounded-b-lg bg-white;
+    }
+    .tab-content.active {
+      @apply block;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-5xl mx-auto bg-white p-6 rounded shadow">
+    <h1 class="text-2xl font-bold mb-4">Penugasan</h1>
+
+    <!-- Tab Navigation -->
+    <div class="flex border-b border-gray-300 mb-4">
+      <a href="/mahasiswa/tugas?tab=ongoing" 
+         class="tab-button <%= currentTab === 'ongoing' ? 'active' : 'inactive' %>">
+        On-Going
+      </a>
+      <a href="/mahasiswa/tugas?tab=completed" 
+         class="tab-button <%= currentTab === 'completed' ? 'active' : 'inactive' %>">
+        Completed
+      </a>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content <%= currentTab === 'ongoing' ? 'active' : '' %>" id="ongoing">
+      <% if (currentTab === 'ongoing') { %>
+        <div class="mb-6">
+          <h2 class="text-lg font-semibold mb-2">Upload Tugas Baru</h2>
+          <form action="/mahasiswa/tugas" method="POST" enctype="multipart/form-data" class="space-y-2">
+            <input type="text" name="nama_peserta" placeholder="Nama Peserta" required class="w-full border p-2 rounded" />
+            <input type="file" name="tugas" required class="w-full border p-2 rounded" />
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Upload</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="tab-content <%= currentTab === 'completed' ? 'active' : '' %>" id="completed">
+      <% if (currentTab === 'completed') { %>
+        <% if (tugas.length === 0) { %>
+          <p class="text-gray-500">Tidak ada tugas yang sudah selesai</p>
+        <% } else { %>
+          <table class="w-full table-auto border">
+            <thead class="bg-gray-200">
+              <tr>
+                <th class="border p-2">Nama</th>
+                <th class="border p-2">File</th>
+                <th class="border p-2">Versi</th>
+                <th class="border p-2">Waktu</th>
+                <th class="border p-2">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% tugas.forEach(t => { %>
+                <tr>
+                  <td class="border p-2"><%= t.nama_peserta %></td>
+                  <td class="border p-2"><%= t.filename %></td>
+                  <td class="border p-2"><%= t.versi %></td>
+                  <td class="border p-2"><%= new Date(t.createdAt).toLocaleString() %></td>
+                  <td class="border p-2 space-x-2">
+                    <a href="/panitia/tugas/<%= t.id %>/download" 
+                       class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
+                      Download
+                    </a>
+                    <% if (t.versi === 'origin') { %>
+                      <button onclick="showRevisiForm('<%= t.id %>', '<%= t.nama_peserta %>')" 
+                              class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
+                        Upload Revisi
+                      </button>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } %>
+
+        <!-- Form Revisi (hidden by default) -->
+        <div id="revisiForm" class="hidden mt-6 p-4 border border-gray-300 rounded-lg">
+          <h2 class="text-lg font-semibold mb-2">Upload Revisi Tugas</h2>
+          <form action="/mahasiswa/revisi" method="POST" enctype="multipart/form-data" class="space-y-2">
+            <input type="hidden" id="tugas_id" name="tugas_id">
+            <input type="text" id="revisi_nama" name="nama_peserta" required 
+                   class="w-full border p-2 rounded" readonly>
+            <input type="file" name="tugas" required class="w-full border p-2 rounded" />
+            <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded">Upload Revisi</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <script>
+    function showRevisiForm(tugasId, namaPeserta) {
+      document.getElementById('tugas_id').value = tugasId;
+      document.getElementById('revisi_nama').value = namaPeserta;
+      document.getElementById('revisiForm').classList.remove('hidden');
+      window.scrollTo({
+        top: document.getElementById('revisiForm').offsetTop,
+        behavior: 'smooth'
+      });
+    }
+  </script>
+</body>
+</html>

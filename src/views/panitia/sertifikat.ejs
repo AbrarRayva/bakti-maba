@@ -1,0 +1,53 @@
+<h1 class="text-2xl font-bold mb-4">Kirim Sertifikat</h1>
+
+<% if (status === 'success') { %>
+  <div class="mb-4 p-3 bg-green-100 text-green-800 rounded">
+    Sertifikat berhasil dikirim!
+  </div>
+<% } %>
+
+<% if (error) { %>
+  <div class="mb-4 p-3 bg-red-100 text-red-800 rounded">
+    <%= error %>
+  </div>
+<% } %>
+
+<% if (pesertaSiap.length === 0) { %>
+  <p class="text-gray-500">Belum ada peserta yang menyelesaikan semua tugas.</p>
+<% } else { %>
+  <ul class="mb-4">
+    <% pesertaSiap.forEach(nama => { %>
+      <li class="mb-2">
+        <form action="/sertifikat/kirim" method="POST" enctype="multipart/form-data" class="inline">
+          <input type="hidden" name="nama" value="<%= nama %>">
+          <span class="font-semibold"><%= nama %></span>
+          <input type="file" name="sertifikat" required class="ml-2">
+          <button type="submit" class="ml-2 bg-blue-500 text-white px-2 py-1 rounded">
+            Kirim Sertifikat
+          </button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<!-- Daftar Sertifikat Terkirim -->
+<% if (sertifikatList.length > 0) { %>
+  <h2 class="text-xl font-bold mt-6 mb-2">Sertifikat Terkirim</h2>
+  <table class="w-full border">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="p-2 border">Peserta</th>
+        <th class="p-2 border">Waktu</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% sertifikatList.forEach(s => { %>
+        <tr>
+          <td class="p-2 border"><%= s.nama %></td>
+          <td class="p-2 border"><%= new Date(s.waktu).toLocaleString() %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
