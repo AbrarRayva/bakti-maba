@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 const path = require("path");
+const expressLayouts = require('express-ejs-layouts');
+const methodOverride = require('method-override');
 const multer = require('multer'); // For file uploads
 const fs = require('fs'); // For ensuring upload directories exist
 const session = require('express-session');
@@ -16,15 +18,33 @@ const adminCampusRoutes = require('./routes/admincampusRoutes');
 const campusRoutes = require('./routes/campusRoutes');
 const materialRoutes = require('./routes/materialRoutes');
 const adminMaterialRoutes = require('./routes/adminMaterialRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
+const jadwalRoutes = require('./routes/jadwalRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 // Settings
+app.use(expressLayouts);
+app.set('layout', 'layouts/main'); // Use path relative to 'views' folder
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+// Middleware untuk mengatur layout berdasarkan route
+app.use((req, res, next) => {
+    if (req.path.startsWith('/admin')) {
+        res.locals.layout = 'layouts/admin';
+        res.locals.isAdmin = true;
+    } else {
+        res.locals.layout = 'layouts/main';
+        res.locals.isAdmin = false;
+    }
+    next();
+});
 
 // Middleware
 app.use(express.static(path.join(__dirname, "..", "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(methodOverride('_method'));
 
 // Session middleware
 app.use(session({
@@ -47,8 +67,13 @@ if (!fs.existsSync(submissionDir)) {
     fs.mkdirSync(submissionDir, { recursive: true });
 }
 
-// Routes
+// Routes - Admin routes first to avoid conflicts
+app.use('/admin', adminRoutes);
 app.use("/login", authRoutes);
+app.use('/jadwal', jadwalRoutes);
+app.use("/", dashboardRoutes);
+
+// Assignment and campus routes
 app.use('/admin', adminAssignmentRoutes);
 app.use('/', assignmentRoutes);
 app.use('/admin', adminCampusRoutes);
@@ -56,9 +81,9 @@ app.use('/', campusRoutes);
 app.use('/material', materialRoutes);
 app.use('/admin/material', adminMaterialRoutes);
 
-// Default route
-app.get('/', (req, res) => {
-    res.redirect('/assignment'); // Or '/login' if you want login as default
+// Default route redirect to dashboard for now
+app.get("/", (req, res) => {
+    res.redirect("/dashboard");
 });
 
 // Database sync and server start

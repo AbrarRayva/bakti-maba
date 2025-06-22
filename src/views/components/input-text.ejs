@@ -9,7 +9,7 @@
             type="<%= typeof type !== 'undefined' ? type : 'text' %>"
             id="<%= id %>"
             name="<%= typeof name !== 'undefined' ? name : id %>"
-            class="block w-full <%= typeof icon !== 'undefined' ? 'pl-10' : 'px-3' %> pr-3 py-2 bg-indigo-50 border border-indigo-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 hover:bg-indigo-100"
+            class="block w-full <%= typeof icon !== 'undefined' ? 'pl-10' : 'px-3' %> pr-3 py-2 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-gray-400 hover:bg-gray-100"
             placeholder="<%= placeholder %>"
             <% if (typeof required !== 'undefined' && required) { %>required<% } %>
             <% if (typeof value !== 'undefined') { %>value="<%= value %>"<% } %>

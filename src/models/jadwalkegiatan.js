@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       JadwalKegiatan.belongsTo(models.Lokasi, { foreignKey: 'id_lokasi' });
       JadwalKegiatan.hasMany(models.SesiAbsensi, { foreignKey: 'id_kegiatan' });
+      JadwalKegiatan.belongsToMany(models.Kelompok, { 
+        through: 'JadwalKelompok',
+        foreignKey: 'id_kegiatan',
+        otherKey: 'id_kelompok'
+      });
     }
   }
   JadwalKegiatan.init({
@@ -24,7 +29,8 @@ module.exports = (sequelize, DataTypes) => {
     nama_kegiatan: DataTypes.STRING,
     deskripsi: DataTypes.TEXT,
     tanggal: DataTypes.DATEONLY,
-    waktu_mulai: DataTypes.TIME
+    waktu_mulai: DataTypes.TIME,
+    id_lokasi: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'JadwalKegiatan',
