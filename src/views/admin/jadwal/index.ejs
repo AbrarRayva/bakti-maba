@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Manajemen Jadwal - Bakti Maba</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <h1 class="text-3xl font-bold">Manajemen Jadwal</h1>
+                <div class="flex space-x-4">
+                    <a href="/jadwal" class="bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center space-x-2">
+                        <i class="fas fa-eye"></i>
+                        <span>Lihat Jadwal</span>
+                    </a>
+                    <a href="/jadwal/admin/create" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Tambah Jadwal</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <div class="container mx-auto px-4 py-6">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                        <i class="fas fa-calendar text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Jadwal</p>
+                        <p class="text-2xl font-semibold text-gray-900"><%= jadwal.length %></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 text-green-600">
+                        <i class="fas fa-map-marker-alt text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Lokasi Tersedia</p>
+                        <p class="text-2xl font-semibold text-gray-900"><%= lokasi.length %></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                        <i class="fas fa-clock text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Hari Ini</p>
+                        <p class="text-2xl font-semibold text-gray-900" id="todayCount">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                        <i class="fas fa-users text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Kelompok Aktif</p>
+                        <p class="text-2xl font-semibold text-gray-900" id="activeGroups">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jadwal Table -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-800">Daftar Jadwal Kegiatan</h2>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Kegiatan
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Tanggal & Waktu
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Lokasi
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Kelompok
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Jenis
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Aksi
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <% jadwal.forEach(function(item) { %>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900"><%= item.nama_kegiatan %></div>
+                                        <% if (item.deskripsi) { %>
+                                            <div class="text-sm text-gray-500 truncate max-w-xs"><%= item.deskripsi %></div>
+                                        <% } %>
+                                        <% if (item.topik) { %>
+                                            <div class="text-xs text-blue-600 font-medium">Topik: <%= item.topik %></div>
+                                        <% } %>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">
+                                        <%= new Date(item.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        <%= item.waktu_mulai %><%= item.waktu_selesai ? ' - ' + item.waktu_selesai : '' %>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900"><%= item.Lokasi ? item.Lokasi.nama_lokasi : '-' %></div>
+                                    <% if (item.Lokasi && item.Lokasi.alamat) { %>
+                                        <div class="text-sm text-gray-500 truncate max-w-xs"><%= item.Lokasi.alamat %></div>
+                                    <% } %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <% if (item.kelompok) { %>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <%= item.kelompok %>
+                                        </span>
+                                    <% } else { %>
+                                        <span class="text-sm text-gray-500">-</span>
+                                    <% } %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <% if (item.jenis_kegiatan) { %>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            <%= item.jenis_kegiatan %>
+                                        </span>
+                                    <% } else { %>
+                                        <span class="text-sm text-gray-500">-</span>
+                                    <% } %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex space-x-2">
+                                        <a href="/jadwal/admin/edit/<%= item.id_kegiatan %>" class="text-blue-600 hover:text-blue-900" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button onclick="deleteJadwal(<%= item.id_kegiatan %>)" class="text-red-600 hover:text-red-900" title="Hapus">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <button onclick="viewDetails(<%= JSON.stringify(item) %>)" class="text-green-600 hover:text-green-900" title="Detail">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            
+            <% if (jadwal.length === 0) { %>
+                <div class="text-center py-12">
+                    <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">Belum ada jadwal</h3>
+                    <p class="text-gray-500 mb-4">Mulai dengan menambahkan jadwal kegiatan pertama.</p>
+                    <a href="/jadwal/admin/create" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-plus mr-2"></i>Tambah Jadwal
+                    </a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Detail Jadwal</h3>
+                <button onclick="closeDetailModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="detailContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Calculate stats
+        function calculateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayCount = document.querySelectorAll(`tr[data-date="${today}"]`).length;
+            document.getElementById('todayCount').textContent = todayCount;
+            
+            const groups = new Set();
+            document.querySelectorAll('tr').forEach(row => {
+                const groupElement = row.querySelector('.bg-green-100');
+                if (groupElement) {
+                    groups.add(groupElement.textContent.trim());
+                }
+            });
+            document.getElementById('activeGroups').textContent = groups.size;
+        }
+        
+        // Delete jadwal
+        function deleteJadwal(id) {
+            Swal.fire({
+                title: 'Konfirmasi Hapus',
+                text: 'Apakah Anda yakin ingin menghapus jadwal ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/jadwal/admin/api/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('Berhasil!', 'Jadwal berhasil dihapus', 'success')
+                            .then(() => location.reload());
+                        } else {
+                            Swal.fire('Error', data.message || 'Terjadi kesalahan', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire('Error', 'Terjadi kesalahan saat menghapus jadwal', 'error');
+                    });
+                }
+            });
+        }
+        
+        // View details
+        function viewDetails(item) {
+            const modal = document.getElementById('detailModal');
+            const content = document.getElementById('detailContent');
+            
+            content.innerHTML = `
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Nama Kegiatan</h4>
+                        <p class="text-gray-900">${item.nama_kegiatan}</p>
+                    </div>
+                    
+                    ${item.deskripsi ? `
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Deskripsi</h4>
+                            <p class="text-gray-900">${item.deskripsi}</p>
+                        </div>
+                    ` : ''}
+                    
+                    ${item.topik ? `
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Topik</h4>
+                            <p class="text-gray-900">${item.topik}</p>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Tanggal</h4>
+                            <p class="text-gray-900">${new Date(item.tanggal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Waktu</h4>
+                            <p class="text-gray-900">${item.waktu_mulai}${item.waktu_selesai ? ' - ' + item.waktu_selesai : ''}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Lokasi</h4>
+                            <p class="text-gray-900">${item.Lokasi ? item.Lokasi.nama_lokasi : '-'}</p>
+                            ${item.Lokasi && item.Lokasi.alamat ? `<p class="text-sm text-gray-500">${item.Lokasi.alamat}</p>` : ''}
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Kelompok</h4>
+                            <p class="text-gray-900">${item.kelompok || '-'}</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Jenis Kegiatan</h4>
+                        <p class="text-gray-900">${item.jenis_kegiatan || '-'}</p>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        
+        function closeDetailModal() {
+            const modal = document.getElementById('detailModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateStats();
+        });
+    </script>
+</body>
+</html> 

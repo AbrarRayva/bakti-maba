@@ -6,6 +6,7 @@ const expressLayouts = require('express-ejs-layouts');
 // Route Imports
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const jadwalRoutes = require('./routes/jadwalRoutes');
 
 // Settings
 app.use(expressLayouts);
@@ -21,6 +22,7 @@ app.use(express.json());
 // Routes
 app.use("/login", authRoutes); // Assuming /login is in authRoutes
 app.use("/", dashboardRoutes);
+app.use('/jadwal', jadwalRoutes);
 
 // Default route redirect to dashboard for now
 app.get("/", (req, res) => {

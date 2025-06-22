@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Kegiatan - Bakti Maba</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <h1 class="text-3xl font-bold">Jadwal Kegiatan</h1>
+                <div class="flex space-x-4">
+                    <button onclick="exportCalendar()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg flex items-center space-x-2">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>Export Kalender</span>
+                    </button>
+                    <button onclick="enableNotifications()" class="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded-lg flex items-center space-x-2">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifikasi</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filter Section -->
+    <div class="container mx-auto px-4 py-6">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Filter Jadwal</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal</label>
+                    <input type="date" id="filterTanggal" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Kegiatan</label>
+                    <select id="filterJenis" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Semua Jenis</option>
+                        <option value="Seminar">Seminar</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Orientasi">Orientasi</option>
+                        <option value="Pelatihan">Pelatihan</option>
+                        <option value="Diskusi">Diskusi</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi</label>
+                    <input type="text" id="filterLokasi" placeholder="Cari lokasi..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Kelompok/Jurusan</label>
+                    <select id="filterKelompok" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Semua Kelompok</option>
+                        <option value="Teknik Informatika">Teknik Informatika</option>
+                        <option value="Sistem Informasi">Sistem Informasi</option>
+                        <option value="Teknik Komputer">Teknik Komputer</option>
+                        <option value="Manajemen Informatika">Manajemen Informatika</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4 flex space-x-2">
+                <button onclick="applyFilter()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+                    <i class="fas fa-filter mr-2"></i>Terapkan Filter
+                </button>
+                <button onclick="clearFilter()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
+                    <i class="fas fa-times mr-2"></i>Reset
+                </button>
+            </div>
+        </div>
+
+        <!-- Jadwal List -->
+        <div id="jadwalContainer" class="space-y-4">
+            <% jadwal.forEach(function(item) { %>
+                <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <h3 class="text-xl font-semibold text-gray-800"><%= item.nama_kegiatan %></h3>
+                                <% if (item.jenis_kegiatan) { %>
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded"><%= item.jenis_kegiatan %></span>
+                                <% } %>
+                                <% if (item.kelompok) { %>
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded"><%= item.kelompok %></span>
+                                <% } %>
+                            </div>
+                            
+                            <% if (item.deskripsi) { %>
+                                <p class="text-gray-600 mb-3"><%= item.deskripsi %></p>
+                            <% } %>
+                            
+                            <% if (item.topik) { %>
+                                <div class="mb-3">
+                                    <span class="text-sm font-medium text-gray-700">Topik:</span>
+                                    <span class="text-gray-600 ml-2"><%= item.topik %></span>
+                                </div>
+                            <% } %>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-calendar text-blue-500"></i>
+                                    <span class="text-gray-700"><%= new Date(item.tanggal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-clock text-green-500"></i>
+                                    <span class="text-gray-700"><%= item.waktu_mulai %><%= item.waktu_selesai ? ' - ' + item.waktu_selesai : '' %></span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-map-marker-alt text-red-500"></i>
+                                    <span class="text-gray-700"><%= item.Lokasi ? item.Lokasi.nama_lokasi : 'Lokasi belum ditentukan' %></span>
+                                </div>
+                            </div>
+                            
+                            <% if (item.Lokasi && item.Lokasi.alamat) { %>
+                                <div class="mt-2 text-sm text-gray-500">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    <%= item.Lokasi.alamat %>
+                                </div>
+                            <% } %>
+                        </div>
+                        
+                        <div class="flex space-x-2">
+                            <button onclick="addToCalendar(<%= JSON.stringify(item) %>)" class="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg" title="Tambah ke Kalender">
+                                <i class="fas fa-calendar-plus"></i>
+                            </button>
+                            <button onclick="showLocation('<%= item.Lokasi ? item.Lokasi.nama_lokasi : '' %>', '<%= item.Lokasi ? item.Lokasi.alamat : '' %>')" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg" title="Lihat Lokasi">
+                                <i class="fas fa-map"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+        
+        <% if (jadwal.length === 0) { %>
+            <div class="text-center py-12">
+                <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-600 mb-2">Tidak ada jadwal kegiatan</h3>
+                <p class="text-gray-500">Belum ada jadwal kegiatan yang dijadwalkan saat ini.</p>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- Notification Modal -->
+    <div id="notificationModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 class="text-lg font-semibold mb-4">Notifikasi Jadwal</h3>
+            <p class="text-gray-600 mb-4">Dapatkan notifikasi sebelum kegiatan dimulai untuk mengingatkan Anda.</p>
+            <div class="flex space-x-2">
+                <button onclick="requestNotificationPermission()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex-1">
+                    Aktifkan Notifikasi
+                </button>
+                <button onclick="closeNotificationModal()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md flex-1">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filter functionality
+        function applyFilter() {
+            const tanggal = document.getElementById('filterTanggal').value;
+            const jenis = document.getElementById('filterJenis').value;
+            const lokasi = document.getElementById('filterLokasi').value;
+            const kelompok = document.getElementById('filterKelompok').value;
+            
+            let url = '/jadwal/api?';
+            if (tanggal) url += `tanggal=${tanggal}&`;
+            if (jenis) url += `jenis_kegiatan=${jenis}&`;
+            if (lokasi) url += `lokasi=${lokasi}&`;
+            if (kelompok) url += `kelompok=${kelompok}&`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateJadwalDisplay(data.data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Error', 'Terjadi kesalahan saat memfilter jadwal', 'error');
+                });
+        }
+        
+        function clearFilter() {
+            document.getElementById('filterTanggal').value = '';
+            document.getElementById('filterJenis').value = '';
+            document.getElementById('filterLokasi').value = '';
+            document.getElementById('filterKelompok').value = '';
+            location.reload();
+        }
+        
+        function updateJadwalDisplay(jadwal) {
+            const container = document.getElementById('jadwalContainer');
+            if (jadwal.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-600 mb-2">Tidak ada jadwal yang ditemukan</h3>
+                        <p class="text-gray-500">Coba ubah filter pencarian Anda.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = jadwal.map(item => `
+                <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <h3 class="text-xl font-semibold text-gray-800">${item.nama_kegiatan}</h3>
+                                ${item.jenis_kegiatan ? `<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">${item.jenis_kegiatan}</span>` : ''}
+                                ${item.kelompok ? `<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">${item.kelompok}</span>` : ''}
+                            </div>
+                            
+                            ${item.deskripsi ? `<p class="text-gray-600 mb-3">${item.deskripsi}</p>` : ''}
+                            
+                            ${item.topik ? `
+                                <div class="mb-3">
+                                    <span class="text-sm font-medium text-gray-700">Topik:</span>
+                                    <span class="text-gray-600 ml-2">${item.topik}</span>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-calendar text-blue-500"></i>
+                                    <span class="text-gray-700">${new Date(item.tanggal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-clock text-green-500"></i>
+                                    <span class="text-gray-700">${item.waktu_mulai}${item.waktu_selesai ? ' - ' + item.waktu_selesai : ''}</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-map-marker-alt text-red-500"></i>
+                                    <span class="text-gray-700">${item.Lokasi ? item.Lokasi.nama_lokasi : 'Lokasi belum ditentukan'}</span>
+                                </div>
+                            </div>
+                            
+                            ${item.Lokasi && item.Lokasi.alamat ? `
+                                <div class="mt-2 text-sm text-gray-500">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    ${item.Lokasi.alamat}
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="flex space-x-2">
+                            <button onclick="addToCalendar(${JSON.stringify(item)})" class="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg" title="Tambah ke Kalender">
+                                <i class="fas fa-calendar-plus"></i>
+                            </button>
+                            <button onclick="showLocation('${item.Lokasi ? item.Lokasi.nama_lokasi : ''}', '${item.Lokasi ? item.Lokasi.alamat : ''}')" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg" title="Lihat Lokasi">
+                                <i class="fas fa-map"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Calendar export functionality
+        function exportCalendar() {
+            const kelompok = document.getElementById('filterKelompok').value;
+            let url = '/jadwal/api/export';
+            if (kelompok) {
+                url += `?kelompok=${kelompok}`;
+            }
+            
+            window.open(url, '_blank');
+        }
+        
+        function addToCalendar(item) {
+            const startDate = new Date(`${item.tanggal}T${item.waktu_mulai}`);
+            const endDate = item.waktu_selesai ? new Date(`${item.tanggal}T${item.waktu_selesai}`) : new Date(startDate.getTime() + 60 * 60 * 1000);
+            
+            const event = {
+                title: item.nama_kegiatan,
+                description: item.deskripsi || '',
+                location: item.Lokasi ? item.Lokasi.nama_lokasi : '',
+                start: startDate.toISOString(),
+                end: endDate.toISOString()
+            };
+            
+            // Create calendar event URL
+            const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z/${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
+            
+            window.open(googleUrl, '_blank');
+            
+            Swal.fire('Berhasil!', 'Jadwal telah ditambahkan ke Google Calendar', 'success');
+        }
+        
+        // Location functionality
+        function showLocation(nama, alamat) {
+            if (!nama) {
+                Swal.fire('Info', 'Lokasi belum ditentukan', 'info');
+                return;
+            }
+            
+            Swal.fire({
+                title: nama,
+                text: alamat || 'Alamat tidak tersedia',
+                icon: 'info',
+                confirmButtonText: 'Tutup'
+            });
+        }
+        
+        // Notification functionality
+        function enableNotifications() {
+            document.getElementById('notificationModal').classList.remove('hidden');
+            document.getElementById('notificationModal').classList.add('flex');
+        }
+        
+        function closeNotificationModal() {
+            document.getElementById('notificationModal').classList.add('hidden');
+            document.getElementById('notificationModal').classList.remove('flex');
+        }
+        
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        Swal.fire('Berhasil!', 'Notifikasi telah diaktifkan', 'success');
+                        closeNotificationModal();
+                        startNotificationCheck();
+                    } else {
+                        Swal.fire('Dibatalkan', 'Izin notifikasi ditolak', 'info');
+                    }
+                });
+            } else {
+                Swal.fire('Tidak Didukung', 'Browser Anda tidak mendukung notifikasi', 'warning');
+            }
+        }
+        
+        function startNotificationCheck() {
+            // Check for upcoming events every 5 minutes
+            setInterval(() => {
+                fetch('/jadwal/api/notifications')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.data.length > 0) {
+                            data.data.forEach(item => {
+                                new Notification('Jadwal Kegiatan', {
+                                    body: `${item.nama_kegiatan} akan dimulai dalam 30 menit di ${item.Lokasi ? item.Lokasi.nama_lokasi : 'lokasi yang ditentukan'}`,
+                                    icon: '/favicon.ico'
+                                });
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Error checking notifications:', error));
+            }, 5 * 60 * 1000);
+        }
+        
+        // Initialize notification check if permission is granted
+        if ('Notification' in window && Notification.permission === 'granted') {
+            startNotificationCheck();
+        }
+    </script>
+</body>
+</html> 
