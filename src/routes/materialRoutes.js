@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const materialController = require('../controllers/materialController');
+const materialCtrl = require('../controllers/materialController');
+const { requireAuth } = require('../middleware/auth');
 
-
-router.get('/',  materialController.viewMaterials);
-router.get('/download/:id',  materialController.downloadMaterial);
+router.get('/', requireAuth, materialCtrl.viewMaterials);
+router.get('/download/:id', requireAuth, materialCtrl.downloadMaterial);
 
 module.exports = router;

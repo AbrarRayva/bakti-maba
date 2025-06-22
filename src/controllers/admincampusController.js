@@ -1,45 +1,94 @@
-let activities = [
-  { id: 1, title: 'Kegiatan 1',tempat: 'Gedung A 1.8', waktu: '13:30', coords: { x: 150, y: 120 } },
-  { id: 2, title: 'Kegiatan 2',tempat: 'Seminar F', waktu: '16:00', coords: { x: 280, y: 160 } }
-];
+const db = require('../models');
 
-exports.activities = activities;
-
-exports.getMap = (req, res) => {
-  res.render('admin/campus/index', { activities }); // Menggunakan path views/admin/campus/index.ejs
+exports.getMap = async (req, res) => {
+  try {
+    const activities = await db.JadwalKegiatan.findAll({
+      include: [{ model: db.Lokasi, as: 'Lokasi' }],
+      order: [['waktu_mulai', 'ASC']]
+    });
+    res.render('admin/campus/index', { activities });
+  } catch (error) {
+    console.error('Error fetching activities:', error);
+    res.status(500).render('error', { message: 'Terjadi kesalahan saat mengambil data kegiatan' });
+  }
 };
 
 exports.showForm = (req, res) => {
   const { x, y } = req.query;
-  res.render('admin/campus/form', { x: x || '', y: y || '' }); // Menggunakan path views/admin/campus/form.ejs
+  res.render('admin/campus/form', { x: x || '', y: y || '' });
 };
 
-exports.addActivity = (req, res) => {
-  const { title, waktu, x, y } = req.body;
-  activities.push({ id: Date.now(), title, waktu, coords: { x: Number(x), y: Number(y) } });
-  res.redirect('/admin/campus'); // Redirect ke rute /admin/campus
-};
-
-exports.deleteActivity = (req, res) => {
-  const id = parseInt(req.params.id);
-  activities = activities.filter(a => a.id !== id);
-  res.redirect('/admin/campus'); // Redirect ke rute /admin/campus
-};
-
-exports.showEditForm = (req, res) => {
-  const id = parseInt(req.params.id);
-  const activity = activities.find(a => a.id === id);
-  if (!activity) return res.redirect('/admin2/campus'); // Redirect ke rute /admin/campus
-  res.render('admin/campus/edit', { activity }); // Menggunakan path views/admin/campus/edit.ejs
-};
-
-exports.updateActivity = (req, res) => {
-  const id = parseInt(req.params.id);
-  const { title, waktu } = req.body;
-  const activity = activities.find(a => a.id === id);
-  if (activity) {
-    activity.title = title;
-    activity.waktu = waktu;
+exports.addActivity = async (req, res) => {
+  try {
+    const { judul, deskripsi, waktu_mulai, waktu_selesai, id_lokasi } = req.body;
+    
+    await db.JadwalKegiatan.create({
+      judul,
+      deskripsi,
+      waktu_mulai: new Date(waktu_mulai),
+      waktu_selesai: new Date(waktu_selesai),
+      id_lokasi: id_lokasi || null,
+      status: 'aktif'
+    });
+    
+    res.redirect('/admin/campus');
+  } catch (error) {
+    console.error('Error creating activity:', error);
+    res.status(500).render('error', { message: 'Terjadi kesalahan saat membuat kegiatan' });
   }
-  res.redirect('/admin/campus'); // Redirect ke rute /admin/campus
+};
+
+exports.deleteActivity = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const activity = await db.JadwalKegiatan.findByPk(id);
+    
+    if (activity) {
+      await activity.destroy();
+    }
+    
+    res.redirect('/admin/campus');
+  } catch (error) {
+    console.error('Error deleting activity:', error);
+    res.status(500).render('error', { message: 'Terjadi kesalahan saat menghapus kegiatan' });
+  }
+};
+
+exports.showEditForm = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const activity = await db.JadwalKegiatan.findByPk(id, {
+      include: [{ model: db.Lokasi, as: 'Lokasi' }]
+    });
+    
+    if (!activity) return res.redirect('/admin/campus');
+    
+    res.render('admin/campus/edit', { activity });
+  } catch (error) {
+    console.error('Error fetching activity:', error);
+    res.status(500).render('error', { message: 'Terjadi kesalahan saat mengambil data kegiatan' });
+  }
+};
+
+exports.updateActivity = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { judul, deskripsi, waktu_mulai, waktu_selesai, id_lokasi } = req.body;
+    
+    const activity = await db.JadwalKegiatan.findByPk(id);
+    if (activity) {
+      await activity.update({
+        judul,
+        deskripsi,
+        waktu_mulai: new Date(waktu_mulai),
+        waktu_selesai: new Date(waktu_selesai),
+        id_lokasi: id_lokasi || null
+      });
+    }
+    
+    res.redirect('/admin/campus');
+  } catch (error) {
+    console.error('Error updating activity:', error);
+    res.status(500).render('error', { message: 'Terjadi kesalahan saat mengupdate kegiatan' });
+  }
 };

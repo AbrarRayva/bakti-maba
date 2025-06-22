@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const adminCtrl = require('../controllers/admincampusController');
+const adminCampusCtrl = require('../controllers/admincampusController');
+const { requireAdmin } = require('../middleware/auth');
 
-router.get('/campus', adminCtrl.getMap); // /admin2/campus
-router.get('/campus/add', adminCtrl.showForm); // /admin2/campus/add
-router.post('/campus/add', adminCtrl.addActivity); // /admin2/campus/add
-router.post('/campus/:id/delete', adminCtrl.deleteActivity); // /admin2/campus/:id/delete
-router.get('/campus/:id/edit', adminCtrl.showEditForm); // /admin2/campus/:id/edit
-router.post('/campus/:id/edit', adminCtrl.updateActivity); // /admin2/campus/:id/edit
+router.get('/campus', requireAdmin, adminCampusCtrl.getMap); // /admin2/campus
+router.get('/campus/new', requireAdmin, adminCampusCtrl.showForm); // /admin2/campus/add
+router.post('/campus', requireAdmin, adminCampusCtrl.addActivity); // /admin2/campus/add
+router.post('/campus/:id/delete', requireAdmin, adminCampusCtrl.deleteActivity); // /admin2/campus/:id/delete
+router.get('/campus/:id/edit', requireAdmin, adminCampusCtrl.showEditForm); // /admin2/campus/:id/edit
+router.post('/campus/:id/edit', requireAdmin, adminCampusCtrl.updateActivity); // /admin2/campus/:id/edit
 
 module.exports = router;

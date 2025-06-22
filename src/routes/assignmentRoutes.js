@@ -4,6 +4,7 @@ const ctrl = require('../controllers/assignmentController');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { requireAuth } = require('../middleware/auth');
 
 const submissionStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -17,10 +18,10 @@ const submissionStorage = multer.diskStorage({
 });
 const uploadSubmission = multer({ storage: submissionStorage });
 
-router.get('/assignment', ctrl.listAssignments);
-router.get('/assignment/:id', ctrl.detailAssignment);
-router.get('/assignment/:id/submit', ctrl.submitForm);
-router.post('/assignment/:id/submit', uploadSubmission.single('file'), ctrl.submitAssignment);
-router.post('/assignment/submission/:id/delete', ctrl.deleteSubmission);
+router.get('/assignment', requireAuth, ctrl.listAssignments);
+router.get('/assignment/:id', requireAuth, ctrl.detailAssignment);
+router.get('/assignment/:id/submit', requireAuth, ctrl.submitForm);
+router.post('/assignment/:id/submit', requireAuth, uploadSubmission.single('file'), ctrl.submitAssignment);
+router.post('/assignment/submission/:id/delete', requireAuth, ctrl.deleteSubmission);
 
 module.exports = router;

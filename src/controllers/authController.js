@@ -1,3 +1,6 @@
+const bcrypt = require('bcryptjs');
+const db = require('../models');
+
 const viewLoginPage = (req, res) => {
     res.render('auth/login', {
         pageTitle: 'Login',
@@ -12,7 +15,7 @@ const viewLoginPage = (req, res) => {
                             Masukkan username (NIM) dan password yang telah diberikan oleh panitia.
                         </p>
 
-                        <form action="/auth/login" method="POST" class="w-full">
+                        <form action="/login" method="POST" class="w-full">
                             <div class="w-full">
                                 <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
                                 <div class="mt-1 relative">
@@ -40,6 +43,67 @@ const viewLoginPage = (req, res) => {
     });
 };
 
+const login = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        // Find user by username
+        const user = await db.User.findOne({
+            where: { username: username }
+        });
+
+        if (!user) {
+            return res.status(401).json({ 
+                success: false, 
+                message: 'Username atau password salah' 
+            });
+        }
+
+        // Check password
+        const isValidPassword = await bcrypt.compare(password, user.password);
+        
+        if (!isValidPassword) {
+            return res.status(401).json({ 
+                success: false, 
+                message: 'Username atau password salah' 
+            });
+        }
+
+        // Set session
+        req.session.userId = user.id;
+        req.session.username = user.username;
+        req.session.role = user.role;
+
+        // Redirect based on role
+        if (user.role === 'admin') {
+            res.redirect('/admin/assignment');
+        } else {
+            res.redirect('/assignment');
+        }
+
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Terjadi kesalahan server' 
+        });
+    }
+};
+
+const logout = (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ 
+                success: false, 
+                message: 'Gagal logout' 
+            });
+        }
+        res.redirect('/login');
+    });
+};
+
 module.exports = {
-    viewLoginPage
+    viewLoginPage,
+    login,
+    logout
 };

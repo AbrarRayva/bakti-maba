@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const adminCtrl = require('../controllers/adminassignmentController');
+const { requireAdmin } = require('../middleware/auth');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -17,9 +18,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-router.get('/assignment', adminCtrl.listAssignments);
-router.get('/assignment/new', adminCtrl.showForm);
-router.post('/assignment', upload.single('file'), adminCtrl.addAssignment);
-router.post('/assignment/:id/delete', adminCtrl.deleteAssignment);
+router.get('/assignment', requireAdmin, adminCtrl.listAssignments);
+router.get('/assignment/new', requireAdmin, adminCtrl.showForm);
+router.post('/assignment', requireAdmin, upload.single('file'), adminCtrl.addAssignment);
+router.post('/assignment/:id/delete', requireAdmin, adminCtrl.deleteAssignment);
 
 module.exports = router;

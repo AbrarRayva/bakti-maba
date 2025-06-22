@@ -1,51 +1,68 @@
 const path = require('path');
 const fs = require('fs');
+const db = require('../models');
 
-const assignments = []; // Array untuk menyimpan tugas yang dibuat admin
-
-exports.assignments = assignments; // Export assignments agar bisa diakses oleh assignmentController
-
-exports.listAssignments = (req, res) => {
-  res.render('admin/assignment/index', { assignments }); // Menggunakan path views/admin/assignment/index.ejs
+exports.listAssignments = async (req, res) => {
+  try {
+    const assignments = await db.Tugas.findAll({
+      order: [['createdAt', 'DESC']]
+    });
+    res.render('admin/assignment/index', { assignments });
+  } catch (error) {
+    console.error('Error fetching assignments:', error);
+    res.status(500).render('error', { message: 'Terjadi kesalahan saat mengambil data tugas' });
+  }
 };
 
 exports.showForm = (req, res) => {
-  res.render('admin/assignment/form'); // Menggunakan path views/admin/assignment/form.ejs
+  res.render('admin/assignment/form');
 };
 
-exports.addAssignment = (req, res) => {
-  const { title, description, link } = req.body; // Ambil link juga dari body
-  let file = null;
+exports.addAssignment = async (req, res) => {
+  try {
+    const { judul, deskripsi, link } = req.body;
+    let filePath = null;
 
-  if (req.file) {
-    file = `/uploads/${req.file.filename}`; // Path file yang diupload (disimpan di public/uploads)
-  } else if (link) { // Jika ada link yang diisi
-    file = link; // Gunakan link sebagai "file"
-  }
-
-  const newAssignment = {
-    id: Date.now().toString(),
-    title,
-    description,
-    file, // Bisa berupa path file atau link
-    dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Tenggat waktu 7 hari dari sekarang
-  };
-  assignments.push(newAssignment);
-  res.redirect('/admin/assignment'); // Redirect kembali ke daftar tugas admin
-};
-
-exports.deleteAssignment = (req, res) => {
-  const { id } = req.params;
-  const index = assignments.findIndex(a => a.id === id);
-  if (index !== -1) {
-    const filePath = assignments[index].file;
-    // Jika file adalah upload lokal, hapus dari sistem file
-    if (filePath && filePath.startsWith('/uploads/')) {
-      fs.unlink(path.join(__dirname, '../../public', filePath), err => {
-        if (err) console.error('Gagal hapus file:', err);
-      });
+    if (req.file) {
+      filePath = `/uploads/${req.file.filename}`;
+    } else if (link) {
+      filePath = link;
     }
-    assignments.splice(index, 1); // Hapus tugas dari array
+
+    await db.Tugas.create({
+      judul,
+      deskripsi,
+      file_path: filePath,
+      tenggat_waktu: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 hari dari sekarang
+      status: 'aktif'
+    });
+
+    res.redirect('/admin/assignment');
+  } catch (error) {
+    console.error('Error creating assignment:', error);
+    res.status(500).render('error', { message: 'Terjadi kesalahan saat membuat tugas' });
   }
-  res.redirect('/admin/assignment'); // Redirect kembali ke daftar tugas admin
+};
+
+exports.deleteAssignment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const assignment = await db.Tugas.findByPk(id);
+    
+    if (assignment) {
+      // Hapus file jika ada
+      if (assignment.file_path && assignment.file_path.startsWith('/uploads/')) {
+        fs.unlink(path.join(__dirname, '../../public', assignment.file_path), err => {
+          if (err) console.error('Gagal hapus file:', err);
+        });
+      }
+      
+      await assignment.destroy();
+    }
+    
+    res.redirect('/admin/assignment');
+  } catch (error) {
+    console.error('Error deleting assignment:', error);
+    res.status(500).render('error', { message: 'Terjadi kesalahan saat menghapus tugas' });
+  }
 };
