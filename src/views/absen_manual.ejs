@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Input Absen Manual</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    function updateKelompok() {
+      const batch = document.getElementById('batch').value;
+      const kelompokSelect = document.getElementById('kelompok');
+      kelompokSelect.innerHTML = '<option value="">-- Pilih Kelompok --</option>';
+
+      let start = batch === '1' ? 1 : (batch === '2' ? 11 : null);
+      let end = batch === '1' ? 10 : (batch === '2' ? 20 : null);
+
+      if (start !== null && end !== null) {
+        for (let i = start; i <= end; i++) {
+          const option = document.createElement('option');
+          option.value = i;
+          option.text = 'Kelompok ' + i;
+          kelompokSelect.appendChild(option);
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md p-4 ml-64">
+    <div class="flex space-x-6">
+      <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
+      <a href="/gps" class="text-gray-700 hover:text-blue-600">Absensi GPS</a>
+      <a href="/qr" class="text-gray-700 hover:text-blue-600">QR Code</a>
+      <a href="/report/admin" class="text-gray-700 hover:text-blue-600">Report Admin</a>
+      <a href="/manual" class="font-bold text-blue-600">Absen Manual</a>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="ml-64 p-8">
+    <h1 class="text-2xl font-bold mb-6">Input Absen Manual</h1>
+
+    <form action="/manual" method="POST" class="bg-white p-6 rounded shadow-md max-w-xl">
+      <label class="block mb-2 text-gray-700">Nama Lengkap:</label>
+      <input type="text" name="nama" required class="w-full p-2 mb-4 border rounded">
+
+      <label class="block mb-2 text-gray-700">NIM:</label>
+      <input type="text" name="nim" required class="w-full p-2 mb-4 border rounded">
+
+      <label class="block mb-2 text-gray-700">Batch:</label>
+      <select name="batch" id="batch" required class="w-full p-2 mb-4 border rounded" onchange="updateKelompok()">
+        <option value="">-- Pilih Batch --</option>
+        <option value="1">Batch 1</option>
+        <option value="2">Batch 2</option>
+      </select>
+
+      <label class="block mb-2 text-gray-700">Kelompok:</label>
+      <select name="kelompok" id="kelompok" required class="w-full p-2 mb-4 border rounded">
+        <option value="">-- Pilih Kelompok --</option>
+      </select>
+
+      <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded">
+        Simpan Absen
+      </button>
+    </form>
+  </main>
+</body>
+</html>

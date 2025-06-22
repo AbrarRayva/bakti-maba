@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Generate QR Code</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    .qr-code-container {
+      transition: all 0.3s ease;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- Navbar Atas -->
+  <nav class="bg-white shadow-md p-4 ml-64">
+    <div class="flex space-x-6">
+      <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
+      <a href="/gps" class="text-gray-700 hover:text-blue-600">Absensi GPS</a>
+      <a href="/qr" class="font-bold text-blue-600">QR Code</a>
+      <a href="/report/user" class="text-gray-700 hover:text-blue-600">Report</a>
+      <a href="/manual" class="text-gray-700 hover:text-blue-600">Absen Manual</a>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="container mx-auto p-8 ml-64">
+    <h1 class="text-2xl font-bold mb-6">Generate QR Code</h1>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Form Section -->
+      <div class="bg-white p-6 rounded shadow-md w-full lg:w-1/2">
+        <% if (errors && errors.length > 0) { %>
+  <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+    <% errors.forEach(error => { %>
+      <p><%= error %></p>
+    <% }) %>
+  </div>
+<% } %>
+
+        <form method="POST" action="/qr">
+          <div class="mb-4">
+            <label class="block mb-2 text-gray-700 font-medium">Pilih Batch:</label>
+            <select name="batch" required class="w-full p-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">-- Pilih Batch --</option>
+              <option value="Batch 1">Batch 1</option>
+              <option value="Batch 2">Batch 2</option>
+            </select>
+          </div>
+
+          <div class="mb-6">
+            <label class="block mb-2 text-gray-700 font-medium">Durasi (menit):</label>
+            <select name="durasi" required class="w-full p-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">-- Pilih Durasi --</option>
+              <option value="5">5 Menit</option>
+              <option value="10">10 Menit</option>
+              <option value="15">15 Menit</option>
+            </select>
+          </div>
+
+          <button type="submit" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-6 py-3 rounded transition duration-200">
+            Generate QR Code
+          </button>
+        </form>
+        <% if (qrCode) { %>
+  <div class="mt-6 text-center">
+    <h2 class="text-lg font-semibold mb-2">QR Code Aktif</h2>
+    <img src="<%= qrCode %>" alt="QR Code" class="mx-auto border shadow-md p-2 rounded">
+    <p class="text-sm text-gray-500 mt-2">Berlaku selama <%= countdown %> menit</p>
+  </div>
+<% } %>
+
+
+        <% if (errors) { %>
+          <div class="mt-4 bg-red-50 border-l-4 border-red-500 p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <% errors.forEach(error => { %>
+                  <p class="text-sm text-red-700"><%= error %></p>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

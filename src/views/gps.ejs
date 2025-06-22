@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Absensi GPS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tambahkan Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<script>
+  document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault(); // cegah submit langsung
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        // Buat form tersembunyi untuk kirim data ke server
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/gps';
+
+        const latInput = document.createElement('input');
+        latInput.type = 'hidden';
+        latInput.name = 'latitude';
+        latInput.value = lat;
+
+        const lonInput = document.createElement('input');
+        lonInput.type = 'hidden';
+        lonInput.name = 'longitude';
+        lonInput.value = lon;
+
+        form.appendChild(latInput);
+        form.appendChild(lonInput);
+
+        document.body.appendChild(form);
+        form.submit();
+      }, function(error) {
+        alert('Gagal mendapatkan lokasi: ' + error.message);
+      });
+    } else {
+      alert('Browser tidak mendukung GPS!');
+    }
+  });
+</script>
+
+<body class="bg-gray-100 font-sans">
+
+
+  <!-- Navbar Atas -->
+  <nav class="bg-white shadow-md p-4 ml-64">
+    <div class="flex space-x-6">
+      <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
+      <a href="/gps" class="font-bold text-blue-600">Absensi GPS</a>
+      <a href="/qr" class="text-gray-700 hover:text-blue-600">QR Code</a>
+      <a href="/report/user" class="text-gray-700 hover:text-blue-600">Report</a>
+      <a href="/manual" class="text-gray-700 hover:text-blue-600">Absen Manual</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container mx-auto p-8 ml-64">
+    <h1 class="text-2xl font-bold mb-4">Absensi GPS</h1>
+
+    <div class="bg-white p-6 rounded shadow-md flex flex-col md:flex-row items-start gap-8">
+      <!-- Map -->
+      <div class="w-full md:w-1/2 h-64 bg-gray-200 flex items-center justify-center">
+        <span class="text-gray-600">Peta akan tampil di sini</span>
+      </div>
+
+      <!-- Info user -->
+      <div class="w-full md:w-1/2 bg-gray-50 p-4 rounded">
+        <p class="mb-2"><strong>NIM:</strong> 2311523022</p>
+        <p class="mb-2"><strong>Nama:</strong> Giva Gusliana</p>
+      </div>
+    </div>
+
+    <p class="text-sm text-gray-600 mt-2">Status: 0.123 - 100.234</p>
+
+    <form action="/gps" method="POST" class="mt-4">
+      <button type="submit" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-6 py-2 rounded transition duration-200">
+        Absen dengan GPS
+      </button>
+    </form>
+  </main>
+</body>
+</html>
