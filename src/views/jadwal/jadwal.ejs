@@ -1,0 +1,147 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">📅 Jadwal Kegiatan</h1>
+            <p class="text-gray-600 mt-1">Lihat jadwal kegiatan yang akan datang</p>
+        </div>
+        <div class="flex space-x-3">
+            <button onclick="exportCalendar()" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg text-white text-sm">
+                <i class="fas fa-download mr-2"></i>
+                Export
+            </button>
+            <button onclick="testNotification()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg text-white text-sm">
+                <i class="fas fa-bell mr-2"></i>
+                Test Notifikasi
+            </button>
+        </div>
+    </div>
+
+    <!-- Jadwal Cards -->
+    <div id="jadwalContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% jadwal.forEach(function(item) { %>
+            <div class="jadwal-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2"><%= item.nama_kegiatan %></h3>
+                            <% if (item.deskripsi) { %>
+                                <p class="text-gray-600 text-sm line-clamp-2"><%= item.deskripsi %></p>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <!-- Tanggal & Waktu -->
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-calendar text-blue-500 mr-2"></i>
+                            <span><%= new Date(item.tanggal).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' }) %></span>
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-clock text-green-500 mr-2"></i>
+                            <span><%= item.waktu_mulai %></span>
+                        </div>
+
+                        <!-- Lokasi -->
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-map-marker-alt text-red-500 mr-2"></i>
+                            <span><%= item.Lokasi ? item.Lokasi.nama_lokasi : 'Lokasi belum ditentukan' %></span>
+                        </div>
+
+                        <!-- Kelompok -->
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-users text-purple-500 mr-2"></i>
+                            <% if (item.Kelompoks && item.Kelompoks.length > 0) { %>
+                                <% if (item.Kelompoks.length > 3) { %>
+                                    <span class="text-gray-600">
+                                        <%= item.Kelompoks.slice(0, 3).map(k => k.nama_kelompok).join(', ') %> dan <%= item.Kelompoks.length - 3 %> lainnya
+                                    </span>
+                                <% } else { %>
+                                    <span class="text-gray-600">
+                                        <%= item.Kelompoks.map(k => k.nama_kelompok).join(', ') %>
+                                    </span>
+                                <% } %>
+                            <% } else { %>
+                                <span class="text-gray-500">Belum ada kelompok</span>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <a href="/jadwal/<%= item.id_kegiatan %>" class="text-blue-600 hover:text-blue-800 font-medium text-sm">
+                            Lihat Detail <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="text-center py-12 hidden">
+        <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
+        <h3 class="text-xl font-semibold text-gray-600 mb-2">Tidak ada jadwal yang ditemukan</h3>
+        <p class="text-gray-500">Belum ada jadwal kegiatan yang tersedia.</p>
+    </div>
+</div>
+
+<!-- Notification Modal -->
+<div id="notificationModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <h3 class="text-lg font-semibold mb-4">🔔 Notifikasi Jadwal</h3>
+        <p class="text-gray-600 mb-4">Dapatkan notifikasi sebelum kegiatan dimulai untuk mengingatkan Anda.</p>
+        <div class="flex space-x-2">
+            <button onclick="requestNotificationPermission()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex-1">
+                Aktifkan Notifikasi
+            </button>
+            <button onclick="closeNotificationModal()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md flex-1">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Calendar export functionality
+    function exportCalendar() {
+        window.open('/jadwal/api/export', '_blank');
+    }
+    
+    // Test notification functionality
+    function testNotification() {
+        if ('Notification' in window) {
+            Notification.requestPermission().then(function(permission) {
+                if (permission === 'granted') {
+                    new Notification('Bakti Maba - Test Notifikasi', {
+                        body: 'Fitur notifikasi berfungsi dengan baik!',
+                        icon: '/favicon.ico'
+                    });
+                    alert('Notifikasi test berhasil dikirim!');
+                } else {
+                    alert('Izin notifikasi ditolak. Silakan aktifkan notifikasi di pengaturan browser.');
+                }
+            });
+        } else {
+            alert('Browser Anda tidak mendukung notifikasi.');
+        }
+    }
+    
+    // Notification functionality
+    function requestNotificationPermission() {
+        if ('Notification' in window) {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    alert('Notifikasi telah diaktifkan!');
+                    closeNotificationModal();
+                } else {
+                    alert('Izin notifikasi ditolak');
+                }
+            });
+        } else {
+            alert('Browser Anda tidak mendukung notifikasi');
+        }
+    }
+    
+    function closeNotificationModal() {
+        document.getElementById('notificationModal').classList.add('hidden');
+    }
+</script> 

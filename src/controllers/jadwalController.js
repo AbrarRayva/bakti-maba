@@ -45,7 +45,7 @@ const index = async (req, res) => {
     const lokasiList = await Lokasi.findAll();
     const kelompokList = await Kelompok.findAll();
 
-    res.render('jadwal/index', {
+    res.render('jadwal/jadwal', {
       jadwal,
       lokasiList,
       kelompokList,
@@ -54,6 +54,38 @@ const index = async (req, res) => {
   } catch (error) {
     console.error('Error fetching jadwal:', error);
     res.status(500).send('Terjadi kesalahan saat mengambil data jadwal');
+  }
+};
+
+// Menampilkan detail jadwal
+const show = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const jadwal = await JadwalKegiatan.findByPk(id, {
+      include: [
+        {
+          model: Lokasi,
+          as: 'Lokasi',
+          attributes: ['nama_lokasi', 'alamat']
+        },
+        {
+          model: Kelompok,
+          as: 'Kelompoks',
+          through: { attributes: [] },
+          attributes: ['nama_kelompok']
+        }
+      ]
+    });
+
+    if (!jadwal) {
+      return res.status(404).send('Jadwal tidak ditemukan');
+    }
+
+    res.render('jadwal/detail', { jadwal });
+  } catch (error) {
+    console.error('Error fetching jadwal detail:', error);
+    res.status(500).send('Terjadi kesalahan saat mengambil detail jadwal');
   }
 };
 
@@ -77,7 +109,15 @@ const adminIndex = async (req, res) => {
       order: [['tanggal', 'ASC'], ['waktu_mulai', 'ASC']]
     });
 
-    res.render('admin/jadwal/index', { jadwal });
+    // Ambil data untuk statistik
+    const lokasiList = await Lokasi.findAll();
+    const kelompokList = await Kelompok.findAll();
+
+    res.render('admin/jadwal/jadwal', { 
+      jadwal, 
+      lokasiList, 
+      kelompokList 
+    });
   } catch (error) {
     console.error('Error fetching jadwal:', error);
     res.status(500).send('Terjadi kesalahan saat mengambil data jadwal');
@@ -204,7 +244,7 @@ const destroy = async (req, res) => {
     }
 
     await jadwal.destroy();
-    res.redirect('/admin/jadwal');
+    res.status(200).send('Jadwal berhasil dihapus');
   } catch (error) {
     console.error('Error deleting jadwal:', error);
     res.status(500).send('Terjadi kesalahan saat menghapus jadwal');
@@ -225,28 +265,15 @@ const exportCalendar = async (req, res) => {
       order: [['tanggal', 'ASC'], ['waktu_mulai', 'ASC']]
     });
 
-    let icsContent = 'BEGIN:VCALENDAR\r\n';
-    icsContent += 'VERSION:2.0\r\n';
-    icsContent += 'PRODID:-//Bakti Maba//Jadwal Kegiatan//ID\r\n';
+    // Format data untuk calendar
+    const calendarData = jadwal.map(item => ({
+      title: item.nama_kegiatan,
+      start: `${item.tanggal}T${item.waktu_mulai}:00`,
+      location: item.Lokasi ? item.Lokasi.nama_lokasi : 'Lokasi belum ditentukan',
+      description: item.deskripsi || ''
+    }));
 
-    jadwal.forEach(item => {
-      const startDate = new Date(`${item.tanggal}T${item.waktu_mulai}`);
-      const endDate = new Date(startDate.getTime() + (2 * 60 * 60 * 1000)); // Default 2 jam
-
-      icsContent += 'BEGIN:VEVENT\r\n';
-      icsContent += `DTSTART:${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z\r\n`;
-      icsContent += `DTEND:${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z\r\n`;
-      icsContent += `SUMMARY:${item.nama_kegiatan}\r\n`;
-      icsContent += `DESCRIPTION:${item.deskripsi || ''}\r\n`;
-      icsContent += `LOCATION:${item.Lokasi ? item.Lokasi.nama_lokasi : ''}\r\n`;
-      icsContent += 'END:VEVENT\r\n';
-    });
-
-    icsContent += 'END:VCALENDAR\r\n';
-
-    res.setHeader('Content-Type', 'text/calendar');
-    res.setHeader('Content-Disposition', 'attachment; filename="jadwal-kegiatan.ics"');
-    res.send(icsContent);
+    res.json(calendarData);
   } catch (error) {
     console.error('Error exporting calendar:', error);
     res.status(500).send('Terjadi kesalahan saat export calendar');
@@ -255,6 +282,7 @@ const exportCalendar = async (req, res) => {
 
 module.exports = {
   index,
+  show,
   adminIndex,
   create,
   store,

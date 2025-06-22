@@ -8,8 +8,8 @@
 <body class="bg-slate-100 font-sans">
     <div class="md:flex h-screen">
         
-        <!-- Sidebar -->
-        <%- include('../partials/sidebar', { isAdmin: typeof isAdmin !== 'undefined' ? isAdmin : false }) %>
+        <!-- Sidebar Admin -->
+        <%- include('../partials/sidebarAdmin') %>
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col">
@@ -19,7 +19,7 @@
                     <button id="mobile-menu-button" class="text-gray-600 focus:outline-none">
                         <i data-lucide="menu" class="h-6 w-6"></i>
                     </button>
-                    <span class="text-xl font-bold tracking-tight">Bakti Maba</span>
+                    <span class="text-xl font-bold tracking-tight">Bakti Maba - Admin</span>
                 </div>
             </header>
 
@@ -32,7 +32,7 @@
     <script>
         // Initialize Lucide Icons
         if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
+            lucide.createIcons();
         }
 
         // Mobile Menu Toggle Logic
