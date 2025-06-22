@@ -1,0 +1,195 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">👥 Manajemen Kelompok</h1>
+            <p class="text-gray-600 mt-1">Kelola data kelompok dalam sistem Bakti Maba</p>
+        </div>
+        <div class="flex space-x-3">
+            <a href="/admin/kelompok/create" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg text-white text-sm">
+                <i class="fas fa-plus mr-2"></i>
+                Tambah Kelompok
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">🔍 Filter Kelompok</h3>
+        
+        <form id="filterForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Search Filter -->
+            <div>
+                <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Cari Kelompok</label>
+                <input 
+                    type="text" 
+                    id="search" 
+                    name="search" 
+                    placeholder="Cari nama kelompok..."
+                    value="<%= filters.search || '' %>"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+            </div>
+        </form>
+
+        <!-- Filter Actions -->
+        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
+            <div class="flex space-x-2">
+                <button 
+                    type="button" 
+                    onclick="clearFilters()" 
+                    class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md text-sm font-medium"
+                >
+                    <i class="fas fa-times mr-2"></i>
+                    Bersihkan Filter
+                </button>
+            </div>
+            <div class="text-sm text-gray-600">
+                <span id="resultCount"><%= kelompokList.length %></span> kelompok ditemukan
+            </div>
+        </div>
+    </div>
+
+    <!-- Kelompok Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% kelompokList.forEach(function(kelompok) { %>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2"><%= kelompok.nama_kelompok %></h3>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-users text-blue-500 mr-2"></i>
+                                <span><%= kelompok.Users ? kelompok.Users.length : 0 %> anggota</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <a href="/admin/kelompok/<%= kelompok.id_kelompok %>" 
+                               class="text-blue-600 hover:text-blue-900">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="/admin/kelompok/edit/<%= kelompok.id_kelompok %>" 
+                               class="text-green-600 hover:text-green-900">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <button class="delete-kelompok-btn text-red-600 hover:text-red-900"
+                                    data-kelompok-id="<%= kelompok.id_kelompok %>"
+                                    data-kelompok-name="<%= kelompok.nama_kelompok %>">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Member List Preview -->
+                    <% if (kelompok.Users && kelompok.Users.length > 0) { %>
+                        <div class="border-t border-gray-200 pt-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Anggota:</h4>
+                            <div class="space-y-1">
+                                <% kelompok.Users.slice(0, 3).forEach(function(user) { %>
+                                    <div class="flex items-center text-sm text-gray-600">
+                                        <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center mr-2">
+                                            <span class="text-xs font-medium text-gray-700">
+                                                <%= user.nama.charAt(0).toUpperCase() %>
+                                            </span>
+                                        </div>
+                                        <span><%= user.nama %></span>
+                                        <span class="text-gray-400 ml-1">(<%= user.nim %>)</span>
+                                    </div>
+                                <% }); %>
+                                <% if (kelompok.Users.length > 3) { %>
+                                    <div class="text-sm text-gray-500">
+                                        dan <%= kelompok.Users.length - 3 %> anggota lainnya...
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <div class="border-t border-gray-200 pt-4">
+                            <p class="text-sm text-gray-500">Belum ada anggota</p>
+                        </div>
+                    <% } %>
+
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <a href="/admin/kelompok/<%= kelompok.id_kelompok %>" 
+                           class="text-blue-600 hover:text-blue-800 font-medium text-sm">
+                            Lihat Detail <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+
+    <!-- Empty State -->
+    <% if (kelompokList.length === 0) { %>
+    <div class="text-center py-12">
+        <i class="fas fa-users text-6xl text-gray-300 mb-4"></i>
+        <h3 class="text-xl font-semibold text-gray-600 mb-2">Tidak ada kelompok yang ditemukan</h3>
+        <p class="text-gray-500">Belum ada kelompok yang tersedia atau filter terlalu ketat.</p>
+    </div>
+    <% } %>
+</div>
+
+<script>
+    // Filter functionality
+    function applyFilters() {
+        const form = document.getElementById('filterForm');
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+        
+        for (let [key, value] of formData.entries()) {
+            if (value) {
+                params.append(key, value);
+            }
+        }
+        
+        window.location.href = '/admin/kelompok?' + params.toString();
+    }
+    
+    function clearFilters() {
+        window.location.href = '/admin/kelompok';
+    }
+    
+    // Add event listeners for automatic filtering
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search');
+        if (searchInput) {
+            let timeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(applyFilters, 500); // 500ms delay
+            });
+        }
+        
+        // Add event listeners for delete buttons
+        const deleteButtons = document.querySelectorAll('.delete-kelompok-btn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const kelompokId = this.getAttribute('data-kelompok-id');
+                const kelompokName = this.getAttribute('data-kelompok-name');
+                
+                if (confirm('Apakah Anda yakin ingin menghapus kelompok "' + kelompokName + '"? Tindakan ini tidak dapat dibatalkan.')) {
+                    fetch('/admin/kelompok/' + kelompokId, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();
+                        } else {
+                            alert('Terjadi kesalahan: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat menghapus kelompok');
+                    });
+                }
+            });
+        });
+    });
+</script> 

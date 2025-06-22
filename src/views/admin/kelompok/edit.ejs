@@ -1,0 +1,80 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">✏️ Edit Kelompok</h1>
+            <p class="text-gray-600 mt-1">Edit data kelompok: <%= kelompok.nama_kelompok %></p>
+        </div>
+        <a href="/admin/kelompok" class="bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-lg text-white text-sm">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Kembali
+        </a>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <form action="/admin/kelompok/<%= kelompok.id_kelompok %>?_method=PUT" method="POST" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Nama Kelompok -->
+                <div>
+                    <label for="nama_kelompok" class="block text-sm font-medium text-gray-700 mb-2">
+                        Nama Kelompok <span class="text-red-500">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="nama_kelompok" 
+                        name="nama_kelompok" 
+                        value="<%= kelompok.nama_kelompok %>"
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Masukkan nama kelompok"
+                    >
+                </div>
+            </div>
+
+            <!-- Member Info -->
+            <div class="border-t border-gray-200 pt-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">📋 Informasi Anggota</h3>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-users text-blue-500 mr-2"></i>
+                        <span class="font-medium text-gray-700">
+                            <%= kelompok.Users ? kelompok.Users.length : 0 %> anggota dalam kelompok ini
+                        </span>
+                    </div>
+                    
+                    <% if (kelompok.Users && kelompok.Users.length > 0) { %>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <% kelompok.Users.forEach(function(user) { %>
+                                <div class="flex items-center p-2 bg-white rounded border">
+                                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                        <span class="text-sm font-medium text-blue-700">
+                                            <%= user.nama.charAt(0).toUpperCase() %>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900"><%= user.nama %></div>
+                                        <div class="text-xs text-gray-500"><%= user.nim %></div>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <p class="text-gray-500 text-sm">Belum ada anggota dalam kelompok ini.</p>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+                <a href="/admin/kelompok" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-md text-sm font-medium">
+                    Batal
+                </a>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md text-sm font-medium">
+                    <i class="fas fa-save mr-2"></i>
+                    Update Kelompok
+                </button>
+            </div>
+        </form>
+    </div>
+</div> 

@@ -3,6 +3,7 @@ const router = express.Router();
 const jadwalController = require('../controllers/jadwalController');
 const dashboardController = require('../controllers/dashboardController');
 const userController = require('../controllers/userController');
+const kelompokController = require('../controllers/kelompokController');
 
 // Admin dashboard route
 router.get('/dashboard', dashboardController.adminDashboard);
@@ -27,5 +28,16 @@ router.post('/users', userController.store);
 router.put('/users/:id', userController.update);
 router.delete('/users/:id', userController.destroy);
 router.post('/users/:id/toggle-block', userController.toggleBlock);
+
+// Routes untuk admin kelompok
+router.get('/kelompok', kelompokController.index);
+router.get('/kelompok/create', kelompokController.create);
+router.get('/kelompok/edit/:id', kelompokController.edit);
+router.get('/kelompok/:id', kelompokController.show);
+
+// API routes untuk admin kelompok
+router.post('/kelompok', kelompokController.store);
+router.put('/kelompok/:id', kelompokController.update);
+router.delete('/kelompok/:id', kelompokController.destroy);
 
 module.exports = router; 
