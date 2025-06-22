@@ -1,3 +1,5 @@
+const { User, ForumPost } = require('../models'); // Impor model
+
 let messages = {}; // Simpan pesan berdasarkan ID forum
 let pinnedMessages = {}; 
 
@@ -9,18 +11,38 @@ exports.showForumChat = (req, res) => {
 };
 
 // Untuk User Umum: Kirim pesan ke forum
-exports.sendMessage = (req, res) => {
-  const { id } = req.params;
-  const message = req.body.message;
+exports.sendMessage = async (req, res) => {
+  const { id } = req.params; // id disini adalah id_thread
+  const { message } = req.body;
+  const userId = req.user.id; // Asumsi ID user didapat dari middleware auth
 
-  if (!messages[id]) {
-    messages[id] = [];
+  if (!message) {
+    return res.redirect(`/forum/chat/${id}`);
   }
 
-  messages[id].push({ text: message, time: new Date().toLocaleTimeString() });
+  try {
+    // 1. Simpan pesan ke database
+    await ForumPost.create({
+      id_thread: id,
+      id_user: userId,
+      isi_pesan: message
+    });
 
-  console.log(`Pesan ke forum ${id}: ${message}`);
-  res.redirect(`/forum/chat/${id}`);
+    // 2. Tambahkan poin ke user
+    const poinToAdd = 5;
+    const user = await User.findByPk(userId);
+    if (user) {
+      user.total_poin += poinToAdd;
+      await user.save();
+      console.log(`User ${userId} mendapatkan ${poinToAdd} poin. Total poin: ${user.total_poin}`);
+    }
+
+    console.log(`Pesan ke forum thread ${id} oleh user ${userId}: ${message}`);
+    res.redirect(`/forum/chat/${id}`);
+  } catch (error) {
+    console.error("Gagal mengirim pesan atau menambah poin:", error);
+    res.status(500).send("Terjadi kesalahan pada server");
+  }
 };
 
 // Untuk Admin: Tampilkan halaman forum admin (tanpa ID khusus)
