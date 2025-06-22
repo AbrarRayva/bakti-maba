@@ -1,0 +1,9 @@
+<!-- Button Component -->
+<button
+    type="<%= typeof type !== 'undefined' ? type : 'submit' %>"
+    class="block w-full px-8 py-2 bg-indigo-500 border border-indigo-300 rounded-2xl text-sm text-white font-bold focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 hover:bg-indigo-600 transition-colors duration-200"
+    <% if (typeof id !== 'undefined') { %>id="<%= id %>"<% } %>
+    <% if (typeof onclick !== 'undefined') { %>onclick="<%= onclick %>"<% } %>
+>
+    <%= text %>
+</button> 
