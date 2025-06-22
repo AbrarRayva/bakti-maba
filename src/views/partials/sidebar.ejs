@@ -1,0 +1,52 @@
+<!-- 
+  Sidebar
+  - `h-full` to make it take the full viewport height
+  - `absolute` for mobile overlay
+  - `relative` for desktop view
+  - `transform -translate-x-full` to hide it off-screen on mobile
+  - `md:translate-x-0` to make it visible on desktop
+-->
+<aside id="sidebar" class="absolute md:relative w-64 h-full flex-shrink-0 bg-white shadow-lg flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-30">
+    <!-- Sidebar Header -->
+    <div class="p-4 border-b h-16 flex items-center justify-between">
+        <span class="ml-4 text-xl font-bold tracking-tight">Bakti Maba</span>
+        <!-- Mobile Close Button -->
+        <button id="close-sidebar-button" class="md:hidden text-gray-600 focus:outline-none">
+            <i data-lucide="x" class="h-6 w-6"></i>
+        </button>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="flex-1 overflow-y-auto">
+        <nav class="mt-4 px-2">
+            <a href="#" class="flex items-center px-4 py-3 text-gray-800 bg-slate-200 rounded-lg">
+                <i data-lucide="home" class="w-5 h-5 text-gray-700"></i>
+                <span class="mx-4 font-semibold">Home</span>
+            </a>
+            <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="calendar" class="w-5 h-5"></i>
+                <span class="mx-4 font-medium">Jadwal</span>
+            </a>
+            <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="file-pen-line" class="w-5 h-5"></i>
+                <span class="mx-4 font-medium">Penugasan</span>
+            </a>
+            <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="qr-code" class="w-5 h-5"></i>
+                <span class="mx-4 font-medium">Absensi</span>
+            </a>
+            <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="message-square" class="w-5 h-5"></i>
+                <span class="mx-4 font-medium">Forum</span>
+            </a>
+            <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="map" class="w-5 h-5"></i>
+                <span class="mx-4 font-medium">Peta</span>
+            </a>
+            <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="log-out" class="w-5 h-5"></i>
+                <span class="mx-4 font-medium">Logout</span>
+            </a>
+        </nav>
+    </div>
+</aside> 

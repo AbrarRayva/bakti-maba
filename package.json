@@ -18,6 +18,7 @@
     "bcryptjs": "^3.0.2",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "express-ejs-layouts": "^2.5.1",
     "lucide": "^0.522.0",
     "pg": "^8.16.2",
     "pg-hstore": "^2.3.4",
