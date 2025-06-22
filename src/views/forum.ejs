@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Forum</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<%- include('partials/head', { pageTitle: 'Forum' }) %>
+
 <body class="flex bg-white min-h-screen relative">
 
 <!--sidebar-->
@@ -19,7 +13,7 @@
     <a href="/forum/chat/1" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Forum</a>
     <a href="/peta" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Peta</a>
     <a href="/logout" class="flex items-center text-red-600 hover:text-red-800"><span class="material-icons mr-3"></span> Logout</a>
-  </nav>
+  </nav>
 </aside>
 
 <!-- Main Content -->
@@ -45,7 +39,7 @@
           <h2 class="text-lg font-semibold">Bakti 2025</h2>
         </div>
       </div>
-      <button class="text-gray-600 text-lg">🔍</button>
+      <button onclick="toggleSearch()" class="text-gray-600 text-lg">🔍</button>
     </div>
 
     <div id="searchBox" class="mb-4 hidden">

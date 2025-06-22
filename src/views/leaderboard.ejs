@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Leaderboard</title>
-  <link href="./output.css" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<%- include('partials/head', { pageTitle: 'Leaderboard' }) %>
+
 <body class="flex bg-gradient-to-b from-yellow-100 to-blue-100 min-h-screen">
 
 <aside class="w-64 h-screen bg-white shadow-md fixed top-0 left-0 flex flex-col pt-6 px-4 z-10">
@@ -19,7 +12,7 @@
     <a href="/forum/chat/1" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Forum</a>
     <a href="/peta" class="flex items-center text-gray-700 hover:text-blue-600"><span class="material-icons mr-3"></span> Peta</a>
     <a href="/logout" class="flex items-center text-red-600 hover:text-red-800"><span class="material-icons mr-3"></span> Logout</a>
-  </nav>
+  </nav>
 </aside>
 
 <!-- Main Content -->
@@ -38,9 +31,9 @@
     <div class="bg-white rounded-2xl shadow-md p-6 w-80 text-center">
       <div class="text-6xl mb-2">🏆</div>
       <h2 class="text-xl font-bold">Congratulations!</h2>
-      <p class="text-gray-500">@<%= username %></p>
+      <p class="text-gray-500">@<%= locals.username %></p>
       <hr class="my-4">
-      <p class="text-3xl font-semibold"><%= userPoints %></p>
+      <p class="text-3xl font-semibold"><%= locals.userPoints %></p>
       <p class="text-gray-500">Interaction</p>
     </div>
 
@@ -56,7 +49,7 @@
           </tr>
         </thead>
         <tbody>
-          <% leaderboard.forEach((user, index) => { %>
+          <% locals.leaderboard.forEach((user, index) => { %>
             <tr class="border-b py-2">
               <td class="py-2"><%= index + 1 %></td>
               <td>@<%= user.username %></td>
