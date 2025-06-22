@@ -30,10 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     deskripsi: DataTypes.TEXT,
     tanggal: DataTypes.DATEONLY,
     waktu_mulai: DataTypes.TIME,
-    waktu_selesai: DataTypes.TIME,
-    id_lokasi: DataTypes.INTEGER,
-    jenis_kegiatan: DataTypes.STRING,
-    topik: DataTypes.STRING
+    id_lokasi: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'JadwalKegiatan',

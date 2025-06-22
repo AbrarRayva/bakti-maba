@@ -7,61 +7,46 @@ module.exports = {
     const jadwalData = [
       {
         nama_kegiatan: 'Orientasi Mahasiswa Baru',
-        deskripsi: 'Kegiatan orientasi untuk mahasiswa baru angkatan 2024',
+        deskripsi: 'Kegiatan orientasi untuk mahasiswa baru tahun 2024',
         tanggal: '2024-08-15',
         waktu_mulai: '08:00:00',
-        waktu_selesai: '12:00:00',
         id_lokasi: 1,
-        jenis_kegiatan: 'Orientasi',
-        topik: 'Pengenalan Kampus dan Sistem Akademik',
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         nama_kegiatan: 'Workshop Programming',
-        deskripsi: 'Workshop dasar programming untuk mahasiswa teknik informatika',
-        tanggal: '2024-08-20',
-        waktu_mulai: '13:00:00',
-        waktu_selesai: '17:00:00',
+        deskripsi: 'Workshop dasar pemrograman untuk mahasiswa TI',
+        tanggal: '2024-08-16',
+        waktu_mulai: '09:00:00',
         id_lokasi: 2,
-        jenis_kegiatan: 'Workshop',
-        topik: 'Dasar-dasar JavaScript dan Node.js',
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         nama_kegiatan: 'Seminar Kewirausahaan',
-        deskripsi: 'Seminar tentang kewirausahaan dan peluang bisnis di era digital',
-        tanggal: '2024-08-25',
-        waktu_mulai: '09:00:00',
-        waktu_selesai: '11:30:00',
+        deskripsi: 'Seminar tentang kewirausahaan di era digital',
+        tanggal: '2024-08-17',
+        waktu_mulai: '13:00:00',
         id_lokasi: 3,
-        jenis_kegiatan: 'Seminar',
-        topik: 'Startup dan Inovasi Digital',
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         nama_kegiatan: 'Pelatihan Soft Skills',
-        deskripsi: 'Pelatihan pengembangan soft skills untuk mahasiswa',
-        tanggal: '2024-08-30',
-        waktu_mulai: '14:00:00',
-        waktu_selesai: '16:00:00',
+        deskripsi: 'Pelatihan pengembangan soft skills mahasiswa',
+        tanggal: '2024-08-18',
+        waktu_mulai: '10:00:00',
         id_lokasi: 1,
-        jenis_kegiatan: 'Pelatihan',
-        topik: 'Komunikasi Efektif dan Leadership',
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        nama_kegiatan: 'Diskusi Panel Teknologi',
-        deskripsi: 'Diskusi panel tentang perkembangan teknologi terkini',
-        tanggal: '2024-09-05',
-        waktu_mulai: '19:00:00',
-        waktu_selesai: '21:00:00',
-        id_lokasi: 2,
-        jenis_kegiatan: 'Diskusi',
-        topik: 'AI dan Machine Learning',
+        nama_kegiatan: 'Kunjungan Industri',
+        deskripsi: 'Kunjungan ke perusahaan teknologi terkemuka',
+        tanggal: '2024-08-19',
+        waktu_mulai: '07:30:00',
+        id_lokasi: 4,
         createdAt: new Date(),
         updatedAt: new Date()
       }
@@ -107,7 +92,7 @@ module.exports = {
       { id_kegiatan: jadwal[3].id_kegiatan, id_kelompok: 7, createdAt: new Date(), updatedAt: new Date() },
       { id_kegiatan: jadwal[3].id_kegiatan, id_kelompok: 8, createdAt: new Date(), updatedAt: new Date() },
       
-      // Diskusi Panel untuk TI, SI, dan TK
+      // Kunjungan Industri untuk TI, SI, dan TK
       { id_kegiatan: jadwal[4].id_kegiatan, id_kelompok: 1, createdAt: new Date(), updatedAt: new Date() },
       { id_kegiatan: jadwal[4].id_kegiatan, id_kelompok: 2, createdAt: new Date(), updatedAt: new Date() },
       { id_kegiatan: jadwal[4].id_kegiatan, id_kelompok: 3, createdAt: new Date(), updatedAt: new Date() }

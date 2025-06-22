@@ -3,246 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Edit Jadwal - Bakti Maba</title>
+    <title>Edit Jadwal Kegiatan - Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
-    <!-- Header -->
-    <header class="bg-blue-600 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-6">
-            <div class="flex justify-between items-center">
-                <h1 class="text-3xl font-bold">Edit Jadwal</h1>
-                <div class="flex space-x-4">
-                    <a href="/jadwal/admin" class="bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center space-x-2">
-                        <i class="fas fa-arrow-left"></i>
-                        <span>Kembali</span>
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-4">
+                    <h1 class="text-2xl font-bold text-gray-900">Edit Jadwal Kegiatan</h1>
+                    <a href="/admin/jadwal" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition duration-200">
+                        <i class="fas fa-arrow-left mr-2"></i>Kembali
                     </a>
                 </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- Content -->
-    <div class="container mx-auto px-4 py-6">
-        <div class="max-w-4xl mx-auto">
+        <!-- Main Content -->
+        <main class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
             <div class="bg-white rounded-lg shadow-md p-6">
-                <form id="jadwalForm" class="space-y-6">
-                    <!-- Basic Information -->
+                <form action="/admin/jadwal/<%= jadwal.id_kegiatan %>?_method=PUT" method="POST" class="space-y-6">
+                    <!-- Nama Kegiatan -->
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Informasi Dasar</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="nama_kegiatan" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Nama Kegiatan <span class="text-red-500">*</span>
+                        <label for="nama_kegiatan" class="block text-sm font-medium text-gray-700 mb-2">
+                            Nama Kegiatan <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" 
+                               id="nama_kegiatan" 
+                               name="nama_kegiatan" 
+                               value="<%= jadwal.nama_kegiatan %>"
+                               required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="Masukkan nama kegiatan">
+                    </div>
+
+                    <!-- Deskripsi -->
+                    <div>
+                        <label for="deskripsi" class="block text-sm font-medium text-gray-700 mb-2">
+                            Deskripsi
+                        </label>
+                        <textarea id="deskripsi" 
+                                  name="deskripsi" 
+                                  rows="4"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                  placeholder="Masukkan deskripsi kegiatan"><%= jadwal.deskripsi || '' %></textarea>
+                    </div>
+
+                    <!-- Tanggal -->
+                    <div>
+                        <label for="tanggal" class="block text-sm font-medium text-gray-700 mb-2">
+                            Tanggal <span class="text-red-500">*</span>
+                        </label>
+                        <input type="date" 
+                               id="tanggal" 
+                               name="tanggal" 
+                               value="<%= jadwal.tanggal %>"
+                               required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+
+                    <!-- Waktu Mulai -->
+                    <div>
+                        <label for="waktu_mulai" class="block text-sm font-medium text-gray-700 mb-2">
+                            Waktu Mulai <span class="text-red-500">*</span>
+                        </label>
+                        <input type="time" 
+                               id="waktu_mulai" 
+                               name="waktu_mulai" 
+                               value="<%= jadwal.waktu_mulai %>"
+                               required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+
+                    <!-- Lokasi -->
+                    <div>
+                        <label for="id_lokasi" class="block text-sm font-medium text-gray-700 mb-2">
+                            Lokasi <span class="text-red-500">*</span>
+                        </label>
+                        <select id="id_lokasi" 
+                                name="id_lokasi" 
+                                required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Pilih lokasi</option>
+                            <% lokasiList.forEach(lokasi => { %>
+                                <option value="<%= lokasi.id_lokasi %>" 
+                                        <%= jadwal.id_lokasi == lokasi.id_lokasi ? 'selected' : '' %>>
+                                    <%= lokasi.nama_lokasi %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <!-- Kelompok -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Kelompok <span class="text-red-500">*</span>
+                        </label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <% kelompokList.forEach(kelompok => { %>
+                                <label class="flex items-center space-x-2">
+                                    <input type="checkbox" 
+                                           name="kelompok_ids[]" 
+                                           value="<%= kelompok.id_kelompok %>"
+                                           <%= selectedKelompokIds.includes(kelompok.id_kelompok) ? 'checked' : '' %>
+                                           class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-sm text-gray-700"><%= kelompok.nama_kelompok %></span>
                                 </label>
-                                <input type="text" id="nama_kegiatan" name="nama_kegiatan" required
-                                    value="<%= jadwal.nama_kegiatan %>"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Masukkan nama kegiatan">
-                            </div>
-                            
-                            <div>
-                                <label for="jenis_kegiatan" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Jenis Kegiatan
-                                </label>
-                                <select id="jenis_kegiatan" name="jenis_kegiatan"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="">Pilih jenis kegiatan</option>
-                                    <option value="Seminar" <%= jadwal.jenis_kegiatan === 'Seminar' ? 'selected' : '' %>>Seminar</option>
-                                    <option value="Workshop" <%= jadwal.jenis_kegiatan === 'Workshop' ? 'selected' : '' %>>Workshop</option>
-                                    <option value="Orientasi" <%= jadwal.jenis_kegiatan === 'Orientasi' ? 'selected' : '' %>>Orientasi</option>
-                                    <option value="Pelatihan" <%= jadwal.jenis_kegiatan === 'Pelatihan' ? 'selected' : '' %>>Pelatihan</option>
-                                    <option value="Diskusi" <%= jadwal.jenis_kegiatan === 'Diskusi' ? 'selected' : '' %>>Diskusi</option>
-                                    <option value="Presentasi" <%= jadwal.jenis_kegiatan === 'Presentasi' ? 'selected' : '' %>>Presentasi</option>
-                                    <option value="Praktikum" <%= jadwal.jenis_kegiatan === 'Praktikum' ? 'selected' : '' %>>Praktikum</option>
-                                    <option value="Lainnya" <%= jadwal.jenis_kegiatan === 'Lainnya' ? 'selected' : '' %>>Lainnya</option>
-                                </select>
-                            </div>
+                            <% }); %>
                         </div>
                     </div>
 
-                    <!-- Description and Topic -->
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Deskripsi dan Topik</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label for="deskripsi" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Deskripsi Kegiatan
-                                </label>
-                                <textarea id="deskripsi" name="deskripsi" rows="3"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Jelaskan detail kegiatan..."><%= jadwal.deskripsi || '' %></textarea>
-                            </div>
-                            
-                            <div>
-                                <label for="topik" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Topik/Materi
-                                </label>
-                                <input type="text" id="topik" name="topik"
-                                    value="<%= jadwal.topik || '' %>"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Masukkan topik atau materi yang akan dibahas">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Schedule -->
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Jadwal</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div>
-                                <label for="tanggal" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Tanggal <span class="text-red-500">*</span>
-                                </label>
-                                <input type="date" id="tanggal" name="tanggal" required
-                                    value="<%= jadwal.tanggal %>"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                            
-                            <div>
-                                <label for="waktu_mulai" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Waktu Mulai <span class="text-red-500">*</span>
-                                </label>
-                                <input type="time" id="waktu_mulai" name="waktu_mulai" required
-                                    value="<%= jadwal.waktu_mulai %>"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                            
-                            <div>
-                                <label for="waktu_selesai" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Waktu Selesai
-                                </label>
-                                <input type="time" id="waktu_selesai" name="waktu_selesai"
-                                    value="<%= jadwal.waktu_selesai || '' %>"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Location and Group -->
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Lokasi dan Kelompok</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="id_lokasi" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Lokasi <span class="text-red-500">*</span>
-                                </label>
-                                <select id="id_lokasi" name="id_lokasi" required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="">Pilih lokasi</option>
-                                    <% lokasi.forEach(function(loc) { %>
-                                        <option value="<%= loc.id_lokasi %>" <%= jadwal.id_lokasi === loc.id_lokasi ? 'selected' : '' %>><%= loc.nama_lokasi %></option>
-                                    <% }); %>
-                                </select>
-                            </div>
-                            
-                            <div>
-                                <label for="kelompok" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Kelompok/Jurusan
-                                </label>
-                                <select id="kelompok" name="kelompok"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="">Semua Kelompok</option>
-                                    <option value="Teknik Informatika" <%= jadwal.kelompok === 'Teknik Informatika' ? 'selected' : '' %>>Teknik Informatika</option>
-                                    <option value="Sistem Informasi" <%= jadwal.kelompok === 'Sistem Informasi' ? 'selected' : '' %>>Sistem Informasi</option>
-                                    <option value="Teknik Komputer" <%= jadwal.kelompok === 'Teknik Komputer' ? 'selected' : '' %>>Teknik Komputer</option>
-                                    <option value="Manajemen Informatika" <%= jadwal.kelompok === 'Manajemen Informatika' ? 'selected' : '' %>>Manajemen Informatika</option>
-                                    <option value="Teknik Elektro" <%= jadwal.kelompok === 'Teknik Elektro' ? 'selected' : '' %>>Teknik Elektro</option>
-                                    <option value="Teknik Mesin" <%= jadwal.kelompok === 'Teknik Mesin' ? 'selected' : '' %>>Teknik Mesin</option>
-                                    <option value="Teknik Sipil" <%= jadwal.kelompok === 'Teknik Sipil' ? 'selected' : '' %>>Teknik Sipil</option>
-                                    <option value="Arsitektur" <%= jadwal.kelompok === 'Arsitektur' ? 'selected' : '' %>>Arsitektur</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-                        <a href="/jadwal/admin" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">
+                    <!-- Submit Button -->
+                    <div class="flex justify-end space-x-4 pt-6 border-t">
+                        <a href="/admin/jadwal" 
+                           class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-200">
                             Batal
                         </a>
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg flex items-center space-x-2">
-                            <i class="fas fa-save"></i>
-                            <span>Update Jadwal</span>
+                        <button type="submit" 
+                                class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">
+                            <i class="fas fa-save mr-2"></i>Update
                         </button>
                     </div>
                 </form>
             </div>
-        </div>
+        </main>
     </div>
 
     <script>
-        // Form submission
-        document.getElementById('jadwalForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            
-            // Validation
-            if (!data.nama_kegiatan.trim()) {
-                Swal.fire('Error', 'Nama kegiatan harus diisi', 'error');
-                return;
-            }
-            
-            if (!data.tanggal) {
-                Swal.fire('Error', 'Tanggal harus diisi', 'error');
-                return;
-            }
-            
-            if (!data.waktu_mulai) {
-                Swal.fire('Error', 'Waktu mulai harus diisi', 'error');
-                return;
-            }
-            
-            if (!data.id_lokasi) {
-                Swal.fire('Error', 'Lokasi harus dipilih', 'error');
-                return;
-            }
-            
-            // Submit form
-            fetch('/jadwal/admin/api/<%= jadwal.id_kegiatan %>', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    Swal.fire({
-                        title: 'Berhasil!',
-                        text: 'Jadwal berhasil diperbarui',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        window.location.href = '/jadwal/admin';
-                    });
-                } else {
-                    Swal.fire('Error', result.message || 'Terjadi kesalahan saat memperbarui jadwal', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire('Error', 'Terjadi kesalahan saat memperbarui jadwal', 'error');
-            });
-        });
-        
-        // Auto-calculate end time when start time changes
-        document.getElementById('waktu_mulai').addEventListener('change', function() {
-            const startTime = this.value;
-            const endTimeInput = document.getElementById('waktu_selesai');
-            
-            if (startTime && !endTimeInput.value) {
-                // Default to 1 hour later
-                const startDate = new Date(`2000-01-01T${startTime}`);
-                const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
-                endTimeInput.value = endDate.toTimeString().slice(0, 5);
-            }
-        });
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('tanggal').min = today;
     </script>
 </body>
 </html> 
