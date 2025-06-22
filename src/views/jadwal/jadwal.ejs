@@ -6,10 +6,6 @@
             <p class="text-gray-600 mt-1">Lihat jadwal kegiatan yang akan datang</p>
         </div>
         <div class="flex space-x-3">
-            <button onclick="exportCalendar()" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg text-white text-sm">
-                <i class="fas fa-download mr-2"></i>
-                Export
-            </button>
             <button onclick="testNotification()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg text-white text-sm">
                 <i class="fas fa-bell mr-2"></i>
                 Test Notifikasi
@@ -226,11 +222,6 @@
             }
         });
     });
-    
-    // Calendar export functionality
-    function exportCalendar() {
-        window.open('/jadwal/api/export', '_blank');
-    }
     
     // Test notification functionality
     function testNotification() {
