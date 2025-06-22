@@ -16,6 +16,7 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.1.10",
     "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "lucide": "^0.522.0",

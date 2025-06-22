@@ -1,21 +1,21 @@
 {
   "development": {
     "username": "postgres",
-    "password": "password",
+    "password": "Buatbelajar",
     "database": "bakti-maba",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
-    "password": "password",
+    "password": "Buatbelajar",
     "database": "bakti-maba_test",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
     "username": "postgres",
-    "password": "password",
+    "password": "Buatbelajar",
     "database": "bakti-maba_production",
     "host": "127.0.0.1",
     "dialect": "postgres"
