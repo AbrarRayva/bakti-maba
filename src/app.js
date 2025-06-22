@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const expressLayouts = require('express-ejs-layouts');
+const methodOverride = require('method-override');
 
 // Route Imports
 const authRoutes = require("./routes/authRoutes");
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, "..", "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(methodOverride('_method'));
 
 // Routes - Admin routes first to avoid conflicts
 app.use('/admin', adminRoutes);

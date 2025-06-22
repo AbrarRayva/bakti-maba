@@ -19,60 +19,32 @@
     <!-- Navigation Links -->
     <div class="flex-1 overflow-y-auto">
         <nav class="mt-4 px-2">
-            <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
-                <!-- Admin Navigation -->
-                <a href="/admin/dashboard" class="flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
-                    <i data-lucide="home" class="w-5 h-5 text-gray-700"></i>
-                    <span class="mx-4 font-semibold">Dashboard</span>
-                </a>
-                <a href="/admin/jadwal" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
-                    <i data-lucide="calendar" class="w-5 h-5"></i>
-                    <span class="mx-4 font-medium">Manajemen Jadwal</span>
-                </a>
-                <a href="/admin/lokasi" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
-                    <i data-lucide="map-pin" class="w-5 h-5"></i>
-                    <span class="mx-4 font-medium">Manajemen Lokasi</span>
-                </a>
-                <a href="/admin/kelompok" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
-                    <i data-lucide="users" class="w-5 h-5"></i>
-                    <span class="mx-4 font-medium">Manajemen Kelompok</span>
-                </a>
-                <a href="/admin/users" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
-                    <i data-lucide="user" class="w-5 h-5"></i>
-                    <span class="mx-4 font-medium">Manajemen User</span>
-                </a>
-                <div class="border-t my-4"></div>
-                <a href="/jadwal" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
-                    <i data-lucide="eye" class="w-5 h-5"></i>
-                    <span class="mx-4 font-medium">Lihat Jadwal</span>
-                </a>
-            <% } else { %>
-                <!-- User Navigation -->
-                <a href="/dashboard" class="flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
-                    <i data-lucide="home" class="w-5 h-5 text-gray-700"></i>
-                    <span class="mx-4 font-semibold">Home</span>
-                </a>
-                <a href="/jadwal" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
-                    <i data-lucide="calendar" class="w-5 h-5"></i>
-                    <span class="mx-4 font-medium">Jadwal</span>
-                </a>
-                <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
-                    <i data-lucide="file-pen-line" class="w-5 h-5"></i>
-                    <span class="mx-4 font-medium">Penugasan</span>
-                </a>
-                <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
-                    <i data-lucide="qr-code" class="w-5 h-5"></i>
-                    <span class="mx-4 font-medium">Absensi</span>
-                </a>
-                <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
-                    <i data-lucide="message-square" class="w-5 h-5"></i>
-                    <span class="mx-4 font-medium">Forum</span>
-                </a>
-                <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
-                    <i data-lucide="map" class="w-5 h-5"></i>
-                    <span class="mx-4 font-medium">Peta</span>
-                </a>
-            <% } %>
+            <!-- User Navigation -->
+            <a href="/dashboard" class="flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="home" class="w-5 h-5 text-gray-700"></i>
+                <span class="mx-4 font-semibold">Home</span>
+            </a>
+            <a href="/jadwal" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="calendar" class="w-5 h-5"></i>
+                <span class="mx-4 font-medium">Jadwal</span>
+            </a>
+            <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="file-pen-line" class="w-5 h-5"></i>
+                <span class="mx-4 font-medium">Penugasan</span>
+            </a>
+            <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="qr-code" class="w-5 h-5"></i>
+                <span class="mx-4 font-medium">Absensi</span>
+            </a>
+            <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="message-square" class="w-5 h-5"></i>
+                <span class="mx-4 font-medium">Forum</span>
+            </a>
+            <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="map" class="w-5 h-5"></i>
+                <span class="mx-4 font-medium">Peta</span>
+            </a>
+            <div class="border-t my-4"></div>
             <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
                 <i data-lucide="log-out" class="w-5 h-5"></i>
                 <span class="mx-4 font-medium">Logout</span>

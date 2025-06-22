@@ -1,0 +1,307 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">👥 Manajemen User</h1>
+            <p class="text-gray-600 mt-1">Kelola data pengguna sistem Bakti Maba</p>
+        </div>
+        <div class="flex space-x-3">
+            <a href="/admin/users/create" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg text-white text-sm">
+                <i class="fas fa-plus mr-2"></i>
+                Tambah User
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">🔍 Filter User</h3>
+        
+        <form id="filterForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Search Nama Filter -->
+            <div>
+                <label for="search_nama" class="block text-sm font-medium text-gray-700 mb-2">Cari Nama</label>
+                <input 
+                    type="text" 
+                    id="search_nama" 
+                    name="search_nama" 
+                    placeholder="Cari berdasarkan nama..."
+                    value="<%= filters.search_nama || '' %>"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+            </div>
+
+            <!-- Search NIM Filter -->
+            <div>
+                <label for="search_nim" class="block text-sm font-medium text-gray-700 mb-2">Cari NIM</label>
+                <input 
+                    type="text" 
+                    id="search_nim" 
+                    name="search_nim" 
+                    placeholder="Cari berdasarkan NIM..."
+                    value="<%= filters.search_nim || '' %>"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+            </div>
+
+            <!-- Group Filter -->
+            <div>
+                <label for="kelompok" class="block text-sm font-medium text-gray-700 mb-2">Kelompok</label>
+                <select 
+                    id="kelompok" 
+                    name="kelompok"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                    <option value="">Semua Kelompok</option>
+                    <% kelompokList.forEach(function(kelompok) { %>
+                        <option value="<%= kelompok.id_kelompok %>" <%= filters.kelompok == kelompok.id_kelompok ? 'selected' : '' %>>
+                            <%= kelompok.nama_kelompok %>
+                        </option>
+                    <% }); %>
+                </select>
+            </div>
+
+            <!-- Role Filter -->
+            <div>
+                <label for="role" class="block text-sm font-medium text-gray-700 mb-2">Role</label>
+                <select 
+                    id="role" 
+                    name="role"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                    <option value="">Semua Role</option>
+                    <option value="admin" <%= filters.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                    <option value="peserta" <%= filters.role === 'peserta' ? 'selected' : '' %>>Peserta</option>
+                </select>
+            </div>
+
+            <!-- Status Filter -->
+            <div>
+                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <select 
+                    id="status" 
+                    name="status"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                    <option value="">Semua Status</option>
+                    <option value="active" <%= filters.status === 'active' ? 'selected' : '' %>>Aktif</option>
+                    <option value="blocked" <%= filters.status === 'blocked' ? 'selected' : '' %>>Diblokir</option>
+                </select>
+            </div>
+        </form>
+
+        <!-- Filter Actions -->
+        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
+            <div class="flex space-x-2">
+                <button 
+                    type="button" 
+                    onclick="clearFilters()" 
+                    class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md text-sm font-medium"
+                >
+                    <i class="fas fa-times mr-2"></i>
+                    Bersihkan Filter
+                </button>
+            </div>
+            <div class="text-sm text-gray-600">
+                <span id="resultCount"><%= users.length %></span> user ditemukan
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            User
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            NIM
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Kelompok
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Role
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Poin
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Aksi
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <% users.forEach(function(user) { %>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                            <span class="text-sm font-medium text-gray-700">
+                                                <%= user.nama.charAt(0).toUpperCase() %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900"><%= user.nama %></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <%= user.nim %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <%= user.Kelompok ? user.Kelompok.nama_kelompok : '-' %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                    <%= user.role === 'admin' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
+                                    <%= user.role === 'admin' ? 'Admin' : 'Peserta' %>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                    <%= user.is_blocked ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
+                                    <%= user.is_blocked ? 'Diblokir' : 'Aktif' %>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <%= user.total_poin || 0 %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex space-x-2">
+                                    <a href="/admin/users/edit/<%= user.id_user %>" 
+                                       class="text-blue-600 hover:text-blue-900">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button onclick="toggleBlockStatus(<%= user.id_user %>)" 
+                                            class="<%= user.is_blocked ? 'text-green-600 hover:text-green-900' : 'text-red-600 hover:text-red-900' %>">
+                                        <i class="fas fa-<%= user.is_blocked ? 'unlock' : 'lock' %>"></i>
+                                    </button>
+                                    <button class="delete-user-btn text-red-600 hover:text-red-900"
+                                            data-user-id="<%= user.id_user %>">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <% if (users.length === 0) { %>
+    <div class="text-center py-12">
+        <i class="fas fa-users text-6xl text-gray-300 mb-4"></i>
+        <h3 class="text-xl font-semibold text-gray-600 mb-2">Tidak ada user yang ditemukan</h3>
+        <p class="text-gray-500">Belum ada user yang tersedia atau filter terlalu ketat.</p>
+    </div>
+    <% } %>
+</div>
+
+<script>
+    // Filter functionality
+    function applyFilters() {
+        const form = document.getElementById('filterForm');
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+        
+        for (let [key, value] of formData.entries()) {
+            if (value) {
+                params.append(key, value);
+            }
+        }
+        
+        window.location.href = '/admin/users?' + params.toString();
+    }
+    
+    function clearFilters() {
+        window.location.href = '/admin/users';
+    }
+    
+    // Add event listeners for automatic filtering
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterInputs = ['search_nama', 'search_nim', 'kelompok', 'role', 'status'];
+        filterInputs.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                if (id === 'search_nama' || id === 'search_nim') {
+                    // For search inputs, use input event with debouncing
+                    let timeout;
+                    element.addEventListener('input', function() {
+                        clearTimeout(timeout);
+                        timeout = setTimeout(applyFilters, 500); // 500ms delay
+                    });
+                } else {
+                    // For other inputs, apply immediately
+                    element.addEventListener('change', applyFilters);
+                }
+            }
+        });
+    });
+    
+    // Toggle block status
+    function toggleBlockStatus(userId) {
+        if (confirm('Apakah Anda yakin ingin mengubah status user ini?')) {
+            fetch('/admin/users/' + userId + '/toggle-block', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert('Terjadi kesalahan: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat mengubah status user');
+            });
+        }
+    }
+    
+    // Add event listeners for delete buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.delete-user-btn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const userId = this.getAttribute('data-user-id');
+                if (confirm('Apakah Anda yakin ingin menghapus user ini? Tindakan ini tidak dapat dibatalkan.')) {
+                    fetch('/admin/users/' + userId, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();
+                        } else {
+                            alert('Terjadi kesalahan: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat menghapus user');
+                    });
+                }
+            });
+        });
+    });
+</script> 
