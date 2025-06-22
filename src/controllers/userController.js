@@ -50,7 +50,7 @@ const index = async (req, res) => {
     // Ambil data untuk filter
     const kelompokList = await Kelompok.findAll();
 
-    res.render('admin/users/index', {
+    res.render('admin/users/users', {
       users,
       kelompokList,
       filters: { search_nama, search_nim, kelompok, role, status }

@@ -181,8 +181,8 @@
                                        class="text-blue-600 hover:text-blue-900">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <button onclick="toggleBlockStatus(<%= user.id_user %>)" 
-                                            class="<%= user.is_blocked ? 'text-green-600 hover:text-green-900' : 'text-red-600 hover:text-red-900' %>">
+                                    <button class="toggle-block-btn <%= user.is_blocked ? 'text-green-600 hover:text-green-900' : 'text-red-600 hover:text-red-900' %>"
+                                            data-user-id="<%= user.id_user %>">
                                         <i class="fas fa-<%= user.is_blocked ? 'unlock' : 'lock' %>"></i>
                                     </button>
                                     <button class="delete-user-btn text-red-600 hover:text-red-900"
@@ -247,35 +247,37 @@
                 }
             }
         });
-    });
-    
-    // Toggle block status
-    function toggleBlockStatus(userId) {
-        if (confirm('Apakah Anda yakin ingin mengubah status user ini?')) {
-            fetch('/admin/users/' + userId + '/toggle-block', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+        
+        // Add event listeners for toggle block buttons
+        const toggleButtons = document.querySelectorAll('.toggle-block-btn');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const userId = this.getAttribute('data-user-id');
+                if (confirm('Apakah Anda yakin ingin mengubah status user ini?')) {
+                    fetch('/admin/users/' + userId + '/toggle-block', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();
+                        } else {
+                            alert('Terjadi kesalahan: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat mengubah status user');
+                    });
                 }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    location.reload();
-                } else {
-                    alert('Terjadi kesalahan: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat mengubah status user');
             });
-        }
-    }
-    
-    // Add event listeners for delete buttons
-    document.addEventListener('DOMContentLoaded', function() {
+        });
+        
+        // Add event listeners for delete buttons
         const deleteButtons = document.querySelectorAll('.delete-user-btn');
         deleteButtons.forEach(button => {
             button.addEventListener('click', function() {
