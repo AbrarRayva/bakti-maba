@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('../components/head', {
+    <%- include('../partials/head', {
         pageTitle: 'Login'
     }) %>
 </head>
 <body>
     <div class="flex justify-center items-center h-screen bg-transparent md:bg-indigo-100">
-        <div class="px-14 py-20 max-w-full bg-white rounded-2xl sm:max-w-4/5 shadow-lg">
+        <div class="px-14 py-20 max-w-full bg-white rounded-2xl shadow-none sm:max-w-4/5 md:shadow-md">
             <div class="flex flex-col space-y-4">
                 <h1 class="text-xl font-bold tracking-tight md:text-2xl">
                     Login
@@ -21,7 +21,7 @@
                         id: 'username',
                         label: 'Username',
                         placeholder: '251152xxxx',
-                        icon: '@',
+                        icon: '<i data-lucide="user"></i>',
                         type: 'text',
                         required: true
                     }) %>
@@ -31,7 +31,7 @@
                             id: 'password',
                             label: 'Password',
                             placeholder: 'Password',
-                            icon: '#',
+                            icon: '<i data-lucide="lock"></i>',
                             type: 'password',
                             required: true
                         }) %>
