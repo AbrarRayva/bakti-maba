@@ -1,9 +1,10 @@
 const { JadwalKegiatan, Lokasi, Kelompok } = require('../models');
+const { Op } = require('sequelize');
 
 // Menampilkan halaman jadwal untuk peserta
 const index = async (req, res) => {
   try {
-    const { tanggal, kelompok, lokasi } = req.query;
+    const { tanggal, kelompok, lokasi, jenis_kegiatan } = req.query;
     
     let whereClause = {};
     let includeClause = [
@@ -23,6 +24,13 @@ const index = async (req, res) => {
     // Filter berdasarkan tanggal
     if (tanggal) {
       whereClause.tanggal = tanggal;
+    }
+
+    // Filter berdasarkan jenis kegiatan (mencari dalam nama_kegiatan)
+    if (jenis_kegiatan) {
+      whereClause.nama_kegiatan = {
+        [Op.iLike]: `%${jenis_kegiatan}%`
+      };
     }
 
     // Filter berdasarkan kelompok
@@ -49,7 +57,7 @@ const index = async (req, res) => {
       jadwal,
       lokasiList,
       kelompokList,
-      filters: { tanggal, kelompok, lokasi }
+      filters: { tanggal, kelompok, lokasi, jenis_kegiatan }
     });
   } catch (error) {
     console.error('Error fetching jadwal:', error);

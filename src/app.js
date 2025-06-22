@@ -32,11 +32,11 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Routes
-app.use("/login", authRoutes); // Assuming /login is in authRoutes
-app.use("/", dashboardRoutes);
-app.use('/jadwal', jadwalRoutes);
+// Routes - Admin routes first to avoid conflicts
 app.use('/admin', adminRoutes);
+app.use("/login", authRoutes);
+app.use('/jadwal', jadwalRoutes);
+app.use("/", dashboardRoutes);
 
 // Default route redirect to dashboard for now
 app.get("/", (req, res) => {

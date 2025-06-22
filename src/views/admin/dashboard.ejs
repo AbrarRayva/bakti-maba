@@ -15,7 +15,7 @@
             </div>
             <div class="ml-3">
                 <p class="text-sm font-medium text-gray-600">Total Jadwal</p>
-                <p class="text-lg font-semibold text-gray-900"><%= stats ? stats.totalJadwal : 0 %></p>
+                <p class="text-lg font-semibold text-gray-900"><%= typeof stats !== 'undefined' && stats ? stats.totalJadwal : 0 %></p>
             </div>
         </div>
         <div class="bg-white rounded-lg shadow-md p-4 flex items-center">
@@ -24,7 +24,7 @@
             </div>
             <div class="ml-3">
                 <p class="text-sm font-medium text-gray-600">Lokasi</p>
-                <p class="text-lg font-semibold text-gray-900"><%= stats ? stats.totalLokasi : 0 %></p>
+                <p class="text-lg font-semibold text-gray-900"><%= typeof stats !== 'undefined' && stats ? stats.totalLokasi : 0 %></p>
             </div>
         </div>
         <div class="bg-white rounded-lg shadow-md p-4 flex items-center">
@@ -33,7 +33,7 @@
             </div>
             <div class="ml-3">
                 <p class="text-sm font-medium text-gray-600">Kelompok</p>
-                <p class="text-lg font-semibold text-gray-900"><%= stats ? stats.totalKelompok : 0 %></p>
+                <p class="text-lg font-semibold text-gray-900"><%= typeof stats !== 'undefined' && stats ? stats.totalKelompok : 0 %></p>
             </div>
         </div>
         <div class="bg-white rounded-lg shadow-md p-4 flex items-center">
@@ -42,7 +42,7 @@
             </div>
             <div class="ml-3">
                 <p class="text-sm font-medium text-gray-600">Users</p>
-                <p class="text-lg font-semibold text-gray-900"><%= stats ? stats.totalUsers : 0 %></p>
+                <p class="text-lg font-semibold text-gray-900"><%= typeof stats !== 'undefined' && stats ? stats.totalUsers : 0 %></p>
             </div>
         </div>
     </div>
