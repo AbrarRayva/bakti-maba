@@ -20,34 +20,18 @@
     <!-- Filter Section -->
     <div class="bg-white rounded-lg shadow-md p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">🔍 Filter Jadwal</h3>
+        
         <form id="filterForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Date Filter -->
+            <!-- Sort Order Filter -->
             <div>
-                <label for="tanggal" class="block text-sm font-medium text-gray-700 mb-2">Tanggal</label>
-                <input 
-                    type="date" 
-                    id="tanggal" 
-                    name="tanggal" 
-                    value="<%= filters.tanggal || '' %>"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-            </div>
-
-            <!-- Activity Type Filter -->
-            <div>
-                <label for="jenis_kegiatan" class="block text-sm font-medium text-gray-700 mb-2">Jenis Kegiatan</label>
+                <label for="sort_order" class="block text-sm font-medium text-gray-700 mb-2">Urutan Tanggal</label>
                 <select 
-                    id="jenis_kegiatan" 
-                    name="jenis_kegiatan"
+                    id="sort_order" 
+                    name="sort_order"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                    <option value="">Semua Jenis</option>
-                    <option value="orientasi" <%= filters.jenis_kegiatan === 'orientasi' ? 'selected' : '' %>>Orientasi</option>
-                    <option value="pelatihan" <%= filters.jenis_kegiatan === 'pelatihan' ? 'selected' : '' %>>Pelatihan</option>
-                    <option value="seminar" <%= filters.jenis_kegiatan === 'seminar' ? 'selected' : '' %>>Seminar</option>
-                    <option value="workshop" <%= filters.jenis_kegiatan === 'workshop' ? 'selected' : '' %>>Workshop</option>
-                    <option value="kunjungan" <%= filters.jenis_kegiatan === 'kunjungan' ? 'selected' : '' %>>Kunjungan</option>
-                    <option value="lainnya" <%= filters.jenis_kegiatan === 'lainnya' ? 'selected' : '' %>>Lainnya</option>
+                    <option value="asc" <%= filters.sort_order === 'asc' ? 'selected' : '' %>>Terlama ke Terbaru</option>
+                    <option value="desc" <%= filters.sort_order === 'desc' ? 'selected' : '' %>>Terbaru ke Terlama</option>
                 </select>
             </div>
 
@@ -84,6 +68,19 @@
                     <% }); %>
                 </select>
             </div>
+
+            <!-- Search Activity Name -->
+            <div>
+                <label for="search_nama" class="block text-sm font-medium text-gray-700 mb-2">Cari Kegiatan</label>
+                <input 
+                    type="text" 
+                    id="search_nama" 
+                    name="search_nama" 
+                    placeholder="Cari nama kegiatan..."
+                    value="<%= filters.search_nama || '' %>"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+            </div>
         </form>
 
         <!-- Filter Actions -->
@@ -91,19 +88,11 @@
             <div class="flex space-x-2">
                 <button 
                     type="button" 
-                    onclick="applyFilters()" 
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium"
-                >
-                    <i class="fas fa-filter mr-2"></i>
-                    Terapkan Filter
-                </button>
-                <button 
-                    type="button" 
                     onclick="clearFilters()" 
                     class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md text-sm font-medium"
                 >
                     <i class="fas fa-times mr-2"></i>
-                    Bersihkan
+                    Bersihkan Filter
                 </button>
             </div>
             <div class="text-sm text-gray-600">
@@ -116,10 +105,8 @@
     <div id="jadwalContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <% jadwal.forEach(function(item) { %>
             <div class="jadwal-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow" 
-                 data-tanggal="<%= item.tanggal %>"
                  data-lokasi="<%= item.id_lokasi %>"
-                 data-kelompok="<%= item.Kelompoks ? item.Kelompoks.map(k => k.id_kelompok).join(',') : '' %>"
-                 data-nama="<%= item.nama_kegiatan.toLowerCase() %>">
+                 data-kelompok="<%= item.Kelompoks ? item.Kelompoks.map(k => k.id_kelompok).join(',') : '' %>">
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-4">
                         <div class="flex-1">
@@ -200,7 +187,7 @@
 </div>
 
 <script>
-    // Filter functionality
+    // Function to apply filters and redirect
     function applyFilters() {
         const form = document.getElementById('filterForm');
         const formData = new FormData(form);
@@ -219,78 +206,23 @@
         window.location.href = '/jadwal';
     }
     
-    // Client-side filtering for better UX
-    function filterCards() {
-        const tanggal = document.getElementById('tanggal').value;
-        const jenisKegiatan = document.getElementById('jenis_kegiatan').value;
-        const lokasi = document.getElementById('lokasi').value;
-        const kelompok = document.getElementById('kelompok').value;
-        
-        const cards = document.querySelectorAll('.jadwal-card');
-        let visibleCount = 0;
-        
-        cards.forEach(card => {
-            let show = true;
-            
-            // Filter by date
-            if (tanggal) {
-                const cardDate = card.dataset.tanggal;
-                if (cardDate !== tanggal) {
-                    show = false;
-                }
-            }
-            
-            // Filter by activity type (based on nama_kegiatan)
-            if (jenisKegiatan && show) {
-                const cardNama = card.dataset.nama;
-                if (!cardNama.includes(jenisKegiatan.toLowerCase())) {
-                    show = false;
-                }
-            }
-            
-            // Filter by location
-            if (lokasi && show) {
-                const cardLokasi = card.dataset.lokasi;
-                if (cardLokasi !== lokasi) {
-                    show = false;
-                }
-            }
-            
-            // Filter by group
-            if (kelompok && show) {
-                const cardKelompok = card.dataset.kelompok;
-                if (!cardKelompok.includes(kelompok)) {
-                    show = false;
-                }
-            }
-            
-            if (show) {
-                card.style.display = 'block';
-                visibleCount++;
-            } else {
-                card.style.display = 'none';
-            }
-        });
-        
-        // Update result count
-        document.getElementById('resultCount').textContent = visibleCount;
-        
-        // Show/hide empty state
-        const emptyState = document.getElementById('emptyState');
-        if (visibleCount === 0) {
-            emptyState.classList.remove('hidden');
-        } else {
-            emptyState.classList.add('hidden');
-        }
-    }
-    
-    // Add event listeners for real-time filtering
+    // Add event listeners for automatic filtering
     document.addEventListener('DOMContentLoaded', function() {
-        const filterInputs = ['tanggal', 'jenis_kegiatan', 'lokasi', 'kelompok'];
+        const filterInputs = ['sort_order', 'search_nama', 'lokasi', 'kelompok'];
         filterInputs.forEach(id => {
             const element = document.getElementById(id);
             if (element) {
-                element.addEventListener('change', filterCards);
+                if (id === 'search_nama') {
+                    // For search input, use input event with debouncing
+                    let timeout;
+                    element.addEventListener('input', function() {
+                        clearTimeout(timeout);
+                        timeout = setTimeout(applyFilters, 500); // 500ms delay
+                    });
+                } else {
+                    // For other inputs, apply immediately
+                    element.addEventListener('change', applyFilters);
+                }
             }
         });
     });
@@ -309,9 +241,9 @@
                         body: 'Fitur notifikasi berfungsi dengan baik!',
                         icon: '/favicon.ico'
                     });
-                    alert('Notifikasi test berhasil dikirim!');
+                    // alert('Notifikasi test berhasil dikirim!');
                 } else {
-                    alert('Izin notifikasi ditolak. Silakan aktifkan notifikasi di pengaturan browser.');
+                    // alert('Izin notifikasi ditolak. Silakan aktifkan notifikasi di pengaturan browser.');
                 }
             });
         } else {

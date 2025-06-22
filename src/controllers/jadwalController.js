@@ -4,7 +4,7 @@ const { Op } = require('sequelize');
 // Menampilkan halaman jadwal untuk peserta
 const index = async (req, res) => {
   try {
-    const { tanggal, kelompok, lokasi, jenis_kegiatan } = req.query;
+    const { sort_order = 'asc', kelompok, lokasi, search_nama } = req.query;
     
     let whereClause = {};
     let includeClause = [
@@ -17,25 +17,15 @@ const index = async (req, res) => {
         model: Kelompok,
         as: 'Kelompoks',
         through: { attributes: [] },
-        attributes: ['nama_kelompok']
+        attributes: ['id_kelompok', 'nama_kelompok']
       }
     ];
 
-    // Filter berdasarkan tanggal
-    if (tanggal) {
-      whereClause.tanggal = tanggal;
-    }
-
-    // Filter berdasarkan jenis kegiatan (mencari dalam nama_kegiatan)
-    if (jenis_kegiatan) {
+    // Filter berdasarkan search nama kegiatan
+    if (search_nama) {
       whereClause.nama_kegiatan = {
-        [Op.iLike]: `%${jenis_kegiatan}%`
+        [Op.iLike]: `%${search_nama}%`
       };
-    }
-
-    // Filter berdasarkan kelompok
-    if (kelompok) {
-      includeClause[1].where = { id_kelompok: kelompok };
     }
 
     // Filter berdasarkan lokasi
@@ -43,10 +33,18 @@ const index = async (req, res) => {
       whereClause.id_lokasi = lokasi;
     }
 
+    // Filter berdasarkan kelompok
+    if (kelompok) {
+      includeClause[1].where = { id_kelompok: kelompok };
+    }
+
+    // Set sort order
+    const orderDirection = sort_order === 'desc' ? 'DESC' : 'ASC';
+
     const jadwal = await JadwalKegiatan.findAll({
       where: whereClause,
       include: includeClause,
-      order: [['tanggal', 'ASC'], ['waktu_mulai', 'ASC']]
+      order: [['tanggal', orderDirection], ['waktu_mulai', orderDirection]]
     });
 
     // Ambil data untuk filter
@@ -57,7 +55,7 @@ const index = async (req, res) => {
       jadwal,
       lokasiList,
       kelompokList,
-      filters: { tanggal, kelompok, lokasi, jenis_kegiatan }
+      filters: { sort_order, kelompok, lokasi, search_nama }
     });
   } catch (error) {
     console.error('Error fetching jadwal:', error);
