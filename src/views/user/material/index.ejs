@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Bakti-Maba</title>
+    <style>
+        .material-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .file-icon {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        }
+        .popular-badge {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="flex">
+        <%- include('../../partials/sidebar_mahasiswa') %>
+        
+        <div class="flex-1 ml-64 p-6">
+            <div class="bg-white rounded-xl shadow p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-gray-800">Materi</h1>
+                    <div class="relative">
+                        <input type="text" placeholder="Cari materi..." class="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+                
+                <% if (materials.length === 0) { %>
+                    <div class="text-center py-10">
+                        <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-book text-gray-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-1">Belum ada materi</h3>
+                        <p class="text-gray-500">Materi akan tersedia segera setelah diunggah oleh panitia</p>
+                    </div>
+                <% } else { %>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <% materials.forEach(material => { %>
+                            <div class="material-card border border-gray-200 rounded-xl p-4 transition-all duration-300">
+                                <div class="flex">
+                                    <div class="file-icon w-12 h-12 rounded-lg flex items-center justify-center mr-4">
+                                        <i class="fas fa-file-pdf text-white text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="font-semibold text-gray-800 truncate"><%= material.title %></h3>
+                                        <p class="text-sm text-gray-600 mb-1 truncate"><%= material.description || 'Tidak ada deskripsi' %></p>
+                                        <div class="flex items-center text-xs text-gray-500">
+                                            <span class="mr-3"><i class="far fa-calendar mr-1"></i> <%= material.createdAt.toLocaleDateString('id-ID') %></span>
+                                            <span class="mr-3"><i class="fas fa-download mr-1"></i> <%= material.downloads %></span>
+                                            <span><i class="fas fa-file mr-1"></i> <%= (material.fileSize / 1024 / 1024).toFixed(2) %> MB</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4 flex justify-end">
+                                    <a href="/material/download/<%= material.id %>" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center">
+                                        <i class="fas fa-download mr-2"></i> Unduh
+                                    </a>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Materi Terpopuler</h2>
+                <div class="space-y-3">
+                    <% const popularMaterials = [...materials].sort((a, b) => b.downloads - a.downloads).slice(0, 3); %>
+                    <% popularMaterials.forEach((material, index) => { %>
+                        <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                            <div class="w-8 h-8 rounded-md flex items-center justify-center mr-3">
+                                <% if(index === 0) { %>
+                                    <span class="popular-badge px-2 py-1 rounded-full text-white text-xs font-bold">#<%= index + 1 %></span>
+                                <% } else { %>
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-bold">#<%= index + 1 %></span>
+                                <% } %>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-medium text-gray-800 truncate"><%= material.title %></h3>
+                                <p class="text-sm text-gray-600 truncate"><%= material.description || 'Tidak ada deskripsi' %></p>
+                            </div>
+                            <div class="text-xs text-gray-500 flex items-center">
+                                <i class="fas fa-download mr-1"></i> <%= material.downloads %>
+                            </div>
+                            <a href="/material/download/<%= material.id %>" class="ml-4 text-blue-500 hover:text-blue-700">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

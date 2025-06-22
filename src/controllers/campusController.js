@@ -1,5 +1,5 @@
 const activities = require('./admincampusController').activities;
 
 exports.getMap = (req, res) => {
-  res.render('campus/index', { activities });
+  res.render('user/campus/index', { activities });
 };

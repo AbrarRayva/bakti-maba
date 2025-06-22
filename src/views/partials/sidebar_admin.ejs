@@ -1,14 +1,248 @@
-<div class="sidebar">
-    <div class="sidebar-header">Peta (Panitia)</div>
-    <ul class="nav-menu">
-        <li><a href="/admin/home"><img src="/img/icon-home.png" alt="Home Icon"> Home</a></li>
-        <li><a href="/admin/jadwal"><img src="/img/icon-jadwal.png" alt="Jadwal Icon"> Jadwal</a></li>
-        <li><a href="/admin/assignment"><img src="/img/icon-penugasan.png" alt="Penugasan Icon"> Penugasan</a></li>
-        <li><a href="/admin/absensi"><img src="/img/icon-absensi.png" alt="Absensi Icon"> Absensi</a></li>
-        <li><a href="/admin/forum"><img src="/img/icon-forum.png" alt="Forum Icon"> Forum</a></li>
-        <li class="active"><a href="/admin2/campus"><img src="/img/icon-peta.png" alt="Peta Icon"> Peta</a></li>
-    </ul>
-    <div class="logout-section">
-        <a href="/logout"><img src="/img/icon-logout.png" alt="Logout Icon"> Logout</a>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakti-Maba - Sidebar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#0ea5e9',
+                        dark: '#1e293b',
+                        light: '#f8fafc'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar-transition {
+            transition: all 0.3s ease;
+        }
+        .active-item {
+            background: linear-gradient(to right, #dbeafe, #eff6ff);
+            color: #2563eb !important;
+            border-left: 4px solid #2563eb;
+        }
+        .active-item span {
+            background-color: #2563eb;
+            color: white;
+        }
+        .icon-badge {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #ef4444;
+            color: white;
+            border-radius: 9999px;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        .sidebar-mini .nav-text {
+            display: none;
+        }
+        .sidebar-mini .sidebar-header span {
+            display: none;
+        }
+        .sidebar-mini .user-name {
+            display: none;
+        }
+        .sidebar-mini .logout-text {
+            display: none;
+        }
+        .sidebar-mini .icon-badge {
+            right: 6px;
+        }
+        .sidebar-mini .nav-menu li a {
+            justify-content: center;
+            padding: 12px;
+        }
+        .sidebar-mini .nav-menu li a span {
+            margin-right: 0;
+        }
+        .sidebar-mini .user-avatar {
+            margin-right: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex">
+    <!-- Sidebar -->
+    <div class="fixed w-64 h-screen bg-white shadow-lg flex flex-col justify-between sidebar-transition z-20" id="sidebar">
+        <div>
+            <!-- Sidebar Header with Toggle -->
+            <div class="sidebar-header p-4 border-b flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="bg-primary w-8 h-8 rounded-md flex items-center justify-center mr-2">
+                        <i class="fas fa-graduation-cap text-white"></i>
+                    </div>
+                    <span class="text-lg font-bold text-dark">Bakti-Maba</span>
+                </div>
+                <button id="toggle-sidebar" class="text-gray-500 hover:text-primary">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <!-- User Profile -->
+            <div class="user-info p-4 border-b flex items-center">
+                <div class="user-avatar mr-3">
+                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-primary font-bold">
+                        AR
+                    </div>
+                </div>
+                <div>
+                    <div class="user-name font-medium text-gray-800">Ahmad Ridwan</div>
+                    <div class="user-role text-xs text-gray-500">Mahasiswa - Teknik Informatika</div>
+                </div>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <ul class="nav-menu p-2 space-y-1">
+                <li>
+                    <a href="/home" class="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors relative">
+                        <span class="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center mr-3 text-gray-600">
+                            <i class="fas fa-home"></i>
+                        </span>
+                        <span class="nav-text">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/jadwal" class="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors relative">
+                        <span class="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center mr-3 text-gray-600">
+                            <i class="fas fa-calendar-alt"></i>
+                        </span>
+                        <span class="nav-text">Jadwal</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/assignment" class="flex items-center p-3 rounded-lg transition-colors relative active-item">
+                        <span class="w-8 h-8 rounded-md flex items-center justify-center mr-3">
+                            <i class="fas fa-tasks text-primary"></i>
+                        </span>
+                        <span class="nav-text font-medium">Penugasan</span>
+                        <span class="icon-badge">3</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/absensi" class="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors relative">
+                        <span class="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center mr-3 text-gray-600">
+                            <i class="fas fa-check-circle"></i>
+                        </span>
+                        <span class="nav-text">Absensi</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/forum" class="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors relative">
+                        <span class="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center mr-3 text-gray-600">
+                            <i class="fas fa-comments"></i>
+                        </span>
+                        <span class="nav-text">Forum</span>
+                        <span class="icon-badge">5</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admincampus" class="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors relative">
+                        <span class="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center mr-3 text-gray-600">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </span>
+                        <span class="nav-text">Peta Kampus</span>
+                    </a>
+                </li>
+                <li class="mt-4 pt-4 border-t">
+                    <a href="/settings" class="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                        <span class="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center mr-3 text-gray-600">
+                            <i class="fas fa-cog"></i>
+                        </span>
+                        <span class="nav-text">Pengaturan</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Logout Section -->
+        <div class="logout-section p-4 border-t">
+            <a href="/logout" class="flex items-center p-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                <span class="w-8 h-8 rounded-md bg-red-100 flex items-center justify-center mr-3">
+                    <i class="fas fa-sign-out-alt"></i>
+                </span>
+                <span class="logout-text">Logout</span>
+            </a>
+        </div>
     </div>
-</div>
+    
+        
+        <div class="mt-6 text-center text-sm text-gray-500">
+            <p>© 2023 Bakti-Maba. Sistem Informasi Maba Universitas Indonesia.</p>
+        </div>
+
+    
+    <!-- Mobile Menu Button -->
+    <div class="fixed bottom-4 right-4 w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg z-10 md:hidden" id="mobile-menu-button">
+        <i class="fas fa-bars text-white text-xl"></i>
+    </div>
+
+    <script>
+        // Toggle sidebar (desktop)
+        document.getElementById('toggle-sidebar').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            
+            sidebar.classList.toggle('sidebar-mini');
+            sidebar.classList.toggle('w-20');
+            sidebar.classList.toggle('w-64');
+            
+            mainContent.classList.toggle('ml-64');
+            mainContent.classList.toggle('ml-20');
+        });
+        
+        // Toggle sidebar (mobile)
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('translate-x-[-100%]');
+        });
+        
+        // Auto hide sidebar on mobile when menu item clicked
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 768) {
+                    document.getElementById('sidebar').classList.add('hidden');
+                }
+            });
+        });
+        
+        // Responsive behavior
+        function handleResponsive() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            
+            if (window.innerWidth < 768) {
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('w-64', 'w-20', 'sidebar-mini');
+                mainContent.classList.remove('ml-64', 'ml-20');
+                mobileMenuButton.classList.remove('hidden');
+            } else {
+                sidebar.classList.remove('hidden');
+                sidebar.classList.add('w-64');
+                mainContent.classList.add('ml-64');
+                mobileMenuButton.classList.add('hidden');
+            }
+        }
+        
+        // Initial call and event listener
+        handleResponsive();
+        window.addEventListener('resize', handleResponsive);
+    </script>
+</body>
+</html>

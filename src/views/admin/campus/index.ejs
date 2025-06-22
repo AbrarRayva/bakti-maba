@@ -51,13 +51,13 @@
 
         <div class="flex space-x-8">
             <div id="campusMap" class="map-image-container">
-                <img src="/public/images/peta_unand.jpeg" alt="Peta Universitas Andalas" class="w-full h-full object-cover">
+                <img src="/images/peta_unand.jpeg" alt="Peta Universitas Andalas" class="w-full h-full object-cover">
                 </div>
 
             <div class="flex-1 bg-white rounded-xl shadow-md p-6 max-w-xs">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-semibold text-gray-800">Activity</h2>
-                    <button id="addActivityBtn" class="bg-primary-purple hover:bg-primary-purple-dark text-white text-xl w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                    <button id="addActivityBtn" class="bg-purple-500 hover:bg-primary-purple-dark text-white text-xl w-8 h-8 rounded-full flex items-center justify-center transition-colors">
                         +
                     </button>
                 </div>
@@ -68,6 +68,7 @@
                             <div class="pin-icon"></div>
                             <div class="flex-1">
                                 <p class="font-semibold text-gray-800"><%= activity.title %></p>
+                                <p class="text-gray-600 text-sm"><%= activity.tempat %></p>
                                 <p class="text-gray-600 text-sm"><%= activity.waktu %></p>
                             </div>
                             <div class="flex flex-col space-y-1">
@@ -112,12 +113,12 @@
             const rect = campusMap.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            window.location.href = `/admin2/campus/add?x=${x}&y=${y}`;
+            window.location.href = `/admin/campus/add?x=${x}&y=${y}`;
         });
 
         addActivityBtn.addEventListener('click', (e) => {
             e.stopPropagation(); // Prevent map click from firing
-            window.location.href = '/admin2/campus/add';
+            window.location.href = '/admin/campus/add';
         });
 
         mapImage.onload = renderMarkers;

@@ -5,7 +5,7 @@ const fs = require('fs');
 const submittedAssignments = []; // Simulasi penyimpanan tugas yang disubmit oleh mahasiswa
 
 exports.listAssignments = (req, res) => {
-  res.render('assignment/index', { assignments });
+  res.render('user/assignment/index', { assignments });
 };
 
 exports.detailAssignment = (req, res) => {
@@ -13,13 +13,13 @@ exports.detailAssignment = (req, res) => {
   if (!assignment) return res.redirect('/assignment');
 
   const studentSubmissions = submittedAssignments.filter(s => s.assignmentId === req.params.id);
-  res.render('assignment/detail', { assignment, studentSubmissions });
+  res.render('user/assignment/detail', { assignment, studentSubmissions });
 };
 
 exports.submitForm = (req, res) => {
   const assignment = assignments.find(a => a.id === req.params.id);
   if (!assignment) return res.redirect('/assignment');
-  res.render('assignment/form', { assignment });
+  res.render('user/assignment/form', { assignment });
 };
 
 exports.submitAssignment = (req, res) => {
@@ -43,7 +43,7 @@ exports.submitAssignment = (req, res) => {
   };
   submittedAssignments.push(newSubmission);
   console.log('Tugas Disubmit (simulasi):', newSubmission);
-  res.redirect(`/assignment/${assignmentId}`);
+  res.redirect(`/user/assignment/${assignmentId}`);
 };
 
 exports.deleteSubmission = (req, res) => {
@@ -60,5 +60,5 @@ exports.deleteSubmission = (req, res) => {
     submittedAssignments.splice(index, 1);
     return res.redirect(`/assignment/${assignmentId}`);
   }
-  res.redirect('/assignment');
+  res.redirect('/user/assignment');
 };

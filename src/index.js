@@ -9,10 +9,13 @@ const adminAssignmentRoutes = require('./routes/adminassignmentRoutes');
 const assignmentRoutes = require('./routes/assignmentRoutes');
 const adminCampusRoutes = require('./routes/admincampusRoutes'); // Rute untuk admin2 kampus
 const campusRoutes = require('./routes/campusRoutes');
+const materialRoutes = require('./routes/materialRoutes');
+const adminMaterialRoutes = require('./routes/adminmaterialRoutes');
 
 // Settings
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public'))); // Untuk melayani file statis seperti CSS, JS, gambar, dan file yang diupload
@@ -34,8 +37,10 @@ if (!fs.existsSync(submissionDir)) {
 // Routes
 app.use('/admin', adminAssignmentRoutes); // Rute untuk admin tugas (misal /admin/assignment)
 app.use('/', assignmentRoutes); // Rute untuk tugas mahasiswa (misal /assignment)
-app.use('/admin2', adminCampusRoutes); // Rute untuk admin2 kampus (misal /admin2/campus)
-app.use('/', campusRoutes); // Rute untuk kampus mahasiswa (misal /campus)
+app.use('/admin', adminCampusRoutes); // Rute untuk admin2 kampus (misal /admin2/campus)
+app.use('/', campusRoutes);
+app.use('/material', materialRoutes); // Rute untuk kampus mahasiswa (misal /campus)
+app.use('/admin/material', adminMaterialRoutes); // Rute untuk admin2 materi (misal /admin2/material)
 
 // Default route
 app.get('/', (req, res) => {
