@@ -3,13 +3,13 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('PostUpvote', {
-      id_user: {
-        type: Sequelize.INTEGER,
+      nim: {
+        type: Sequelize.STRING,
         primaryKey: true,
         allowNull: false,
         references: {
           model: 'User',
-          key: 'id_user'
+          key: 'nim'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'

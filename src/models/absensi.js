@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Absensi.belongsTo(models.User, { foreignKey: 'id_user' });
+      Absensi.belongsTo(models.User, { foreignKey: 'nim' });
       Absensi.belongsTo(models.SesiAbsensi, { foreignKey: 'id_sesi_absen' });
     }
   }
@@ -21,9 +21,13 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
-    waktu_absensi: DataTypes.DATE,
+    id_sesi_absen: DataTypes.INTEGER,
+    nim: DataTypes.STRING,
+    waktu_absen: DataTypes.DATE,
     status_kehadiran: DataTypes.STRING,
-    metode_absensi: DataTypes.STRING
+    metode_absen: DataTypes.STRING,
+    lokasi_gps: DataTypes.STRING,
+    keterangan: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'Absensi',

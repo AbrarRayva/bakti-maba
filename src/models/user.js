@@ -11,24 +11,24 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.hasMany(models.Reward, { foreignKey: 'id_user' });
-      User.hasMany(models.Absensi, { foreignKey: 'id_user' });
-      User.hasMany(models.ForumThread, { foreignKey: 'id_user_pembuat' });
-      User.hasMany(models.ForumPost, { foreignKey: 'id_user' });
-      User.belongsToMany(models.Tugas, { through: 'PengumpulanTugas', foreignKey: 'id_user' });
-      User.belongsToMany(models.ForumPost, { through: 'PostUpvote', as: 'UpvotedPosts', foreignKey: 'id_user' });
+      User.hasMany(models.Reward, { foreignKey: 'nim' });
+      User.hasMany(models.Absensi, { foreignKey: 'nim' });
+      User.hasMany(models.ForumThread, { foreignKey: 'nim_pembuat' });
+      User.hasMany(models.ForumPost, { foreignKey: 'nim' });
+      User.belongsToMany(models.Tugas, { through: 'PengumpulanTugas', foreignKey: 'nim' });
+      User.belongsToMany(models.ForumPost, { through: 'PostUpvote', as: 'UpvotedPosts', foreignKey: 'nim' });
       User.belongsTo(models.Kelompok, { foreignKey: 'id_kelompok' });
     }
   }
   User.init({
-    id_user: {
-      type: DataTypes.INTEGER,
+    nim: {
+      type: DataTypes.STRING,
       primaryKey: true,
-      autoIncrement: true
+      allowNull: false,
+      unique: true
     },
     nama: DataTypes.STRING,
     password: DataTypes.STRING,
-    nim: DataTypes.STRING,
     id_kelompok: DataTypes.INTEGER,
     role: DataTypes.STRING,
     is_blocked: DataTypes.BOOLEAN,

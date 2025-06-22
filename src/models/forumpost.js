@@ -11,13 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      ForumPost.belongsTo(models.User, { foreignKey: 'id_user' });
+      ForumPost.belongsTo(models.User, { foreignKey: 'nim' });
       ForumPost.belongsTo(models.ForumThread, { foreignKey: 'id_thread' });
       
       // Self-referencing for replies
-      ForumPost.belongsTo(models.ForumPost, { as: 'Parent', foreignKey: 'parent_post_id' });
-      ForumPost.hasMany(models.ForumPost, { as: 'Replies', foreignKey: 'parent_post_id' });
-      ForumPost.belongsToMany(models.User, { through: 'PostUpvote', as: 'Upvoters', foreignKey: 'id_post' });
+      ForumPost.belongsTo(models.ForumPost, { as: 'ParentPost', foreignKey: 'parent_post_id' });
+      ForumPost.hasMany(models.ForumPost, { as: 'ChildPosts', foreignKey: 'parent_post_id' });
+      ForumPost.belongsToMany(models.User, { through: 'PostUpvote', as: 'UpvotedBy', foreignKey: 'id_post' });
     }
   }
   ForumPost.init({
@@ -26,12 +26,15 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
+    id_thread: DataTypes.INTEGER,
+    nim: DataTypes.STRING,
     parent_post_id: DataTypes.INTEGER,
     isi_pesan: DataTypes.TEXT,
     waktu_kirim: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'ForumPost',
+    freezeTableName: true
   });
   return ForumPost;
 };

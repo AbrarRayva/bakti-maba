@@ -4,40 +4,41 @@ const jadwalController = require('../controllers/jadwalController');
 const dashboardController = require('../controllers/dashboardController');
 const userController = require('../controllers/userController');
 const kelompokController = require('../controllers/kelompokController');
+const { requireAdmin } = require('../middleware/auth');
 
 // Admin dashboard route
-router.get('/dashboard', dashboardController.adminDashboard);
+router.get('/dashboard', requireAdmin, dashboardController.adminDashboard);
 
 // Routes untuk admin jadwal
-router.get('/jadwal', jadwalController.adminIndex);
-router.get('/jadwal/create', jadwalController.create);
-router.get('/jadwal/edit/:id', jadwalController.edit);
+router.get('/jadwal', requireAdmin, jadwalController.adminIndex);
+router.get('/jadwal/create', requireAdmin, jadwalController.create);
+router.get('/jadwal/edit/:id', requireAdmin, jadwalController.edit);
 
 // API routes untuk admin jadwal
-router.post('/jadwal', jadwalController.store);
-router.put('/jadwal/:id', jadwalController.update);
-router.delete('/jadwal/:id', jadwalController.destroy);
+router.post('/jadwal', requireAdmin, jadwalController.store);
+router.put('/jadwal/:id', requireAdmin, jadwalController.update);
+router.delete('/jadwal/:id', requireAdmin, jadwalController.destroy);
 
 // Routes untuk admin users
-router.get('/users', userController.index);
-router.get('/users/create', userController.create);
-router.get('/users/edit/:id', userController.edit);
+router.get('/users', requireAdmin, userController.index);
+router.get('/users/create', requireAdmin, userController.create);
+router.get('/users/edit/:id', requireAdmin, userController.edit);
 
 // API routes untuk admin users
-router.post('/users', userController.store);
-router.put('/users/:id', userController.update);
-router.delete('/users/:id', userController.destroy);
-router.post('/users/:id/toggle-block', userController.toggleBlock);
+router.post('/users', requireAdmin, userController.store);
+router.put('/users/:id', requireAdmin, userController.update);
+router.delete('/users/:id', requireAdmin, userController.destroy);
+router.post('/users/:id/toggle-block', requireAdmin, userController.toggleBlock);
 
 // Routes untuk admin kelompok
-router.get('/kelompok', kelompokController.index);
-router.get('/kelompok/create', kelompokController.create);
-router.get('/kelompok/edit/:id', kelompokController.edit);
-router.get('/kelompok/:id', kelompokController.show);
+router.get('/kelompok', requireAdmin, kelompokController.index);
+router.get('/kelompok/create', requireAdmin, kelompokController.create);
+router.get('/kelompok/edit/:id', requireAdmin, kelompokController.edit);
+router.get('/kelompok/:id', requireAdmin, kelompokController.show);
 
 // API routes untuk admin kelompok
-router.post('/kelompok', kelompokController.store);
-router.put('/kelompok/:id', kelompokController.update);
-router.delete('/kelompok/:id', kelompokController.destroy);
+router.post('/kelompok', requireAdmin, kelompokController.store);
+router.put('/kelompok/:id', requireAdmin, kelompokController.update);
+router.delete('/kelompok/:id', requireAdmin, kelompokController.destroy);
 
 module.exports = router; 

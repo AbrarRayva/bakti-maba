@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Reward.belongsTo(models.User, { foreignKey: 'id_user' });
+      Reward.belongsTo(models.User, { foreignKey: 'nim' });
     }
   }
   Reward.init({
@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
+    nim: DataTypes.STRING,
     poin: DataTypes.INTEGER,
     keterangan: DataTypes.STRING,
     tanggal_diberikan: DataTypes.DATE

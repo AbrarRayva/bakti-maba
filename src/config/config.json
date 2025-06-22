@@ -9,14 +9,14 @@
   "test": {
     "username": "postgres",
     "password": "password",
-    "database": "bakti-maba_test",
+    "database": "bakti-maba",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
     "username": "postgres",
     "password": "password",
-    "database": "bakti-maba_production",
+    "database": "bakti-maba",
     "host": "127.0.0.1",
     "dialect": "postgres"
   }

@@ -19,7 +19,7 @@ const index = async (req, res) => {
         {
           model: User,
           as: 'Users',
-          attributes: ['id_user', 'nama', 'nim']
+          attributes: ['nim', 'nama']
         }
       ],
       order: [['nama_kelompok', 'ASC']]
@@ -71,7 +71,7 @@ const edit = async (req, res) => {
         {
           model: User,
           as: 'Users',
-          attributes: ['id_user', 'nama', 'nim']
+          attributes: ['nim', 'nama']
         }
       ]
     });
@@ -151,7 +151,7 @@ const show = async (req, res) => {
         {
           model: User,
           as: 'Users',
-          attributes: ['id_user', 'nama', 'nim', 'role', 'is_blocked', 'total_poin']
+          attributes: ['nim', 'nama', 'role', 'is_blocked', 'total_poin']
         }
       ]
     });

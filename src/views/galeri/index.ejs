@@ -1,0 +1,304 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <!-- Hero Header -->
+    <div class="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+        <div class="absolute inset-0 bg-black opacity-20"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Galeri Gedung</h1>
+                <p class="text-xl md:text-2xl mb-6">Universitas Andalas</p>
+                <p class="text-blue-100 text-lg max-w-3xl mx-auto">
+                    Jelajahi gedung-gedung megah dan fasilitas modern kampus tertua di luar Jawa yang telah melahirkan ribuan pemimpin bangsa
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Search and Filter Section -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <div class="flex flex-col lg:flex-row gap-6">
+                <!-- Search Bar -->
+                <div class="flex-1">
+                    <div class="relative">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                        <input type="text" id="searchInput" placeholder="Cari gedung, fakultas, atau fasilitas..." 
+                               class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg">
+                    </div>
+                </div>
+                
+                <!-- Category Filter -->
+                <div class="flex gap-2">
+                    <button class="filter-btn active px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300 font-medium" data-category="all">
+                        Semua
+                    </button>
+                    <button class="filter-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-all duration-300 font-medium" data-category="Fakultas">
+                        Fakultas
+                    </button>
+                    <button class="filter-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-all duration-300 font-medium" data-category="Fasilitas">
+                        Fasilitas
+                    </button>
+                    <button class="filter-btn px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-all duration-300 font-medium" data-category="Administrasi">
+                        Administrasi
+                    </button>
+                </div>
+                
+                <!-- View Toggle -->
+                <div class="flex gap-2">
+                    <button id="gridView" class="view-btn active px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300">
+                        <i data-lucide="grid" class="w-5 h-5"></i>
+                    </button>
+                    <button id="listView" class="view-btn px-4 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-all duration-300">
+                        <i data-lucide="list" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="text-3xl font-bold text-blue-600 mb-2"><%= buildings.length %></div>
+                <div class="text-gray-600">Total Gedung</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="text-3xl font-bold text-green-600 mb-2"><%= buildings.filter(b => b.category === 'Fakultas').length %></div>
+                <div class="text-gray-600">Fakultas</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="text-3xl font-bold text-purple-600 mb-2"><%= buildings.filter(b => b.category === 'Fasilitas').length %></div>
+                <div class="text-gray-600">Fasilitas</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="text-3xl font-bold text-orange-600 mb-2">1955</div>
+                <div class="text-gray-600">Tahun Berdiri</div>
+            </div>
+        </div>
+
+        <!-- Buildings Grid View -->
+        <div id="buildingsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <% buildings.forEach(function(building) { %>
+            <div class="building-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2" data-category="<%= building.category %>">
+                <div class="relative h-64 bg-gradient-to-br from-gray-200 to-gray-300">
+                    <img src="<%= building.image %>" 
+                         alt="<%= building.name %>"
+                         class="w-full h-full object-cover"
+                         loading="lazy">
+                    <div class="absolute top-4 left-4">
+                        <span class="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">
+                            <%= building.category %>
+                        </span>
+                    </div>
+                    <div class="absolute top-4 right-4">
+                        <span class="px-3 py-1 bg-white bg-opacity-90 text-gray-700 text-xs font-semibold rounded-full">
+                            <%= building.year %>
+                        </span>
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 hover:opacity-60 transition-all duration-300"></div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 building-name"><%= building.name %></h3>
+                    <p class="text-gray-600 text-sm leading-relaxed building-description mb-4"><%= building.description %></p>
+                    <div class="flex items-center text-sm text-gray-500 mb-4">
+                        <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>
+                        <span><%= building.location %></span>
+                    </div>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+
+        <!-- Buildings List View (Hidden by default) -->
+        <div id="buildingsList" class="hidden space-y-6">
+            <% buildings.forEach(function(building) { %>
+            <div class="building-item bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300" data-category="<%= building.category %>">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-6">
+                    <div class="flex-shrink-0">
+                        <img src="<%= building.image %>" 
+                             alt="<%= building.name %>"
+                             class="w-32 h-24 object-cover rounded-xl"
+                             loading="lazy">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <h3 class="text-2xl font-bold text-gray-900 building-name"><%= building.name %></h3>
+                            <span class="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">
+                                <%= building.category %>
+                            </span>
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 text-xs font-semibold rounded-full">
+                                <%= building.year %>
+                            </span>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed building-description mb-3"><%= building.description %></p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>
+                            <span><%= building.location %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-16">
+            <div class="bg-white rounded-2xl shadow-lg p-12 max-w-md mx-auto">
+                <i data-lucide="search" class="w-20 h-20 text-gray-400 mx-auto mb-6"></i>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Tidak ada gedung ditemukan</h3>
+                <p class="text-gray-600 mb-6">Coba ubah kata kunci pencarian atau filter kategori Anda</p>
+                <button onclick="clearSearch()" class="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors duration-300">
+                    Reset Pencarian
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="bg-gray-900 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-2xl font-bold mb-4">Universitas Andalas</h3>
+            <p class="text-gray-400 mb-6">Kampus Limau Manis, Padang, Sumatera Barat</p>
+            <div class="flex justify-center space-x-6">
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                    <i data-lucide="globe" class="w-5 h-5"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                    <i data-lucide="facebook" class="w-5 h-5"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                    <i data-lucide="instagram" class="w-5 h-5"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                    <i data-lucide="youtube" class="w-5 h-5"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const buildingsGrid = document.getElementById('buildingsGrid');
+    const buildingsList = document.getElementById('buildingsList');
+    const gridViewBtn = document.getElementById('gridView');
+    const listViewBtn = document.getElementById('listView');
+    const emptyState = document.getElementById('emptyState');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const viewBtns = document.querySelectorAll('.view-btn');
+
+    let currentCategory = 'all';
+    let currentSearch = '';
+
+    // Search functionality
+    searchInput.addEventListener('input', function() {
+        currentSearch = this.value.toLowerCase();
+        filterBuildings();
+    });
+
+    // Category filter functionality
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from all buttons
+            filterBtns.forEach(b => {
+                b.classList.remove('active', 'bg-blue-600', 'text-white');
+                b.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            
+            // Add active class to clicked button
+            this.classList.add('active', 'bg-blue-600', 'text-white');
+            this.classList.remove('bg-gray-200', 'text-gray-700');
+            
+            currentCategory = this.dataset.category;
+            filterBuildings();
+        });
+    });
+
+    // View toggle functionality
+    viewBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from all view buttons
+            viewBtns.forEach(b => {
+                b.classList.remove('active', 'bg-blue-600', 'text-white');
+                b.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            
+            // Add active class to clicked button
+            this.classList.add('active', 'bg-blue-600', 'text-white');
+            this.classList.remove('bg-gray-200', 'text-gray-700');
+            
+            if (this.id === 'gridView') {
+                buildingsGrid.classList.remove('hidden');
+                buildingsList.classList.add('hidden');
+            } else {
+                buildingsGrid.classList.add('hidden');
+                buildingsList.classList.remove('hidden');
+            }
+        });
+    });
+
+    function filterBuildings() {
+        const buildingCards = document.querySelectorAll('.building-card');
+        const buildingItems = document.querySelectorAll('.building-item');
+        let hasResults = false;
+
+        // Filter in grid view
+        buildingCards.forEach(card => {
+            const name = card.querySelector('.building-name').textContent.toLowerCase();
+            const description = card.querySelector('.building-description').textContent.toLowerCase();
+            const category = card.dataset.category;
+            
+            const matchesSearch = name.includes(currentSearch) || description.includes(currentSearch);
+            const matchesCategory = currentCategory === 'all' || category === currentCategory;
+            
+            if (matchesSearch && matchesCategory) {
+                card.style.display = 'block';
+                hasResults = true;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Filter in list view
+        buildingItems.forEach(item => {
+            const name = item.querySelector('.building-name').textContent.toLowerCase();
+            const description = item.querySelector('.building-description').textContent.toLowerCase();
+            const category = item.dataset.category;
+            
+            const matchesSearch = name.includes(currentSearch) || description.includes(currentSearch);
+            const matchesCategory = currentCategory === 'all' || category === currentCategory;
+            
+            if (matchesSearch && matchesCategory) {
+                item.style.display = 'block';
+                hasResults = true;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        // Show/hide empty state
+        if (hasResults) {
+            emptyState.classList.add('hidden');
+        } else {
+            emptyState.classList.remove('hidden');
+        }
+    }
+
+    // Clear search function
+    window.clearSearch = function() {
+        searchInput.value = '';
+        currentSearch = '';
+        
+        // Reset category filter
+        filterBtns.forEach(b => {
+            b.classList.remove('active', 'bg-blue-600', 'text-white');
+            b.classList.add('bg-gray-200', 'text-gray-700');
+        });
+        filterBtns[0].classList.add('active', 'bg-blue-600', 'text-white');
+        filterBtns[0].classList.remove('bg-gray-200', 'text-gray-700');
+        currentCategory = 'all';
+        
+        filterBuildings();
+    };
+});
+</script> 

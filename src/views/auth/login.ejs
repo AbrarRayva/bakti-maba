@@ -13,13 +13,19 @@
                     Login
                 </h1>
                 <p class="text-base">
-                    Masukkan username (NIM) dan password yang telah diberikan oleh panitia.
+                    Masukkan NIM dan password yang telah diberikan oleh panitia.
                 </p>
 
-                <form action="/auth/login" method="POST" class="w-full">
+                <!-- <% if (typeof error !== 'undefined' && error) { %>
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                    <%= error %>
+                </div>
+                <% } %> -->
+
+                <form action="/login" method="POST" class="w-full">
                     <%- include('../components/input-text', {
                         id: 'username',
-                        label: 'Username',
+                        label: 'NIM',
                         placeholder: '251152xxxx',
                         icon: '<i data-lucide="user"></i>',
                         type: 'text',
@@ -39,7 +45,7 @@
                     
                     <div class="mt-6">
                         <%- include('../components/button', {
-                            text: 'Submit'
+                            text: 'Login'
                         }) %>
                     </div>
                 </form>

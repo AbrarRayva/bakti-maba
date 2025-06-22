@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      ForumThread.belongsTo(models.User, { foreignKey: 'id_user_pembuat' });
+      ForumThread.belongsTo(models.User, { foreignKey: 'nim_pembuat' });
       ForumThread.hasMany(models.ForumPost, { foreignKey: 'id_thread' });
     }
   }
@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
+    nim_pembuat: DataTypes.STRING,
     judul: DataTypes.STRING,
     isi_pembuka: DataTypes.TEXT,
     waktu_dibuat: DataTypes.DATE,
@@ -30,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'ForumThread',
+    freezeTableName: true
   });
   return ForumThread;
 };

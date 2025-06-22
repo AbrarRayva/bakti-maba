@@ -4,31 +4,13 @@
 <title><%= typeof pageTitle !== 'undefined' ? pageTitle : 'Bakti Maba' %></title>
 
 <!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="/css/style.css">
 
 <!-- Font Awesome -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
 <!-- Lucide Icons -->
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-
-<!-- Custom Tailwind Config -->
-<script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                colors: {
-                    primary: {
-                        50: '#eff6ff',
-                        500: '#3b82f6',
-                        600: '#2563eb',
-                        700: '#1d4ed8',
-                    }
-                }
-            }
-        }
-    }
-</script>
 
 <% if (typeof extraHead !== 'undefined') { %>
     <%- extraHead %>

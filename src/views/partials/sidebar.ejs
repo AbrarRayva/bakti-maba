@@ -28,6 +28,10 @@
                 <i data-lucide="calendar" class="w-5 h-5"></i>
                 <span class="mx-4 font-medium">Jadwal</span>
             </a>
+            <a href="/galeri" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="image" class="w-5 h-5"></i>
+                <span class="mx-4 font-medium">Galeri</span>
+            </a>
             <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
                 <i data-lucide="file-pen-line" class="w-5 h-5"></i>
                 <span class="mx-4 font-medium">Penugasan</span>
@@ -45,7 +49,13 @@
                 <span class="mx-4 font-medium">Peta</span>
             </a>
             <div class="border-t my-4"></div>
-            <a href="#" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+            <% if (user && user.role === 'admin') { %>
+            <a href="/admin/dashboard" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="shield" class="w-5 h-5"></i>
+                <span class="mx-4 font-medium">Tampilan Admin</span>
+            </a>
+            <% } %>
+            <a href="/login/logout" class="mt-2 flex items-center px-4 py-3 text-gray-600 hover:bg-slate-100 rounded-lg">
                 <i data-lucide="log-out" class="w-5 h-5"></i>
                 <span class="mx-4 font-medium">Logout</span>
             </a>
