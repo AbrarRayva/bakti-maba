@@ -121,7 +121,7 @@
                                             <a href="/jadwal/admin/edit/<%= item.id_kegiatan %>" class="text-blue-600 hover:text-blue-900">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <button onclick="deleteJadwal(<%= item.id_kegiatan %>)" class="text-red-600 hover:text-red-900">
+                                            <button data-id="<%= item.id_kegiatan %>" class="delete-btn text-red-600 hover:text-red-900">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
@@ -146,6 +146,17 @@
         </div>
 
         <script>
+            // Add event listeners for delete buttons
+            document.addEventListener('DOMContentLoaded', function() {
+                const deleteButtons = document.querySelectorAll('.delete-btn');
+                deleteButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        deleteJadwal(id);
+                    });
+                });
+            });
+
             function deleteJadwal(id) {
                 if (confirm('Apakah Anda yakin ingin menghapus jadwal ini?')) {
                     fetch(`/jadwal/admin/jadwal/${id}`, {
