@@ -2,39 +2,49 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('PengumpulanTugas', {
-      id_tugas: {
-        type: Sequelize.INTEGER,
+    await queryInterface.createTable('ForumPost', {
+      id_post: {
+        allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      id_thread: {
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Tugas',
-          key: 'id_tugas'
+          model: 'ForumThread',
+          key: 'id_thread'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
       id_user: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
         allowNull: false,
         references: {
-          model: 'Users',
+          model: 'User',
           key: 'id_user'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      lokasi_file: {
-        type: Sequelize.STRING,
+      parent_post_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'ForumPost', // Self-reference
+          key: 'id_post'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL' // Use SET NULL or CASCADE as appropriate
+      },
+      isi_pesan: {
+        type: Sequelize.TEXT,
         allowNull: false
       },
-      waktu_upload: {
+      waktu_kirim: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-      },
-      nilai: {
-        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -47,6 +57,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('PengumpulanTugas');
+    await queryInterface.dropTable('ForumPost');
   }
 };

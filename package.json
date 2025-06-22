@@ -7,13 +7,15 @@
     "start": "node ./src/app.js",
     "dev": "nodemon ./src/app.js",
     "buildcss": "npx @tailwindcss/cli -i ./src/css/style.css -o ./public/css/style.css --watch",
-    "db:sync": "npx sequelize-cli db:migrate"
+    "db:sync": "npx sequelize-cli db:migrate",
+    "db:seed": "npx sequelize-cli db:seed:all"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@tailwindcss/cli": "^4.1.10",
+    "bcryptjs": "^3.0.2",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "lucide": "^0.522.0",

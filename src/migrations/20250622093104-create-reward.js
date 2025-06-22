@@ -2,28 +2,33 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('PostUpvotes', {
+    await queryInterface.createTable('Reward', {
+      id_reward: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
       id_user: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
         allowNull: false,
         references: {
-          model: 'Users',
+          model: 'User',
           key: 'id_user'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      id_post: {
+      poin: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
-        allowNull: false,
-        references: {
-          model: 'ForumPosts',
-          key: 'id_post'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: false
+      },
+      keterangan: {
+        type: Sequelize.STRING
+      },
+      tanggal_diberikan: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       createdAt: {
         allowNull: false,
@@ -36,6 +41,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('PostUpvotes');
+    await queryInterface.dropTable('Reward');
   }
 };

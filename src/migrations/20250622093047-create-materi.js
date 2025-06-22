@@ -2,43 +2,29 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
-      id_user: {
+    await queryInterface.createTable('Materi', {
+      id_materi: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      nama: {
+      judul_materi: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      password: {
+      deskripsi_materi: {
+        type: Sequelize.TEXT
+      },
+      file_path: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      nim: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
-      },
-      kelompok: {
+      file_size: {
         type: Sequelize.INTEGER
       },
-      role: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-          isIn: [['peserta', 'mentor', 'admin']]
-        }
-      },
-      is_blocked: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-      },
-      total_poin: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0
+      file_type: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -51,6 +37,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('Materi');
   }
 };

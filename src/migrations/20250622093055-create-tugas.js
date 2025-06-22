@@ -2,29 +2,32 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Materis', {
-      id_materi: {
+    await queryInterface.createTable('Tugas', {
+      id_tugas: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      judul_materi: {
+      id_materi: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Materi',
+          key: 'id_materi'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL'
+      },
+      nama_tugas: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      deskripsi_materi: {
+      deskripsi: {
         type: Sequelize.TEXT
       },
-      file_path: {
-        type: Sequelize.STRING,
+      deadline: {
+        type: Sequelize.DATE,
         allowNull: false
-      },
-      file_size: {
-        type: Sequelize.INTEGER
-      },
-      file_type: {
-        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -37,6 +40,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Materis');
+    await queryInterface.dropTable('Tugas');
   }
 };

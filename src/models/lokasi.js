@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Lokasi',
+    freezeTableName: true
   });
   return Lokasi;
 };

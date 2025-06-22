@@ -2,37 +2,25 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('JadwalKegiatans', {
-      id_kegiatan: {
+    await queryInterface.createTable('Lokasi', {
+      id_lokasi: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_lokasi: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'Lokasis',
-          key: 'id_lokasi'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
-      },
-      nama_kegiatan: {
+      nama_lokasi: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      deskripsi: {
+      alamat: {
         type: Sequelize.TEXT
       },
-      tanggal: {
-        type: Sequelize.DATEONLY,
-        allowNull: false
+      koordinat_x: {
+        type: Sequelize.INTEGER
       },
-      waktu_mulai: {
-        type: Sequelize.TIME,
-        allowNull: false
+      koordinat_y: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -45,6 +33,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('JadwalKegiatans');
+    await queryInterface.dropTable('Lokasi');
   }
 };

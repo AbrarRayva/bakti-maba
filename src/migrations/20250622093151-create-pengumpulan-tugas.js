@@ -2,48 +2,39 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('ForumThreads', {
-      id_thread: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      id_user_pembuat: {
+    await queryInterface.createTable('PengumpulanTugas', {
+      id_tugas: {
         type: Sequelize.INTEGER,
+        primaryKey: true,
         allowNull: false,
         references: {
-          model: 'Users',
+          model: 'Tugas',
+          key: 'id_tugas'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+      id_user: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+        references: {
+          model: 'User',
           key: 'id_user'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      judul: {
+      lokasi_file: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      isi_pembuka: {
-        type: Sequelize.TEXT
-      },
-      waktu_dibuat: {
+      waktu_upload: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
-      is_pinned: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-      },
-      is_open: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: true
-      },
-      akses: {
-        type: Sequelize.STRING,
-        defaultValue: 'publik',
-        validate: {
-          isIn: [['publik', 'admin']]
-        }
+      nilai: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -56,6 +47,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('ForumThreads');
+    await queryInterface.dropTable('PengumpulanTugas');
   }
 };
