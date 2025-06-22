@@ -67,32 +67,4 @@ Menjalankan semua file *seeder* untuk mengisi database dengan data awal. Contohn
 
 **Kapan digunakan?**
 - Setelah database berhasil dibuat/disinkronkan untuk pertama kali.
-- Saat Anda ingin mengembalikan data awal ke database.
-
-### `npm run db:reset`
-
-Perintah ini adalah gabungan dari `undo` semua migrasi dan `sync` lagi dari awal. Ini akan **menghapus semua data** di tabel yang dikelola Sequelize dan membangun ulang skemanya dari nol.
-
-**Kapan digunakan?**
-- Saat terjadi kesalahan selama migrasi dan database berada dalam keadaan tidak konsisten.
-- Saat Anda ingin memulai ulang dengan skema database yang bersih. **Gunakan dengan hati-hati!**
-
-## 5. Membuat Model & Migrasi Baru
-
-Untuk membuat model baru (misalnya, `Contoh`), gunakan perintah berikut di terminal:
-
-```bash
-npx sequelize-cli model:generate --name Contoh --attributes nama:string,deskripsi:text
-```
-
-- `--name Contoh`: Menentukan nama model. Sequelize akan membuat file `contoh.js` di `src/models` dan file migrasi di `src/migrations`.
-- `--attributes`: Mendefinisikan kolom-kolom awal pada tabel.
-
-Setelah file dibuat, Anda perlu **mengedit kedua file tersebut** untuk:
-1.  **Di file migrasi:**
-    - Mengganti nama `id` default jika perlu.
-    - Menambahkan *constraints* seperti `allowNull: false`, `unique: true`.
-    - Menambahkan *foreign key* dan `references`.
-2.  **Di file model:**
-    - Menambahkan `freezeTableName: true` agar nama tabel tidak diubah menjadi jamak.
-    - Mendefinisikan asosiasi (`.hasMany()`, `.belongsTo()`, dll.) di dalam method `static associate(models)`. 
+- Saat Anda ingin mengembalikan data awal ke database. 
