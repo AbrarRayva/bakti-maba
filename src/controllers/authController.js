@@ -1,4 +1,3 @@
-const bcrypt = require('bcryptjs');
 const db = require('../models');
 
 const viewLoginPage = (req, res) => {
@@ -20,4 +19,4 @@ module.exports = {
     viewLoginPage,
     login,
     logout
-};
+}; 
