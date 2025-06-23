@@ -13,6 +13,7 @@ exports.listMaterials = async (req, res) => {
             layout: 'layouts/admin',
             title: 'Manajemen Materi',
             materials,
+            message: req.flash('message')
         });
     } catch (error) {
         console.error('Error fetching materials:', error);

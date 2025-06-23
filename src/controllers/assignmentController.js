@@ -5,7 +5,7 @@ const upload = require('../middleware/upload');
 
 // Display a list of all assignments for students
 exports.listAssignments = async (req, res) => {
-    try {
+  try {
         const assignments = await Tugas.findAll({ order: [['deadline', 'ASC']] });
         const userId = 1; // Hardcoded user ID
         const submissions = await PengumpulanTugas.findAll({ where: { id_user: userId } });
@@ -21,25 +21,25 @@ exports.listAssignments = async (req, res) => {
             submissionMap,
             layout: 'layouts/main'
         });
-    } catch (error) {
+  } catch (error) {
         console.error('Error in listAssignments:', error);
         res.status(500).render('error', { message: 'Gagal mengambil daftar tugas.' });
-    }
+  }
 };
 
 // Display the detail of a single assignment
 exports.getAssignmentDetail = async (req, res) => {
-    try {
+  try {
         const assignment = await Tugas.findByPk(req.params.id);
         if (!assignment) {
             req.flash('error_msg', 'Tugas tidak ditemukan.');
             return res.redirect('/assignment');
         }
-        
+
         const userId = 1; // Hardcoded user ID
         const submission = await PengumpulanTugas.findOne({
             where: { id_tugas: req.params.id, id_user: userId }
-        });
+    });
 
         res.render('user/assignment/detail', {
             title: `Detail Tugas: ${assignment.nama_tugas}`,
@@ -47,23 +47,23 @@ exports.getAssignmentDetail = async (req, res) => {
             userSubmission: submission,
             layout: 'layouts/main'
         });
-    } catch (error) {
+  } catch (error) {
         console.error('Error in getAssignmentDetail:', error);
-        res.status(500).render('error', { message: 'Terjadi kesalahan saat mengambil detail tugas' });
-    }
+    res.status(500).render('error', { message: 'Terjadi kesalahan saat mengambil detail tugas' });
+  }
 };
 
 // Handle assignment submission
 exports.submitAssignment = async (req, res) => {
-    try {
+  try {
         const { id } = req.params;
         const { link_submission } = req.body;
         const userId = 1; // Hardcoded user ID
 
         let file_submission = null;
-        if (req.file) {
+    if (req.file) {
             file_submission = `/uploads/submissions/${req.file.filename}`;
-        }
+    }
 
         let submission = await PengumpulanTugas.findOne({ where: { id_tugas: id, id_user: userId } });
 
@@ -76,7 +76,7 @@ exports.submitAssignment = async (req, res) => {
         } else {
             await PengumpulanTugas.create({
                 id_tugas: id,
-                id_user: userId,
+      id_user: userId,
                 file_submission,
                 link_submission,
                 waktu_pengumpulan: new Date()
@@ -85,11 +85,11 @@ exports.submitAssignment = async (req, res) => {
         }
 
         res.redirect(`/assignment/${id}`);
-    } catch (error) {
+  } catch (error) {
         console.error('Error in submitAssignment:', error);
         req.flash('error_msg', 'Gagal mengumpulkan tugas.');
         res.redirect(`/assignment/${id}`);
-    }
+  }
 };
 
 exports.deleteSubmission = async (req, res) => {

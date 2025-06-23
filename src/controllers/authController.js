@@ -19,4 +19,4 @@ module.exports = {
     viewLoginPage,
     login,
     logout
-}; 
+};
