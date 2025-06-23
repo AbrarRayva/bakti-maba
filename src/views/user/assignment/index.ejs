@@ -87,74 +87,51 @@
     </style>
 </head>
 <body>
-    <%- include('../../partials/sidebar_mahasiswa') %>
-    <div class="main-content">
-        <h1>Penugasan</h1>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Daftar Penugasan</h1>
+        <p class="text-gray-600 mb-8">Berikut adalah daftar semua tugas yang harus harus dikerjakan.</p>
 
-        <div class="tabs">
-            <button class="tab-button active" data-tab="on-going">On-Going</button>
-            <button class="tab-button" data-tab="completed">Completed</button>
-        </div>
-
-        <div class="assignment-list-container">
-            <div id="on-going" class="tab-content">
-                <% const now = new Date(); %>
-                <% const ongoingAssignments = assignments.filter(a => new Date(a.dueDate) >= now); %>
-                <% if (ongoingAssignments.length > 0) { %>
-                    <% ongoingAssignments.forEach(assignment => { %>
-                        <div class="assignment-item">
-                            <div class="assignment-info">
-                                <h3><%= assignment.title %> - <%= assignment.dueDate %></h3>
-                                <% if (assignment.file && assignment.file.startsWith('/uploads/')) { %>
-                                    <p><img src="/img/icon-doc.png" alt="Doc Icon" style="width:16px;vertical-align:middle;"> <a href="<%= assignment.file %>" target="_blank" download>Instruksi Tugas.<%= assignment.file.split('.').pop() %></a></p>
-                                <% } else if (assignment.file) { %>
-                                    <p><img src="/img/icon-link.png" alt="Link Icon" style="width:16px;vertical-align:middle;"> <a href="<%= assignment.file %>" target="_blank">Link Instruksi</a></p>
+        <div class="space-y-4">
+            <% if (assignments.length > 0) { %>
+                <% assignments.forEach(assignment => { %>
+                    <a href="/assignment/<%= assignment.id_tugas %>" class="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div class="flex-grow mb-4 sm:mb-0">
+                                <h2 class="text-xl font-semibold text-gray-800 mb-1"><%= assignment.nama_tugas %></h2>
+                                <p class="text-sm text-gray-500">
+                                    <i data-lucide="calendar" class="inline-block w-4 h-4 mr-1"></i>
+                                    Batas Waktu: <%= new Date(assignment.deadline).toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short' }) %>
+                                </p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <% const submission = submissionMap[assignment.id_tugas]; %>
+                                <% if (submission) { %>
+                                    <span class="px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800">
+                                        <i data-lucide="check-circle-2" class="inline-block w-4 h-4 mr-1"></i>
+                                        Terkumpul
+                                    </span>
+                                <% } else if (new Date(assignment.deadline) < new Date()) { %>
+                                    <span class="px-4 py-2 rounded-full text-sm font-semibold bg-red-100 text-red-800">
+                                        <i data-lucide="x-circle" class="inline-block w-4 h-4 mr-1"></i>
+                                        Terlewat
+                                    </span>
+                                <% } else { %>
+                                    <span class="px-4 py-2 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">
+                                        <i data-lucide="alert-circle" class="inline-block w-4 h-4 mr-1"></i>
+                                        Tersedia
+                                    </span>
                                 <% } %>
                             </div>
-                            <div class="actions-dropdown">
-                                <button class="actions-button">...</button>
-                                <div class="dropdown-content">
-                                    <a href="/assignment/<%= assignment.id %>">Open</a>
-                                    <% if (assignment.file && assignment.file.startsWith('/uploads/')) { %>
-                                        <a href="<%= assignment.file %>" download>Download</a>
-                                    <% } %>
-                                </div>
-                            </div>
                         </div>
-                    <% }) %>
-                <% } else { %>
-                    <p>Tidak ada tugas yang sedang berjalan.</p>
-                <% } %>
-            </div>
-
-            <div id="completed" class="tab-content" style="display:none;">
-                <% const completedAssignments = assignments.filter(a => new Date(a.dueDate) < now); %>
-                <% if (completedAssignments.length > 0) { %>
-                    <% completedAssignments.forEach(assignment => { %>
-                        <div class="assignment-item">
-                            <div class="assignment-info">
-                                <h3><%= assignment.title %> - <%= assignment.dueDate %> (Completed)</h3>
-                                <% if (assignment.file && assignment.file.startsWith('/uploads/')) { %>
-                                    <p><img src="/img/icon-doc.png" alt="Doc Icon" style="width:16px;vertical-align:middle;"> <a href="<%= assignment.file %>" target="_blank" download>Instruksi Tugas.<%= assignment.file.split('.').pop() %></a></p>
-                                <% } else if (assignment.file) { %>
-                                    <p><img src="/img/icon-link.png" alt="Link Icon" style="width:16px;vertical-align:middle;"> <a href="<%= assignment.file %>" target="_blank">Link Instruksi</a></p>
-                                <% } %>
-                            </div>
-                             <div class="actions-dropdown">
-                                <button class="actions-button">...</button>
-                                <div class="dropdown-content">
-                                    <a href="/assignment/<%= assignment.id %>">Open</a>
-                                    <% if (assignment.file && assignment.file.startsWith('/uploads/')) { %>
-                                        <a href="<%= assignment.file %>" download>Download</a>
-                                    <% } %>
-                                </div>
-                            </div>
-                        </div>
-                    <% }) %>
-                <% } else { %>
-                    <p>Tidak ada tugas yang sudah selesai.</p>
-                <% } %>
-            </div>
+                    </a>
+                <% }) %>
+            <% } else { %>
+                <div class="text-center py-16 bg-white rounded-lg shadow-md">
+                    <i data-lucide="folder-open" class="w-16 h-16 mx-auto text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-700">Belum Ada Tugas</h3>
+                    <p class="text-gray-500 mt-2">Saat ini belum ada tugas yang diberikan.</p>
+                </div>
+            <% } %>
         </div>
     </div>
 

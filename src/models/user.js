@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsToMany(models.Tugas, { through: 'PengumpulanTugas', foreignKey: 'id_user' });
       User.belongsToMany(models.ForumPost, { through: 'PostUpvote', as: 'UpvotedPosts', foreignKey: 'id_user' });
       User.belongsTo(models.Kelompok, { foreignKey: 'id_kelompok' });
+      User.hasMany(models.PengumpulanTugas, { foreignKey: 'id_user', as: 'submissions' });
     }
   }
   User.init({

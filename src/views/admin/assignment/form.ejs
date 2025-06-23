@@ -1,114 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <style type="text/tailwindcss">
-        @theme {
-            --color-primary-purple: #6a0dad;
-            --color-primary-purple-dark: #5a0a9d;
-        }
-    </style>
-    <title>Tambah Penugasan (Panitia)</title>
-</head>
-<body class="bg-gray-100 flex">
-    <%- include('../../partials/sidebar_admin') %>
-    <div class="ml-64 flex-1 p-8">
-        <div class="bg-white rounded-xl shadow-md p-8 max-w-2xl mx-auto">
-            <h1 class="text-3xl font-bold mb-6 text-gray-800">Tambah Penugasan</h1>
-            <form action="/admin/assignment" method="POST" enctype="multipart/form-data">
-                <div class="mb-5">
-                    <label for="title" class="block text-gray-700 text-sm font-bold mb-2">Judul:</label>
-                    <input type="text" id="title" name="title" required
-                        class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-purple-500"
-                        placeholder="Masukkan judul penugasan">
-                </div>
+<h1 class="text-3xl font-bold text-gray-800 mb-6"><%= title %></h1>
 
-                <div class="mb-5">
-                    <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Deskripsi:</label>
-                    <textarea id="description" name="description" rows="5" required
-                        class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-purple-500"
-                        placeholder="Masukkan deskripsi penugasan"></textarea>
-                </div>
-
-                <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">File:</label>
-                    <div class="flex items-center space-x-4 mb-4">
-                        <label class="inline-flex items-center">
-                            <input type="radio" id="uploadFile" name="fileType" value="file" checked
-                                class="form-radio h-4 w-4 text-primary-purple">
-                            <span class="ml-2 text-gray-700">Upload File</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="radio" id="useLink" name="fileType" value="link"
-                                class="form-radio h-4 w-4 text-primary-purple">
-                            <span class="ml-2 text-gray-700">Gunakan Link</span>
-                        </label>
-                    </div>
-
-                    <div id="fileUploadContainer">
-                        <label for="file" class="block text-gray-700 text-sm font-bold mb-2">Pilih File:</label>
-                        <input type="file" id="file" name="file"
-                            class="block w-full text-sm text-gray-500
-                            file:mr-4 file:py-2 file:px-4
-                            file:rounded-full file:border-0
-                            file:text-sm file:font-semibold
-                            file:bg-purple-50 file:text-primary-purple
-                            hover:file:bg-purple-100 cursor-pointer">
-                    </div>
-                    <div id="linkInputContainer" class="hidden">
-                        <label for="link" class="block text-gray-700 text-sm font-bold mb-2">Link:</label>
-                        <input type="url" id="link" name="link"
-                            class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-purple-500"
-                            placeholder="Masukkan URL link (misal: https://docs.google.com/...)">
-                    </div>
-                </div>
-
-                <div class="flex justify-end space-x-4">
-                    <button type="submit"
-                        class="bg-purple-500 hover:bg-primary-purple-dark text-white font-bold py-2 px-6 rounded-lg focus:outline-none focus:shadow-outline transition-colors">
-                        Submit
-                    </button>
-                    <button type="button" onclick="window.history.back();"
-                        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-lg focus:outline-none focus:shadow-outline transition-colors">
-                        Cancel
-                    </button>
-                </div>
-            </form>
+<div class="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
+    <form action="<%= action %>" method="POST" enctype="multipart/form-data">
+        <div class="mb-4">
+            <label for="nama_tugas" class="block text-gray-700 text-sm font-bold mb-2">Assignment Title</label>
+            <input type="text" id="nama_tugas" name="nama_tugas" value="<%= assignment.nama_tugas || '' %>"
+                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
         </div>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const uploadFileRadio = document.getElementById('uploadFile');
-            const useLinkRadio = document.getElementById('useLink');
-            const fileUploadContainer = document.getElementById('fileUploadContainer');
-            const linkInputContainer = document.getElementById('linkInputContainer');
-            const fileInput = document.getElementById('file');
-            const linkInput = document.getElementById('link');
+        <div class="mb-4">
+            <label for="deskripsi" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+            <textarea id="deskripsi" name="deskripsi" rows="5"
+                      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required><%= assignment.deskripsi || '' %></textarea>
+        </div>
 
-            function toggleInputs() {
-                if (uploadFileRadio.checked) {
-                    fileUploadContainer.classList.remove('hidden');
-                    linkInputContainer.classList.add('hidden');
-                    fileInput.required = true;
-                    linkInput.required = false;
-                    linkInput.value = '';
-                } else {
-                    fileUploadContainer.classList.add('hidden');
-                    linkInputContainer.classList.remove('hidden');
-                    fileInput.required = false;
-                    linkInput.required = true;
-                    fileInput.value = '';
-                }
-            }
+        <div class="mb-4">
+            <label for="deadline" class="block text-gray-700 text-sm font-bold mb-2">Deadline</label>
+            <input type="datetime-local" id="deadline" name="deadline" value="<%= assignment.deadline ? new Date(assignment.deadline).toISOString().substring(0, 16) : '' %>"
+                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+        </div>
+        
+        <p class="text-center text-gray-500 my-4 text-sm">You can provide a file OR a link.</p>
 
-            uploadFileRadio.addEventListener('change', toggleInputs);
-            useLinkRadio.addEventListener('change', toggleInputs);
+        <div class="mb-4">
+            <label for="file" class="block text-gray-700 text-sm font-bold mb-2">Upload File</label>
+            <input type="file" id="file" name="file"
+                   class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+        </div>
 
-            toggleInputs(); // Set initial state
-        });
-    </script>
-</body>
-</html>
+        <div class="mb-6">
+            <label for="link" class="block text-gray-700 text-sm font-bold mb-2">Or Provide Link</label>
+            <input type="url" id="link" name="link" value="<%= assignment.file_path && assignment.file_path.startsWith('http') ? assignment.file_path : '' %>" placeholder="https://example.com/assignment"
+                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+
+        <div class="flex items-center justify-end gap-4">
+            <a href="/admin/assignment" class="text-gray-600 hover:text-gray-800 font-bold">Cancel</a>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:shadow-outline">
+                <%= assignment.id_tugas ? 'Update' : 'Create' %>
+            </button>
+        </div>
+    </form>
+</div>

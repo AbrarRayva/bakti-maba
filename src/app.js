@@ -6,6 +6,8 @@ const methodOverride = require('method-override');
 const multer = require('multer'); // For file uploads
 const fs = require('fs'); // For ensuring upload directories exist
 const session = require('express-session');
+const flash = require('connect-flash');
+const cookieParser = require('cookie-parser');
 
 // Database connection
 const db = require('./models');
@@ -45,17 +47,28 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride('_method'));
+app.use(cookieParser());
 
 // Session middleware
 app.use(session({
-    secret: 'bakti-maba-secret-key',
+    secret: 'b4kt1-m4b4-s3cr3t-k3y-d4n-kawan-kawan', // Use a long, random string
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     cookie: {
-        secure: false, // Set to true if using HTTPS
+        secure: process.env.NODE_ENV === 'production', // Set to true if using HTTPS
+        httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
+app.use(flash());
+
+// Make flash messages available in all views
+app.use((req, res, next) => {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
+    next();
+});
 
 // Ensure upload directories exist
 const uploadDir = path.join(__dirname, '..', 'public', 'uploads');

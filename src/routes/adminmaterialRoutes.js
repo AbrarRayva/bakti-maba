@@ -3,7 +3,6 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const adminMaterialCtrl = require('../controllers/adminmaterialController');
-const { requireAdmin } = require('../middleware/auth');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -18,9 +17,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-router.get('/', requireAdmin, adminMaterialCtrl.listMaterials);
-router.get('/new', requireAdmin, adminMaterialCtrl.showForm);
-router.post('/', requireAdmin, upload.single('file'), adminMaterialCtrl.addMaterial);
-router.post('/:id/delete', requireAdmin, adminMaterialCtrl.deleteMaterial);
+router.get('/', adminMaterialCtrl.listMaterials);
+router.get('/new', adminMaterialCtrl.showForm);
+router.post('/', upload.single('file'), adminMaterialCtrl.addMaterial);
+router.post('/:id/delete', adminMaterialCtrl.deleteMaterial);
 
 module.exports = router;

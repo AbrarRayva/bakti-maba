@@ -1,88 +1,104 @@
 const path = require('path');
 const fs = require('fs');
-const db = require('../models');
+const { Tugas, PengumpulanTugas, User } = require('../models');
+const upload = require('../middleware/upload');
 
+// Display a list of all assignments for students
 exports.listAssignments = async (req, res) => {
-  try {
-    const assignments = await db.Tugas.findAll({
-      where: { status: 'aktif' },
-      order: [['createdAt', 'DESC']]
-    });
-    res.render('user/assignment/index', { assignments });
-  } catch (error) {
-    console.error('Error fetching assignments:', error);
-    res.status(500).render('error', { message: 'Terjadi kesalahan saat mengambil data tugas' });
-  }
+    try {
+        const assignments = await Tugas.findAll({ order: [['deadline', 'ASC']] });
+        const userId = 1; // Hardcoded user ID
+        const submissions = await PengumpulanTugas.findAll({ where: { id_user: userId } });
+        
+        const submissionMap = submissions.reduce((map, sub) => {
+            map[sub.id_tugas] = sub;
+            return map;
+        }, {});
+
+        res.render('user/assignment/index', {
+            title: 'Daftar Penugasan',
+            assignments,
+            submissionMap,
+            layout: 'layouts/main'
+        });
+    } catch (error) {
+        console.error('Error in listAssignments:', error);
+        res.status(500).render('error', { message: 'Gagal mengambil daftar tugas.' });
+    }
 };
 
-exports.detailAssignment = async (req, res) => {
-  try {
-    const assignment = await db.Tugas.findByPk(req.params.id);
-    if (!assignment) return res.redirect('/assignment');
+// Display the detail of a single assignment
+exports.getAssignmentDetail = async (req, res) => {
+    try {
+        const assignment = await Tugas.findByPk(req.params.id);
+        if (!assignment) {
+            req.flash('error_msg', 'Tugas tidak ditemukan.');
+            return res.redirect('/assignment');
+        }
+        
+        const userId = 1; // Hardcoded user ID
+        const submission = await PengumpulanTugas.findOne({
+            where: { id_tugas: req.params.id, id_user: userId }
+        });
 
-    const studentSubmissions = await db.PengumpulanTugas.findAll({
-      where: { id_tugas: req.params.id },
-      include: [{ model: db.User, as: 'User' }],
-      order: [['createdAt', 'DESC']]
-    });
-
-    res.render('user/assignment/detail', { assignment, studentSubmissions });
-  } catch (error) {
-    console.error('Error fetching assignment detail:', error);
-    res.status(500).render('error', { message: 'Terjadi kesalahan saat mengambil detail tugas' });
-  }
+        res.render('user/assignment/detail', {
+            title: `Detail Tugas: ${assignment.nama_tugas}`,
+            assignment,
+            userSubmission: submission,
+            layout: 'layouts/main'
+        });
+    } catch (error) {
+        console.error('Error in getAssignmentDetail:', error);
+        res.status(500).render('error', { message: 'Terjadi kesalahan saat mengambil detail tugas' });
+    }
 };
 
-exports.submitForm = async (req, res) => {
-  try {
-    const assignment = await db.Tugas.findByPk(req.params.id);
-    if (!assignment) return res.redirect('/assignment');
-    res.render('user/assignment/form', { assignment });
-  } catch (error) {
-    console.error('Error fetching assignment:', error);
-    res.status(500).render('error', { message: 'Terjadi kesalahan saat mengambil data tugas' });
-  }
-};
-
+// Handle assignment submission
 exports.submitAssignment = async (req, res) => {
-  try {
-    const assignmentId = req.params.id;
-    const { submissionLink, submissionText } = req.body;
-    let filePath = null;
+    try {
+        const { id } = req.params;
+        const { link_submission } = req.body;
+        const userId = 1; // Hardcoded user ID
 
-    if (req.file) {
-      filePath = `/uploads/submissions/${req.file.filename}`;
+        let file_submission = null;
+        if (req.file) {
+            file_submission = `/uploads/submissions/${req.file.filename}`;
+        }
+
+        let submission = await PengumpulanTugas.findOne({ where: { id_tugas: id, id_user: userId } });
+
+        if (submission) {
+            submission.file_submission = file_submission || submission.file_submission;
+            submission.link_submission = link_submission || submission.link_submission;
+            submission.waktu_pengumpulan = new Date();
+            await submission.save();
+            req.flash('success_msg', 'Tugas berhasil diperbarui!');
+        } else {
+            await PengumpulanTugas.create({
+                id_tugas: id,
+                id_user: userId,
+                file_submission,
+                link_submission,
+                waktu_pengumpulan: new Date()
+            });
+            req.flash('success_msg', 'Tugas berhasil dikumpulkan!');
+        }
+
+        res.redirect(`/assignment/${id}`);
+    } catch (error) {
+        console.error('Error in submitAssignment:', error);
+        req.flash('error_msg', 'Gagal mengumpulkan tugas.');
+        res.redirect(`/assignment/${id}`);
     }
-
-    // Get user from session
-    const userId = req.session.userId;
-    if (!userId) {
-      return res.status(401).json({ success: false, message: 'Anda harus login terlebih dahulu' });
-    }
-
-    await db.PengumpulanTugas.create({
-      id_tugas: assignmentId,
-      id_user: userId,
-      link_submission: submissionLink,
-      teks_submission: submissionText,
-      file_submission: filePath,
-      waktu_pengumpulan: new Date(),
-      status: 'submitted'
-    });
-
-    res.redirect(`/assignment/${assignmentId}`);
-  } catch (error) {
-    console.error('Error submitting assignment:', error);
-    res.status(500).json({ success: false, message: 'Terjadi kesalahan saat mengumpulkan tugas' });
-  }
 };
 
 exports.deleteSubmission = async (req, res) => {
   try {
-    const { id } = req.params;
-    const submission = await db.PengumpulanTugas.findByPk(id);
+    const { id } = req.params; // This id is submission id
+    const submission = await PengumpulanTugas.findByPk(id);
     
     if (submission) {
+      const assignmentId = submission.id_tugas;
       // Hapus file jika ada
       if (submission.file_submission && submission.file_submission.startsWith('/uploads/submissions/')) {
         fs.unlink(path.join(__dirname, '../../public', submission.file_submission), err => {
@@ -90,7 +106,6 @@ exports.deleteSubmission = async (req, res) => {
         });
       }
       
-      const assignmentId = submission.id_tugas;
       await submission.destroy();
       return res.redirect(`/assignment/${assignmentId}`);
     }

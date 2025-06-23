@@ -1,27 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const ctrl = require('../controllers/assignmentController');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const { requireAuth } = require('../middleware/auth');
+const assignmentController = require('../controllers/assignmentController');
+const upload = require('../middleware/upload');
 
-const submissionStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = 'public/uploads/submissions';
-    if (!fs.existsSync(uploadPath)) {
-        fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => cb(null, Date.now() + '-submission-' + path.extname(file.originalname))
-});
-const uploadSubmission = multer({ storage: submissionStorage });
+// Middleware to configure multer for submission uploads
+const submissionUpload = upload.single('file');
 
-router.get('/assignment', requireAuth, ctrl.listAssignments);
-router.get('/assignment/:id', requireAuth, ctrl.detailAssignment);
-router.get('/assignment/:id/submit', requireAuth, ctrl.submitForm);
-router.post('/assignment/:id/submit', requireAuth, uploadSubmission.single('file'), ctrl.submitAssignment);
-router.post('/assignment/submission/:id/delete', requireAuth, ctrl.deleteSubmission);
+// Route to display the list of assignments
+router.get('/assignment', assignmentController.listAssignments);
+
+// Route to display assignment details
+router.get('/assignment/:id', assignmentController.getAssignmentDetail);
+
+// Route to handle assignment submission
+router.post('/assignment/:id/submit', submissionUpload, assignmentController.submitAssignment);
 
 module.exports = router;

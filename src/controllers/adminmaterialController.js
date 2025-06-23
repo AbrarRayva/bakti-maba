@@ -1,71 +1,83 @@
 // controllers/adminmaterialController.js
 const path = require('path');
 const fs = require('fs');
-const db = require('../models');
+const { Materi } = require('../models');
 
+// Display list of materials
 exports.listMaterials = async (req, res) => {
-  try {
-    const materials = await db.Materi.findAll({
-      order: [['createdAt', 'DESC']]
-    });
-    res.render('admin/material/index', { materials });
-  } catch (error) {
-    console.error('Error fetching materials:', error);
-    res.status(500).render('error', { message: 'Terjadi kesalahan saat mengambil data materi' });
-  }
-};
-
-exports.showForm = (req, res) => {
-  res.render('admin/material/form');
-};
-
-exports.addMaterial = async (req, res) => {
-  try {
-    const { judul, deskripsi, link } = req.body;
-    let filePath = null;
-
-    if (req.file) {
-      filePath = `/uploads/${req.file.filename}`;
-    } else if (link) {
-      filePath = link;
-    }
-
-    await db.Materi.create({
-      judul,
-      deskripsi,
-      nama_file: req.file ? req.file.originalname : 'Link Materi',
-      file_path: filePath,
-      tipe_file: req.file ? req.file.mimetype : 'application/link',
-      ukuran_file: req.file ? req.file.size : 0,
-      jumlah_download: 0
-    });
-
-    res.redirect('/admin/material');
-  } catch (error) {
-    console.error('Error creating material:', error);
-    res.status(500).render('error', { message: 'Terjadi kesalahan saat membuat materi' });
-  }
-};
-
-exports.deleteMaterial = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const material = await db.Materi.findByPk(id);
-    
-    if (material) {
-      // Hapus file jika ada
-      if (material.file_path && material.file_path.startsWith('/uploads/')) {
-        fs.unlink(path.join(__dirname, '../../public', material.file_path), err => {
-          if (err) console.error('Gagal hapus file:', err);
+    try {
+        const materials = await Materi.findAll({
+            order: [['createdAt', 'DESC']]
         });
-      }
-      
-      await material.destroy();
+        res.render('admin/material/index', {
+            layout: 'layouts/admin',
+            title: 'Manajemen Materi',
+            materials,
+        });
+    } catch (error) {
+        console.error('Error fetching materials:', error);
+        req.flash('message', 'Gagal mengambil data materi.');
+        res.redirect('/admin/dashboard');
     }
-    
-    res.redirect('/admin/material');
-  } catch (error) {
-    console.error('Error deleting material:', error);
-    res.status(500).render('error', { message: 'Terjadi kesalahan saat menghapus materi' });
-  }
 };
+
+// Show form to add new material
+exports.showForm = (req, res) => {
+    res.render('admin/material/form', {
+        layout: 'layouts/admin',
+        title: 'Tambah Materi Baru'
+    });
+};
+
+// Handle adding new material
+exports.addMaterial = async (req, res) => {
+    try {
+        const { judul_materi, deskripsi_materi } = req.body;
+
+        if (!judul_materi || !deskripsi_materi || !req.file) {
+            req.flash('message', 'Semua field (judul, deskripsi, dan file) harus diisi.');
+            return res.redirect('/admin/material/new');
+        }
+
+        await Materi.create({
+            judul_materi,
+            deskripsi_materi,
+            file_path: `/uploads/${req.file.filename}`,
+            file_size: req.file.size,
+            file_type: req.file.mimetype
+        });
+
+        req.flash('message', 'Materi berhasil ditambahkan.');
+        res.redirect('/admin/material');
+    } catch (error) {
+        console.error('Error creating material:', error);
+        req.flash('message', 'Terjadi kesalahan saat menambahkan materi.');
+        res.redirect('/admin/material');
+    }
+};
+
+// Handle deleting a material
+exports.deleteMaterial = async (req, res) => {
+    try {
+        const material = await Materi.findByPk(req.params.id);
+
+        if (material) {
+            if (material.file_path) {
+                const fullPath = path.join(__dirname, '../../public', material.file_path);
+                if (fs.existsSync(fullPath)) {
+                    fs.unlinkSync(fullPath);
+                }
+            }
+            await material.destroy();
+            req.flash('message', 'Materi berhasil dihapus.');
+        } else {
+            req.flash('message', 'Materi tidak ditemukan.');
+        }
+    } catch (error) {
+        console.error('Error deleting material:', error);
+        req.flash('message', 'Terjadi kesalahan saat menghapus materi.');
+    }
+    res.redirect('/admin/material');
+};
+
+// Note: showForm is not needed if the form is on the index page.

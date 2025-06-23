@@ -23,7 +23,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     nama_tugas: DataTypes.STRING,
     deskripsi: DataTypes.TEXT,
-    deadline: DataTypes.DATE
+    deadline: DataTypes.DATE,
+    file_path: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Tugas',

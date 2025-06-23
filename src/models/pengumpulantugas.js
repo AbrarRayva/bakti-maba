@@ -10,12 +10,29 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      PengumpulanTugas.belongsTo(models.Tugas, { foreignKey: 'id_tugas' });
+      PengumpulanTugas.belongsTo(models.User, { foreignKey: 'id_user', as: 'User' });
     }
   }
   PengumpulanTugas.init({
-    lokasi_file: DataTypes.STRING,
-    waktu_upload: DataTypes.DATE,
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      field: 'id_pengumpulan'
+    },
+    file_submission: {
+      type: DataTypes.STRING,
+      field: 'lokasi_file' 
+    },
+    link_submission: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    waktu_pengumpulan: {
+      type: DataTypes.DATE,
+      field: 'waktu_upload'
+    },
     nilai: DataTypes.INTEGER
   }, {
     sequelize,
